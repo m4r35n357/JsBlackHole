@@ -104,10 +104,8 @@ var drawBackground = function () {
 	}
 };
 
-var draw = function () {
-	// Time display
+var drawForeground = function () {
 	DISPLAY.times();
-	// Stop iterating if they collide
 	newton.update();
 	gr.update();
 	DISPLAY.plotOrbit(newton);
@@ -151,6 +149,6 @@ window.onload = function () {
 	gr.potentialY = 410;
 	// Kick-off
 	drawBackground();
-	setInterval(draw, 10);
+	setInterval(drawForeground, 10);
 };
 

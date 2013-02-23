@@ -34,7 +34,7 @@ var newton = {
 			} else {
 				newton.direction = - newton.direction;
 				newton.r = newton.rOld;
-				console.log("Newton - changed direction, PHI = " + newton.phi * 360.0 / TWOPI, + "\n");
+				console.log("Newton - changed direction, PHI = " + newton.phi * 360.0 / TWOPI % 360, + "\n");
 			}
 			newton.phi += newton.L / (newton.r * newton.r) * INIT.time_step;
 		} else {
@@ -65,7 +65,7 @@ var gr = {
 			} else {
 				gr.direction = - gr.direction;
 				gr.r = gr.rOld;
-				console.log("GR - changed direction, PHI = " + gr.phi * 360.0 / TWOPI, + "\n");
+				console.log("GR - changed direction, PHI = " + gr.phi * 360.0 / TWOPI % 360, + "\n");
 			}
 			gr.phi += gr.L / (gr.r * gr.r) * INIT.time_step;
 			gr.t += gr.E / (1.0 - GLOBALS.Rs / gr.r) * INIT.time_step;
