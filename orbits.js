@@ -1,4 +1,4 @@
-function load () {
+window.onload = function () {
 	fg = document.getElementById('canvas').getContext('2d');
 	bg = document.getElementById('bgcanvas').getContext('2d');
 	// Physical constants
@@ -56,9 +56,9 @@ function load () {
 	// Kick-off
 	drawBackground();
 	setInterval(draw, 10);
-}
+};
 
-function drawBackground () {
+drawBackground = function () {
 	var rMin = Math.round(Rs);
 	// Gravitational radius
 	bg.fillStyle = BLACK;
@@ -110,33 +110,33 @@ function drawBackground () {
 			bg.fill();
 		}
 	}
-}
+};
 
-function pointX (radius, angle) {
+pointX = function (radius, angle) {
 	return originX + radius * Math.cos(angle);
-}
+};
 
-function pointY (radius, angle) {
+pointY = function (radius, angle) {
 	return originY + radius * Math.sin(angle);
-}
+};
 
-function circLN (radius) {
+circLN = function (radius) {
 	return Math.sqrt(radius * Rs / 2.0);
-}
+};
 
-function circLGR (radius) {
+circLGR = function (radius) {
 	return radius / Math.sqrt(2.0 * radius / Rs - 3.0);
-}
+};
 
-function vEffN (radius, momentum) {
+vEffN = function (radius, momentum) {
 	return (momentum * momentum / (radius * radius) - Rs / radius) / 2.0;
-}
+};
 
-function vEffGr (radius, momentum) {
+vEffGr = function (radius, momentum) {
 	return (momentum * momentum / (radius * radius) + 1.0) * (1.0 - Rs / radius);
-}
+};
 
-function draw () {
+draw = function () {
 	var vEn = vEffN(rN, Ln);
 	var vE = vEffGr(r, L);
 	var xValue;
@@ -232,5 +232,5 @@ function draw () {
 			fg.lineTo(xValue, yValue2);
 		fg.stroke();
 	}
-}
+};
 
