@@ -93,8 +93,16 @@ var drawBackground = function () {
 	DISPLAY.bg.globalAlpha = 1.0;
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
 	// Newton energy
+	NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
+	NEWTON.bgpotenial.fillRect(0, 0, INIT.Rs, 200); 
 	DISPLAY.energyBar(NEWTON);
 	// GR energy
+	GR.bgpotenial.fillStyle = DISPLAY.BLACK;
+	GR.bgpotenial.fillRect(0, 0, INIT.Rs, 200); 
+	GR.bgpotenial.fillStyle = DISPLAY.RED;
+	GR.bgpotenial.fillRect(INIT.Rs, 0, 1.5 * INIT.Rs, 200); 
+	GR.bgpotenial.fillStyle = DISPLAY.YELLOW;
+	GR.bgpotenial.fillRect(1.5 * INIT.Rs, 0, 3.0 * INIT.Rs, 200); 
 	DISPLAY.energyBar(GR);
 	// Effective potentials
 	for (var i = DISPLAY.rMin; i < DISPLAY.originX; i += 1) {
