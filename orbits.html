@@ -6,16 +6,21 @@
 		<script type="text/javascript" src="orbits.js"></script>
 	</head>
 	<body>
-		<p><canvas id="gradient" class="canvas gradient orbit" width="600" height="600" /></p>
-		<p><canvas id="bgcanvas" class="canvas bg orbit" width="600" height="600" /></p>
-		<p><canvas id="fgcanvas" class="canvas fg orbit" width="600" height="600" /></p>
+		<p><canvas id="bgorbit" class="canvas bg" width="800" height="800" /></p>
+		<p><canvas id="fgorbit" class="canvas fg" width="800" height="800" /></p>
 
-		<p><canvas id="bgpotenialn" class="canvas bg potentialn" width="300" height="200" /></p>
-		<p><canvas id="fgpotenialn" class="canvas fg potentialn" width="300" height="200" /></p>
+		<p><canvas id="bgpotn" class="canvas bg" width="300" height="200" /></p>
+		<p><canvas id="fgpotn" class="canvas fg" width="300" height="200" /></p>
 
-		<p><canvas id="bgpotenialgr" class="canvas bg potentialgr" width="300" height="200" /></p>
-		<p><canvas id="fgpotenialgr" class="canvas fg potentialgr" width="300" height="200" /></p>
+		<p><canvas id="bgpotgr" class="canvas bg" width="300" height="200" /></p>
+		<p><canvas id="fgpotgr" class="canvas fg" width="300" height="200" /></p>
 
-		<p><canvas id="times" class="canvas fg timedisplay" width="200" height="100" /></p>
+		<p><canvas id="times" class="canvas fg" width="200" height="100" /></p>
+
+		<form name="scenarioForm" action="" onsubmit="return scenarioAction();" method="post">
+			<input type="radio" id="scenarioForm1" name="scenario" value="edge" checked = "checked" />Knife-Edge Orbit<br />
+			<input type="radio" id="scenarioForm2" name="scenario" value="precess" />Precession<br />
+			<input type="submit" value="GO !">
+		</form> 
 	</body>
 </html>

@@ -16,6 +16,13 @@ var DISPLAY = {
 	ballSize: 3,
 	blankSize: 5,
 	potentialY: 10,
+	circularGradient: function (x, y, inner, outer) {
+		var grd = DISPLAY.bg.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
+		grd.addColorStop(0, inner);
+		grd.addColorStop(1, outer);
+		DISPLAY.bg.fillStyle = grd;
+		DISPLAY.bg.fillRect(0, 0, 2 * x, 2 * y);
+	},
 	circle: function (X, Y, radius, colour) {
 		DISPLAY.bg.fillStyle = colour;
 			DISPLAY.bg.beginPath();
@@ -75,17 +82,15 @@ var DISPLAY = {
 };
 
 var drawBackground = function () {
-	var grd = DISPLAY.gradient.createRadialGradient(DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.originX, DISPLAY.originY, Math.sqrt(DISPLAY.originX * DISPLAY.originX + DISPLAY.originY * DISPLAY.originY));
-	grd.addColorStop(0, DISPLAY.WHITE);
-	grd.addColorStop(1, DISPLAY.BLACK);
-	// Fill with gradient
-	DISPLAY.gradient.fillStyle = grd;
-	DISPLAY.gradient.fillRect(0, 0, 2 * DISPLAY.originX, 2 * DISPLAY.originY);
+	DISPLAY.circularGradient(DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
 	// Stable orbit limit
+	DISPLAY.bg.globalAlpha = 0.2;
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, 3.0 * INIT.Rs, DISPLAY.YELLOW);
 	// Unstable orbit limit
+	DISPLAY.bg.globalAlpha = 0.6;
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.RED);
 	// Gravitational radius
+	DISPLAY.bg.globalAlpha = 1.0;
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
 	// Newton energy
 	DISPLAY.energyBar(newton);
@@ -126,16 +131,15 @@ var drawForeground = function () {
 };
 
 window.onload = function () {
-	var canvas = document.getElementById('fgcanvas');
+	var canvas = document.getElementById('fgorbit');
 	DISPLAY.originX = canvas.width / 2;
 	DISPLAY.originY = canvas.height / 2;
 	DISPLAY.fg = canvas.getContext('2d');
-	DISPLAY.bg = document.getElementById('bgcanvas').getContext('2d');
-	DISPLAY.gradient = document.getElementById('gradient').getContext('2d');
-	newton.fgpotenial = document.getElementById('fgpotenialn').getContext('2d');
-	newton.bgpotenial = document.getElementById('bgpotenialn').getContext('2d');
-	gr.fgpotenial = document.getElementById('fgpotenialgr').getContext('2d');
-	gr.bgpotenial = document.getElementById('bgpotenialgr').getContext('2d');
+	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
+	newton.fgpotenial = document.getElementById('fgpotn').getContext('2d');
+	newton.bgpotenial = document.getElementById('bgpotn').getContext('2d');
+	gr.fgpotenial = document.getElementById('fgpotgr').getContext('2d');
+	gr.bgpotenial = document.getElementById('bgpotgr').getContext('2d');
 	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
 	console.info("rDot: " + INIT.rDot + "\n");
 	console.info("TimeStep: " + INIT.time_step + "\n");
@@ -163,7 +167,15 @@ window.onload = function () {
 	gr.Y = DISPLAY.pointY(gr.r, gr.phi);
 	gr.colour = DISPLAY.BLUE;
 	// Kick-off
+//	setKnifeEdge();
+//	setPrecession();
 	drawBackground();
 	setInterval(drawForeground, DISPLAY.msInterval);
+};
+
+var scenarioAction = function () {
+	console.info("scenarioAction() triggered\n");
+	console.info(document.form.scenario[0].value);
+	return false;
 };
 

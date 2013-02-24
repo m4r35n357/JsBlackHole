@@ -90,3 +90,19 @@ var gr = {
 	},
 };
 
+var setKnifeEdge = function () {
+	GLOBALS.M = 40.0;
+	INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
+	INIT.r = 239.0;
+	INIT.rDot = 0.001;
+	INIT.time_step = 1.0;
+};
+
+var setPrecession = function () {
+	GLOBALS.M = 1.0;
+	INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
+	INIT.r = 100.0;
+	INIT.rDot = 0.065;
+	INIT.time_step = 10.0;
+};
+

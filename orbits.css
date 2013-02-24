@@ -1,7 +1,23 @@
 /* Styling for orbits.html, currently only canvas elements */
 
-.gradient {
-	z-index: -1;
+#fgorbit, #bgorbit {
+	left: 311px;
+	top: 10px;
+}
+
+#fgpotn, #bgpotn {
+	left: 10px;
+	top: 111px;
+}
+
+#fgpotgr, #bgpotgr {
+	left: 10px;
+	top: 311px;
+}
+
+#times {
+	left: 10px;
+	top: 511px;
 }
 
 .bg {
@@ -16,25 +32,4 @@
 	position: absolute;
 	border: 1px solid #404040;
 }
-
-.orbit {
-	left: 311px;
-	top: 10px;
-}
-
-.timedisplay {
-	left: 10px;
-	top: 10px;
-}
-
-.potentialn {
-	left: 10px;
-	top: 111px;
-}
-
-.potentialgr {
-	left: 10px;
-	top: 311px;
-}
-
 
