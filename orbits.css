@@ -1,17 +1,36 @@
 /* Styling for orbits.html, currently only canvas elements */
 
-#bgcanvas {
+.bg {
 	z-index: 0;
 }
 
-#fgcanvas {
+.fg {
 	z-index: 1;
 }
 
 .canvas {
 	position: absolute;
+	border: 1px solid #404040;
+}
+
+.orbit {
+	left: 310px;
+	top: 10px;
+}
+
+.timedisplay {
 	left: 10px;
 	top: 10px;
-	border:1px solid #404040;
 }
+
+.potentialn {
+	left: 10px;
+	top: 110px;
+}
+
+.potentialgr {
+	left: 10px;
+	top: 310px;
+}
+
 

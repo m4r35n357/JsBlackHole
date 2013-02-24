@@ -5,8 +5,6 @@
 var DISPLAY = {
 	msInterval: 10,
 	// Misc. constants
-	originX: 600.0,
-	originY: 300.0,
 	BLACK: "#000000",
 	RED: "#ff0000",
 	GREEN: "#00ff00",
@@ -17,6 +15,7 @@ var DISPLAY = {
 	rMax: 300,
 	ballSize: 3,
 	blankSize: 5,
+	potentialY: 10,
 	circle: function (X, Y, radius, colour) {
 		DISPLAY.bg.fillStyle = colour;
 			DISPLAY.bg.beginPath();
@@ -26,10 +25,10 @@ var DISPLAY = {
 	},
 	times: function () {
 		if ((DISPLAY.n % 10) === 0) {
-			DISPLAY.fg.clearRect(0, 0, 200, 100);
-			DISPLAY.fg.fillStyle = DISPLAY.BLACK;
-			DISPLAY.fg.fillText("Proper time: " + (DISPLAY.n * INIT.time_step), 10, 50); 
-			DISPLAY.fg.fillText("   Map time: " + Math.round(gr.t), 10, 90);
+			DISPLAY.timedisplay.clearRect(0, 0, 150, 80);
+			DISPLAY.timedisplay.fillStyle = DISPLAY.BLACK;
+			DISPLAY.timedisplay.fillText("Proper time: " + (DISPLAY.n * INIT.time_step), 10, 20); 
+			DISPLAY.timedisplay.fillText("   Map time: " + Math.round(gr.t), 10, 40);
 		}
 	},
 	pointX: function (radius, angle) {
@@ -49,28 +48,28 @@ var DISPLAY = {
 		DISPLAY.fg.fill();
 	},
 	energyBar: function (model) {
-		DISPLAY.bg.strokeStyle = DISPLAY.BLACK;
-			DISPLAY.bg.beginPath();
-			DISPLAY.bg.moveTo(DISPLAY.rMin, model.potentialY);
-			DISPLAY.bg.lineTo(DISPLAY.rMax, model.potentialY);
-		DISPLAY.bg.stroke();
+		model.bgpotenial.strokeStyle = DISPLAY.BLACK;
+			model.bgpotenial.beginPath();
+			model.bgpotenial.moveTo(DISPLAY.rMin, model.potentialY);
+			model.bgpotenial.lineTo(DISPLAY.rMax, model.potentialY);
+		model.bgpotenial.stroke();
 	},
 	plotPotential: function (model, energy, minPotential) {
-		var yValue2 = model.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
-		DISPLAY.fg.clearRect(model.r - DISPLAY.blankSize, model.potentialY - DISPLAY.blankSize, 2 * DISPLAY.blankSize, yValue2 + 2 * DISPLAY.blankSize);
+		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
+		model.fgpotenial.clearRect(model.r - DISPLAY.blankSize, DISPLAY.potentialY - DISPLAY.blankSize, 2 * DISPLAY.blankSize, yValue2 + 2 * DISPLAY.blankSize);
 		if (model.r > INIT.Rs) {
 			// Potential ball
-			DISPLAY.fg.fillStyle = model.colour;
-				DISPLAY.fg.beginPath();
-				DISPLAY.fg.arc(model.r, model.potentialY, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
-				DISPLAY.fg.closePath();
-			DISPLAY.fg.fill();
+			model.fgpotenial.fillStyle = model.colour;
+				model.fgpotenial.beginPath();
+				model.fgpotenial.arc(model.r, DISPLAY.potentialY, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
+				model.fgpotenial.closePath();
+			model.fgpotenial.fill();
 			// Potential dropline
-			DISPLAY.fg.strokeStyle = model.colour;
-				DISPLAY.fg.beginPath();
-				DISPLAY.fg.moveTo(model.r, model.potentialY);
-				DISPLAY.fg.lineTo(model.r, yValue2);
-			DISPLAY.fg.stroke();
+			model.fgpotenial.strokeStyle = model.colour;
+				model.fgpotenial.beginPath();
+				model.fgpotenial.moveTo(model.r, DISPLAY.potentialY);
+				model.fgpotenial.lineTo(model.r, yValue2);
+			model.fgpotenial.stroke();
 		}
 	},
 };
@@ -91,20 +90,20 @@ var drawBackground = function () {
 		// Newton effective potential locus
 		var vEn = newton.vEff(i, newton.L);
 		if (vEn <= newton.E) {
-			DISPLAY.bg.fillStyle = DISPLAY.BLACK;
-				DISPLAY.bg.beginPath();
-				DISPLAY.bg.arc(i, newton.potentialY + 180.0 * (newton.E - vEn) / (newton.E - newton.vC), 1, 0, GLOBALS.TWOPI, true);
-				DISPLAY.bg.closePath();
-			DISPLAY.bg.fill();
+			newton.bgpotenial.fillStyle = DISPLAY.BLACK;
+				newton.bgpotenial.beginPath();
+				newton.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (newton.E - vEn) / (newton.E - newton.vC), 1, 0, GLOBALS.TWOPI, true);
+				newton.bgpotenial.closePath();
+			newton.bgpotenial.fill();
 		}
 		// GR effective potential locus
 		var vE = gr.vEff(i, gr.L);
 		if (vE <= gr.E2) {
-			DISPLAY.bg.fillStyle = DISPLAY.BLACK;
-				DISPLAY.bg.beginPath();
-				DISPLAY.bg.arc(i, gr.potentialY + 180.0 * (gr.E2 - vE) / (gr.E2 - gr.vMin()), 1, 0, GLOBALS.TWOPI, true);
-				DISPLAY.bg.closePath();
-			DISPLAY.bg.fill();
+			gr.bgpotenial.fillStyle = DISPLAY.BLACK;
+				gr.bgpotenial.beginPath();
+				gr.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (gr.E2 - vE) / (gr.E2 - gr.vMin()), 1, 0, GLOBALS.TWOPI, true);
+				gr.bgpotenial.closePath();
+			gr.bgpotenial.fill();
 		}
 	}
 };
@@ -122,10 +121,15 @@ var drawForeground = function () {
 
 window.onload = function () {
 	var canvas = document.getElementById('fgcanvas');
-	DISPLAY.width = canvas.width;
-	DISPLAY.height = canvas.height;
+	DISPLAY.originX = canvas.width / 2;
+	DISPLAY.originY = canvas.height / 2;
 	DISPLAY.fg = canvas.getContext('2d');
 	DISPLAY.bg = document.getElementById('bgcanvas').getContext('2d');
+	newton.fgpotenial = document.getElementById('fgpotenialn').getContext('2d');
+	newton.bgpotenial = document.getElementById('bgpotenialn').getContext('2d');
+	gr.fgpotenial = document.getElementById('fgpotenialgr').getContext('2d');
+	gr.bgpotenial = document.getElementById('bgpotenialgr').getContext('2d');
+	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
 	console.info("rDot: " + INIT.rDot + "\n");
 	console.info("TimeStep: " + INIT.time_step + "\n");
 	// Newton initial conditions
@@ -139,7 +143,6 @@ window.onload = function () {
 	newton.X = DISPLAY.pointX(newton.r, newton.phi);
 	newton.Y = DISPLAY.pointY(newton.r, newton.phi);
 	newton.colour = DISPLAY.GREEN;
-	newton.potentialY = 210;
 	// GR initial conditions
 	gr.L = gr.circL();
 	console.info("L: " + gr.L + "\n");
@@ -152,7 +155,6 @@ window.onload = function () {
 	gr.X = DISPLAY.pointX(gr.r, gr.phi);
 	gr.Y = DISPLAY.pointY(gr.r, gr.phi);
 	gr.colour = DISPLAY.BLUE;
-	gr.potentialY = 410;
 	// Kick-off
 	drawBackground();
 	setInterval(drawForeground, DISPLAY.msInterval);
