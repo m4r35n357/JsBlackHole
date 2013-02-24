@@ -1,0 +1,14 @@
+#bgcanvas {
+	z-index: 0;
+}
+
+#canvas {
+	z-index: 1;
+}
+
+.orbits {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+

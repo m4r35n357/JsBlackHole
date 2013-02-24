@@ -1,4 +1,5 @@
 var DISPLAY = {
+	msInterval: 10,
 	// Misc. constants
 	originX: 600.0,
 	originY: 300.0,
@@ -8,6 +9,22 @@ var DISPLAY = {
 	BLUE: "#0000ff",
 	YELLOW: "#ffff00",
 	n: 0,
+	rMin: Math.round(INIT.Rs),
+	rMax: 300,
+	circle: function (X, Y, radius, colour) {
+		DISPLAY.bg.fillStyle = colour;
+			DISPLAY.bg.beginPath();
+			DISPLAY.bg.arc(X, Y, radius, 0, GLOBALS.TWOPI, true);
+			DISPLAY.bg.closePath();
+		DISPLAY.bg.fill();
+	},
+	energyBar: function (model, rMin) {
+		DISPLAY.bg.strokeStyle = DISPLAY.BLACK;
+			DISPLAY.bg.beginPath();
+			DISPLAY.bg.moveTo(rMin, model.potentialY);
+			DISPLAY.bg.lineTo(300, model.potentialY);
+		DISPLAY.bg.stroke();
+	},
 	times: function () {
 		if ((DISPLAY.n % 10) === 0) {
 			DISPLAY.fg.clearRect(0, 0, 200, 100);
@@ -28,19 +45,21 @@ var DISPLAY = {
 		DISPLAY.fg.clearRect(model.X - 5.0, model.Y - 5.0, 10.0, 10.0);
 		DISPLAY.fg.fillStyle = model.colour;
 			DISPLAY.fg.beginPath();
-			DISPLAY.fg.arc(model.X, model.Y, 3, 0, TWOPI, true);
+			DISPLAY.fg.arc(model.X, model.Y, 3, 0, GLOBALS.TWOPI, true);
 			DISPLAY.fg.closePath();
 		DISPLAY.fg.fill();
 	},
 	plotPotential: function (model, energy, minPotential) {
 		var yValue2 = model.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
 		DISPLAY.fg.clearRect(model.r - 5.0, model.potentialY - 5.0, 10.0, yValue2 + 10.0);
-		if (model.r > GLOBALS.Rs) {
+		if (model.r > INIT.Rs) {
+			// Potential ball
 			DISPLAY.fg.fillStyle = model.colour;
 				DISPLAY.fg.beginPath();
-				DISPLAY.fg.arc(model.r, model.potentialY, 3, 0, TWOPI, true);
+				DISPLAY.fg.arc(model.r, model.potentialY, 3, 0, GLOBALS.TWOPI, true);
 				DISPLAY.fg.closePath();
 			DISPLAY.fg.fill();
+			// Potential dropline
 			DISPLAY.fg.strokeStyle = model.colour;
 				DISPLAY.fg.beginPath();
 				DISPLAY.fg.moveTo(model.r, model.potentialY);
@@ -51,53 +70,33 @@ var DISPLAY = {
 };
 
 var drawBackground = function () {
-	var rMin = Math.round(GLOBALS.Rs);
-	// Gravitational radius
-	DISPLAY.bg.fillStyle = DISPLAY.BLACK;
-		DISPLAY.bg.beginPath();
-		DISPLAY.bg.arc(DISPLAY.originX, DISPLAY.originY, GLOBALS.Rs, 0, TWOPI, true);
-		DISPLAY.bg.closePath();
-	DISPLAY.bg.fill();
-	// Unstable orbit limit
-	DISPLAY.bg.strokeStyle = DISPLAY.YELLOW;
-		DISPLAY.bg.beginPath();
-		DISPLAY.bg.arc(DISPLAY.originX, DISPLAY.originY, 1.5 * GLOBALS.Rs, 0, TWOPI, true);
-		DISPLAY.bg.closePath();
-	DISPLAY.bg.stroke();
 	// Stable orbit limit
-	DISPLAY.bg.strokeStyle = DISPLAY.RED;
-		DISPLAY.bg.beginPath();
-		DISPLAY.bg.arc(DISPLAY.originX, DISPLAY.originY, 3.0 * GLOBALS.Rs, 0, TWOPI, true);
-		DISPLAY.bg.closePath();
-	DISPLAY.bg.stroke();
+	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, 3.0 * INIT.Rs, DISPLAY.YELLOW);
+	// Unstable orbit limit
+	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.RED);
+	// Gravitational radius
+	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
 	// Newton energy
-	DISPLAY.bg.strokeStyle = DISPLAY.BLACK;
-		DISPLAY.bg.beginPath();
-		DISPLAY.bg.moveTo(rMin, 210);
-		DISPLAY.bg.lineTo(300, 210);
-	DISPLAY.bg.stroke();
+	DISPLAY.energyBar(newton, DISPLAY.rMin);
 	// GR energy
-	DISPLAY.bg.strokeStyle = DISPLAY.BLACK;
-		DISPLAY.bg.beginPath();
-		DISPLAY.bg.moveTo(rMin, 410);
-		DISPLAY.bg.lineTo(300, 410);
-	DISPLAY.bg.stroke();
-	for (var i = rMin; i < 300; i += 1) {
-		// Newton potential
+	DISPLAY.energyBar(gr, DISPLAY.rMin);
+	// Effective potentials
+	for (var i = DISPLAY.rMin; i < DISPLAY.rMax; i += 1) {
+		// Newton effective potential locus
 		var vEn = newton.vEff(i, newton.L);
 		if (vEn <= newton.E) {
 			DISPLAY.bg.fillStyle = DISPLAY.BLACK;
 				DISPLAY.bg.beginPath();
-				DISPLAY.bg.arc(i, newton.potentialY + 180.0 * (newton.E - vEn) / (newton.E - newton.vC), 1, 0, TWOPI, true);
+				DISPLAY.bg.arc(i, newton.potentialY + 180.0 * (newton.E - vEn) / (newton.E - newton.vC), 1, 0, GLOBALS.TWOPI, true);
 				DISPLAY.bg.closePath();
 			DISPLAY.bg.fill();
 		}
-		// GR potential
+		// GR effective potential locus
 		var vE = gr.vEff(i, gr.L);
 		if (vE <= gr.E2) {
 			DISPLAY.bg.fillStyle = DISPLAY.BLACK;
 				DISPLAY.bg.beginPath();
-				DISPLAY.bg.arc(i, gr.potentialY + 180.0 * (gr.E2 - vE) / (gr.E2 - gr.vMin()), 1, 0, TWOPI, true);
+				DISPLAY.bg.arc(i, gr.potentialY + 180.0 * (gr.E2 - vE) / (gr.E2 - gr.vMin()), 1, 0, GLOBALS.TWOPI, true);
 				DISPLAY.bg.closePath();
 			DISPLAY.bg.fill();
 		}
@@ -118,10 +117,8 @@ var drawForeground = function () {
 window.onload = function () {
 	DISPLAY.fg = document.getElementById('canvas').getContext('2d');
 	DISPLAY.bg = document.getElementById('bgcanvas').getContext('2d');
-	GLOBALS.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c);
 	console.info("rDot: " + INIT.rDot + "\n");
 	console.info("TimeStep: " + INIT.time_step + "\n");
-	TWOPI = 2.0 * Math.PI;
 	// Newton initial conditions
 	newton.L = newton.circL();
 	console.info("Ln: " + newton.L + "\n");
@@ -149,6 +146,6 @@ window.onload = function () {
 	gr.potentialY = 410;
 	// Kick-off
 	drawBackground();
-	setInterval(drawForeground, 10);
+	setInterval(drawForeground, DISPLAY.msInterval);
 };
 
