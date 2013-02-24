@@ -1,3 +1,7 @@
+/*jslint white: true, browser: true, safe: true */
+
+"use strict";
+
 var GLOBALS = {
 	TWOPI: 2.0 * Math.PI,
 	// Physical constants
@@ -76,6 +80,7 @@ var gr = {
 		}
 	},
 	vMin: function () {
+		var Vmin;
 		if (gr.E2 > gr.vEff((gr.L * gr.L - gr.L * Math.sqrt(gr.L * gr.L - 3.0 * INIT.Rs * INIT.Rs)) / INIT.Rs, gr.L)) {
 			Vmin = gr.vEff(INIT.Rs, gr.L);
 		} else {

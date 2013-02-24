@@ -1,14 +1,17 @@
+/* Styling for orbits.html, currently only canvas elements */
+
 #bgcanvas {
 	z-index: 0;
 }
 
-#canvas {
+#fgcanvas {
 	z-index: 1;
 }
 
-.orbits {
+.canvas {
 	position: absolute;
-	left: 0;
-	top: 0;
+	left: 10px;
+	top: 10px;
+	border:1px solid #404040;
 }
 

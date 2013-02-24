@@ -1,3 +1,7 @@
+/*jslint white: true, browser: true, safe: true */
+
+"use strict";
+
 var DISPLAY = {
 	msInterval: 10,
 	// Misc. constants
@@ -11,19 +15,14 @@ var DISPLAY = {
 	n: 0,
 	rMin: Math.round(INIT.Rs),
 	rMax: 300,
+	ballSize: 3,
+	blankSize: 5,
 	circle: function (X, Y, radius, colour) {
 		DISPLAY.bg.fillStyle = colour;
 			DISPLAY.bg.beginPath();
 			DISPLAY.bg.arc(X, Y, radius, 0, GLOBALS.TWOPI, true);
 			DISPLAY.bg.closePath();
 		DISPLAY.bg.fill();
-	},
-	energyBar: function (model, rMin) {
-		DISPLAY.bg.strokeStyle = DISPLAY.BLACK;
-			DISPLAY.bg.beginPath();
-			DISPLAY.bg.moveTo(rMin, model.potentialY);
-			DISPLAY.bg.lineTo(300, model.potentialY);
-		DISPLAY.bg.stroke();
 	},
 	times: function () {
 		if ((DISPLAY.n % 10) === 0) {
@@ -42,21 +41,28 @@ var DISPLAY = {
 	plotOrbit: function (model) {
 		model.X = DISPLAY.pointX(model.r, model.phi);
 		model.Y = DISPLAY.pointY(model.r, model.phi);
-		DISPLAY.fg.clearRect(model.X - 5.0, model.Y - 5.0, 10.0, 10.0);
+		DISPLAY.fg.clearRect(model.X - DISPLAY.blankSize, model.Y - DISPLAY.blankSize, 2 * DISPLAY.blankSize, 2 * DISPLAY.blankSize);
 		DISPLAY.fg.fillStyle = model.colour;
 			DISPLAY.fg.beginPath();
-			DISPLAY.fg.arc(model.X, model.Y, 3, 0, GLOBALS.TWOPI, true);
+			DISPLAY.fg.arc(model.X, model.Y, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
 			DISPLAY.fg.closePath();
 		DISPLAY.fg.fill();
 	},
+	energyBar: function (model) {
+		DISPLAY.bg.strokeStyle = DISPLAY.BLACK;
+			DISPLAY.bg.beginPath();
+			DISPLAY.bg.moveTo(DISPLAY.rMin, model.potentialY);
+			DISPLAY.bg.lineTo(DISPLAY.rMax, model.potentialY);
+		DISPLAY.bg.stroke();
+	},
 	plotPotential: function (model, energy, minPotential) {
 		var yValue2 = model.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
-		DISPLAY.fg.clearRect(model.r - 5.0, model.potentialY - 5.0, 10.0, yValue2 + 10.0);
+		DISPLAY.fg.clearRect(model.r - DISPLAY.blankSize, model.potentialY - DISPLAY.blankSize, 2 * DISPLAY.blankSize, yValue2 + 2 * DISPLAY.blankSize);
 		if (model.r > INIT.Rs) {
 			// Potential ball
 			DISPLAY.fg.fillStyle = model.colour;
 				DISPLAY.fg.beginPath();
-				DISPLAY.fg.arc(model.r, model.potentialY, 3, 0, GLOBALS.TWOPI, true);
+				DISPLAY.fg.arc(model.r, model.potentialY, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
 				DISPLAY.fg.closePath();
 			DISPLAY.fg.fill();
 			// Potential dropline
@@ -77,9 +83,9 @@ var drawBackground = function () {
 	// Gravitational radius
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
 	// Newton energy
-	DISPLAY.energyBar(newton, DISPLAY.rMin);
+	DISPLAY.energyBar(newton);
 	// GR energy
-	DISPLAY.energyBar(gr, DISPLAY.rMin);
+	DISPLAY.energyBar(gr);
 	// Effective potentials
 	for (var i = DISPLAY.rMin; i < DISPLAY.rMax; i += 1) {
 		// Newton effective potential locus
@@ -115,7 +121,10 @@ var drawForeground = function () {
 };
 
 window.onload = function () {
-	DISPLAY.fg = document.getElementById('canvas').getContext('2d');
+	var canvas = document.getElementById('fgcanvas');
+	DISPLAY.width = canvas.width;
+	DISPLAY.height = canvas.height;
+	DISPLAY.fg = canvas.getContext('2d');
 	DISPLAY.bg = document.getElementById('bgcanvas').getContext('2d');
 	console.info("rDot: " + INIT.rDot + "\n");
 	console.info("TimeStep: " + INIT.time_step + "\n");
