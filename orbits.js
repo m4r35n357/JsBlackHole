@@ -35,7 +35,7 @@ var DISPLAY = {
 			DISPLAY.timedisplay.clearRect(0, 0, 150, 80);
 			DISPLAY.timedisplay.fillStyle = DISPLAY.BLACK;
 			DISPLAY.timedisplay.fillText("Proper time: " + (DISPLAY.n * INIT.time_step), 10, 20); 
-			DISPLAY.timedisplay.fillText("   Map time: " + Math.round(gr.t), 10, 40);
+			DISPLAY.timedisplay.fillText("   Map time: " + Math.round(GR.t), 10, 40);
 		}
 	},
 	pointX: function (radius, angle) {
@@ -93,40 +93,40 @@ var drawBackground = function () {
 	DISPLAY.bg.globalAlpha = 1.0;
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
 	// Newton energy
-	DISPLAY.energyBar(newton);
+	DISPLAY.energyBar(NEWTON);
 	// GR energy
-	DISPLAY.energyBar(gr);
+	DISPLAY.energyBar(GR);
 	// Effective potentials
 	for (var i = DISPLAY.rMin; i < DISPLAY.originX; i += 1) {
 		// Newton effective potential locus
-		var vEn = newton.vEff(i, newton.L);
-		if (vEn <= newton.E) {
-			newton.bgpotenial.fillStyle = DISPLAY.BLACK;
-				newton.bgpotenial.beginPath();
-				newton.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (newton.E - vEn) / (newton.E - newton.vC), 1, 0, GLOBALS.TWOPI, true);
-				newton.bgpotenial.closePath();
-			newton.bgpotenial.fill();
+		var vEn = NEWTON.vEff(i, NEWTON.L);
+		if (vEn <= NEWTON.E) {
+			NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
+				NEWTON.bgpotenial.beginPath();
+				NEWTON.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / (NEWTON.E - NEWTON.vC), 1, 0, GLOBALS.TWOPI, true);
+				NEWTON.bgpotenial.closePath();
+			NEWTON.bgpotenial.fill();
 		}
 		// GR effective potential locus
-		var vE = gr.vEff(i, gr.L);
-		if (vE <= gr.E2) {
-			gr.bgpotenial.fillStyle = DISPLAY.BLACK;
-				gr.bgpotenial.beginPath();
-				gr.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (gr.E2 - vE) / (gr.E2 - gr.vMin()), 1, 0, GLOBALS.TWOPI, true);
-				gr.bgpotenial.closePath();
-			gr.bgpotenial.fill();
+		var vE = GR.vEff(i, GR.L);
+		if (vE <= GR.E2) {
+			GR.bgpotenial.fillStyle = DISPLAY.BLACK;
+				GR.bgpotenial.beginPath();
+				GR.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin()), 1, 0, GLOBALS.TWOPI, true);
+				GR.bgpotenial.closePath();
+			GR.bgpotenial.fill();
 		}
 	}
 };
 
 var drawForeground = function () {
 	DISPLAY.times();
-	newton.update();
-	gr.update();
-	DISPLAY.plotOrbit(newton);
-	DISPLAY.plotOrbit(gr);
-	DISPLAY.plotPotential(newton, newton.E, newton.vC);
-	DISPLAY.plotPotential(gr, gr.E2, gr.vMin());
+	NEWTON.update();
+	GR.update();
+	DISPLAY.plotOrbit(NEWTON);
+	DISPLAY.plotOrbit(GR);
+	DISPLAY.plotPotential(NEWTON, NEWTON.E, NEWTON.vC);
+	DISPLAY.plotPotential(GR, GR.E2, GR.vMin());
 	DISPLAY.n = DISPLAY.n + 1;
 };
 
@@ -136,36 +136,36 @@ window.onload = function () {
 	DISPLAY.originY = canvas.height / 2;
 	DISPLAY.fg = canvas.getContext('2d');
 	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
-	newton.fgpotenial = document.getElementById('fgpotn').getContext('2d');
-	newton.bgpotenial = document.getElementById('bgpotn').getContext('2d');
-	gr.fgpotenial = document.getElementById('fgpotgr').getContext('2d');
-	gr.bgpotenial = document.getElementById('bgpotgr').getContext('2d');
+	NEWTON.fgpotenial = document.getElementById('fgpotn').getContext('2d');
+	NEWTON.bgpotenial = document.getElementById('bgpotn').getContext('2d');
+	GR.fgpotenial = document.getElementById('fgpotgr').getContext('2d');
+	GR.bgpotenial = document.getElementById('bgpotgr').getContext('2d');
 	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
 	console.info("rDot: " + INIT.rDot + "\n");
 	console.info("TimeStep: " + INIT.time_step + "\n");
 	// Newton initial conditions
-	newton.L = newton.circL();
-	console.info("Ln: " + newton.L + "\n");
-	newton.vC = newton.vEff(newton.r, newton.L);
-	console.info("vCN: " + newton.vC + "\n");
-	newton.E = INIT.rDot * INIT.rDot / 2.0 + newton.vC;
-	console.info("En: " + newton.E + "\n");
-	newton.direction = INIT.direction;
-	newton.X = DISPLAY.pointX(newton.r, newton.phi);
-	newton.Y = DISPLAY.pointY(newton.r, newton.phi);
-	newton.colour = DISPLAY.GREEN;
+	NEWTON.L = NEWTON.circL();
+	console.info("Ln: " + NEWTON.L + "\n");
+	NEWTON.vC = NEWTON.vEff(NEWTON.r, NEWTON.L);
+	console.info("vCN: " + NEWTON.vC + "\n");
+	NEWTON.E = INIT.rDot * INIT.rDot / 2.0 + NEWTON.vC;
+	console.info("En: " + NEWTON.E + "\n");
+	NEWTON.direction = INIT.direction;
+	NEWTON.X = DISPLAY.pointX(NEWTON.r, NEWTON.phi);
+	NEWTON.Y = DISPLAY.pointY(NEWTON.r, NEWTON.phi);
+	NEWTON.colour = DISPLAY.GREEN;
 	// GR initial conditions
-	gr.L = gr.circL();
-	console.info("L: " + gr.L + "\n");
-	gr.vC = gr.vEff(gr.r, gr.L);
-	console.info("vC: " + gr.vC + "\n");
-	gr.E2 = INIT.rDot * INIT.rDot + gr.vC;
-	gr.E = Math.sqrt(gr.E2);
-	console.info("E: " + gr.E + "\n");
-	gr.direction = INIT.direction;
-	gr.X = DISPLAY.pointX(gr.r, gr.phi);
-	gr.Y = DISPLAY.pointY(gr.r, gr.phi);
-	gr.colour = DISPLAY.BLUE;
+	GR.L = GR.circL();
+	console.info("L: " + GR.L + "\n");
+	GR.vC = GR.vEff(GR.r, GR.L);
+	console.info("vC: " + GR.vC + "\n");
+	GR.E2 = INIT.rDot * INIT.rDot + GR.vC;
+	GR.E = Math.sqrt(GR.E2);
+	console.info("E: " + GR.E + "\n");
+	GR.direction = INIT.direction;
+	GR.X = DISPLAY.pointX(GR.r, GR.phi);
+	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
+	GR.colour = DISPLAY.BLUE;
 	// Kick-off
 //	setKnifeEdge();
 //	setPrecession();
