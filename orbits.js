@@ -10,9 +10,9 @@ var DISPLAY = {
 	GREEN: "#00ff00",
 	BLUE: "#0000ff",
 	YELLOW: "#ffff00",
+	WHITE: "#ffffff",
 	n: 0,
 	rMin: Math.round(INIT.Rs),
-	rMax: 300,
 	ballSize: 3,
 	blankSize: 5,
 	potentialY: 10,
@@ -50,8 +50,8 @@ var DISPLAY = {
 	energyBar: function (model) {
 		model.bgpotenial.strokeStyle = DISPLAY.BLACK;
 			model.bgpotenial.beginPath();
-			model.bgpotenial.moveTo(DISPLAY.rMin, model.potentialY);
-			model.bgpotenial.lineTo(DISPLAY.rMax, model.potentialY);
+			model.bgpotenial.moveTo(0, DISPLAY.potentialY);
+			model.bgpotenial.lineTo(DISPLAY.originX, DISPLAY.potentialY);
 		model.bgpotenial.stroke();
 	},
 	plotPotential: function (model, energy, minPotential) {
@@ -75,6 +75,12 @@ var DISPLAY = {
 };
 
 var drawBackground = function () {
+	var grd = DISPLAY.gradient.createRadialGradient(DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.originX, DISPLAY.originY, Math.sqrt(DISPLAY.originX * DISPLAY.originX + DISPLAY.originY * DISPLAY.originY));
+	grd.addColorStop(0, DISPLAY.WHITE);
+	grd.addColorStop(1, DISPLAY.BLACK);
+	// Fill with gradient
+	DISPLAY.gradient.fillStyle = grd;
+	DISPLAY.gradient.fillRect(0, 0, 2 * DISPLAY.originX, 2 * DISPLAY.originY);
 	// Stable orbit limit
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, 3.0 * INIT.Rs, DISPLAY.YELLOW);
 	// Unstable orbit limit
@@ -86,7 +92,7 @@ var drawBackground = function () {
 	// GR energy
 	DISPLAY.energyBar(gr);
 	// Effective potentials
-	for (var i = DISPLAY.rMin; i < DISPLAY.rMax; i += 1) {
+	for (var i = DISPLAY.rMin; i < DISPLAY.originX; i += 1) {
 		// Newton effective potential locus
 		var vEn = newton.vEff(i, newton.L);
 		if (vEn <= newton.E) {
@@ -125,6 +131,7 @@ window.onload = function () {
 	DISPLAY.originY = canvas.height / 2;
 	DISPLAY.fg = canvas.getContext('2d');
 	DISPLAY.bg = document.getElementById('bgcanvas').getContext('2d');
+	DISPLAY.gradient = document.getElementById('gradient').getContext('2d');
 	newton.fgpotenial = document.getElementById('fgpotenialn').getContext('2d');
 	newton.bgpotenial = document.getElementById('bgpotenialn').getContext('2d');
 	gr.fgpotenial = document.getElementById('fgpotenialgr').getContext('2d');

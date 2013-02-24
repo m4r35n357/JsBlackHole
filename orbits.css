@@ -1,5 +1,9 @@
 /* Styling for orbits.html, currently only canvas elements */
 
+.gradient {
+	z-index: -1;
+}
+
 .bg {
 	z-index: 0;
 }
@@ -14,7 +18,7 @@
 }
 
 .orbit {
-	left: 310px;
+	left: 311px;
 	top: 10px;
 }
 
@@ -25,12 +29,12 @@
 
 .potentialn {
 	left: 10px;
-	top: 110px;
+	top: 111px;
 }
 
 .potentialgr {
 	left: 10px;
-	top: 310px;
+	top: 311px;
 }
 
 
