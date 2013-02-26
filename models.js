@@ -8,19 +8,24 @@ var GLOBALS = {
 	c: 1.0,
 	G: 1.0,
 	M: 40.0,			// 1.0 for precession demo, 40.0 for orbital stability demo
+//	M: 1.0,			// 1.0 for precession demo, 40.0 for orbital stability demo
 };
 
 var INIT = {
 	Rs: 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c),
 	r: 239.0,			// 100.0 for precession demo, 239.0 for orbital stability demo
+//	r: 100.0,			// 100.0 for precession demo, 239.0 for orbital stability demo
 	rDot: 0.001,			// 0.065 for precession demo, 0.001/0 for orbital stability demo
+//	rDot: 0.065,			// 0.065 for precession demo, 0.001/0 for orbital stability demo
 	phi: 0.0,
  	direction: -1.0,
 	time_step: 1.0,		// 10.0 for precession demo, 1.0 for orbital stability demo
+//	time_step: 10.0,		// 10.0 for precession demo, 1.0 for orbital stability demo
 };
 
 var NEWTON = {
 	name: "Newton",
+	collided: false,
 	r: INIT.r,
 	rOld: INIT.r,
 	phi: INIT.phi,
@@ -51,6 +56,7 @@ var NEWTON = {
 
 var GR = {
 	name: "GR",
+	collided: false,
 	t: 0.0,
 	r: INIT.r,
 	rOld: INIT.r,

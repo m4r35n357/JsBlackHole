@@ -64,7 +64,7 @@ var DISPLAY = {
 	plotPotential: function (model, energy, minPotential) {
 		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
 		model.fgpotenial.clearRect(model.r - DISPLAY.blankSize, DISPLAY.potentialY - DISPLAY.blankSize, 2 * DISPLAY.blankSize, yValue2 + 2 * DISPLAY.blankSize);
-		if (model.r > INIT.Rs) {
+//		if (model.r > INIT.Rs) {
 			// Potential ball
 			model.fgpotenial.fillStyle = model.colour;
 				model.fgpotenial.beginPath();
@@ -77,12 +77,15 @@ var DISPLAY = {
 				model.fgpotenial.moveTo(model.r, DISPLAY.potentialY);
 				model.fgpotenial.lineTo(model.r, yValue2);
 			model.fgpotenial.stroke();
-		}
+//		}
 	},
 };
 
 var drawBackground = function () {
 	DISPLAY.circularGradient(DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
+	var grd=GR.bgpotenial.createLinearGradient(0, 0, 300, 0);
+	grd.addColorStop(0, "white");
+	grd.addColorStop(1, "black");
 	// Stable orbit limit
 	DISPLAY.bg.globalAlpha = 0.2;
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, 3.0 * INIT.Rs, DISPLAY.YELLOW);
@@ -93,16 +96,25 @@ var drawBackground = function () {
 	DISPLAY.bg.globalAlpha = 1.0;
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
 	// Newton energy
+	NEWTON.bgpotenial.fillStyle = grd;
+	NEWTON.bgpotenial.fillRect(0, 0, 300, 200);
+	NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
+	NEWTON.bgpotenial.fillRect(0, 0, INIT.Rs, 200);
 	NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
 	NEWTON.bgpotenial.fillRect(0, 0, INIT.Rs, 200); 
 	DISPLAY.energyBar(NEWTON);
 	// GR energy
-	GR.bgpotenial.fillStyle = DISPLAY.BLACK;
-	GR.bgpotenial.fillRect(0, 0, INIT.Rs, 200); 
-	GR.bgpotenial.fillStyle = DISPLAY.RED;
-	GR.bgpotenial.fillRect(INIT.Rs, 0, 1.5 * INIT.Rs, 200); 
+	GR.bgpotenial.fillStyle = grd;
+	GR.bgpotenial.fillRect(0, 0, 300, 200);
+	GR.bgpotenial.globalAlpha = 0.2;
 	GR.bgpotenial.fillStyle = DISPLAY.YELLOW;
-	GR.bgpotenial.fillRect(1.5 * INIT.Rs, 0, 3.0 * INIT.Rs, 200); 
+	GR.bgpotenial.fillRect(0, 0, 3.0 * INIT.Rs, 200); 
+	GR.bgpotenial.globalAlpha = 0.6;
+	GR.bgpotenial.fillStyle = DISPLAY.RED;
+	GR.bgpotenial.fillRect(0, 0, 1.5 * INIT.Rs, 200); 
+	GR.bgpotenial.globalAlpha = 1.0;
+	GR.bgpotenial.fillStyle = DISPLAY.BLACK;
+	GR.bgpotenial.fillRect(0, 0, INIT.Rs, 200);
 	DISPLAY.energyBar(GR);
 	// Effective potentials
 	for (var i = DISPLAY.rMin; i < DISPLAY.originX; i += 1) {
@@ -112,6 +124,7 @@ var drawBackground = function () {
 			NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
 				NEWTON.bgpotenial.beginPath();
 				NEWTON.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / (NEWTON.E - NEWTON.vC), 1, 0, GLOBALS.TWOPI, true);
+//				NEWTON.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / NEWTON.E, 1, 0, GLOBALS.TWOPI, true);
 				NEWTON.bgpotenial.closePath();
 			NEWTON.bgpotenial.fill();
 		}
@@ -129,26 +142,21 @@ var drawBackground = function () {
 
 var drawForeground = function () {
 	DISPLAY.times();
-	NEWTON.update();
-	GR.update();
-	DISPLAY.plotOrbit(NEWTON);
-	DISPLAY.plotOrbit(GR);
-	DISPLAY.plotPotential(NEWTON, NEWTON.E, NEWTON.vC);
-	DISPLAY.plotPotential(GR, GR.E2, GR.vMin());
+	if (! NEWTON.collided) {
+		NEWTON.update();
+		DISPLAY.plotOrbit(NEWTON);
+		DISPLAY.plotPotential(NEWTON, NEWTON.E, NEWTON.vC);
+//		DISPLAY.plotPotential(NEWTON, NEWTON.E, 0.0);
+	}
+	if (! GR.collided) {
+		GR.update();
+		DISPLAY.plotOrbit(GR);
+		DISPLAY.plotPotential(GR, GR.E2, GR.vMin());
+	}
 	DISPLAY.n = DISPLAY.n + 1;
 };
 
-window.onload = function () {
-	var canvas = document.getElementById('fgorbit');
-	DISPLAY.originX = canvas.width / 2;
-	DISPLAY.originY = canvas.height / 2;
-	DISPLAY.fg = canvas.getContext('2d');
-	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
-	NEWTON.fgpotenial = document.getElementById('fgpotn').getContext('2d');
-	NEWTON.bgpotenial = document.getElementById('bgpotn').getContext('2d');
-	GR.fgpotenial = document.getElementById('fgpotgr').getContext('2d');
-	GR.bgpotenial = document.getElementById('bgpotgr').getContext('2d');
-	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
+var initModels = function () {
 	console.info("rDot: " + INIT.rDot + "\n");
 	console.info("TimeStep: " + INIT.time_step + "\n");
 	// Newton initial conditions
@@ -174,9 +182,23 @@ window.onload = function () {
 	GR.X = DISPLAY.pointX(GR.r, GR.phi);
 	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
 	GR.colour = DISPLAY.BLUE;
-	// Kick-off
+}
+
+window.onload = function () {
+	var canvas = document.getElementById('fgorbit');
+	DISPLAY.originX = canvas.width / 2;
+	DISPLAY.originY = canvas.height / 2;
+	DISPLAY.fg = canvas.getContext('2d');
+	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
+	NEWTON.fgpotenial = document.getElementById('fgpotn').getContext('2d');
+	NEWTON.bgpotenial = document.getElementById('bgpotn').getContext('2d');
+	GR.fgpotenial = document.getElementById('fgpotgr').getContext('2d');
+	GR.bgpotenial = document.getElementById('bgpotgr').getContext('2d');
+	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
 //	setKnifeEdge();
 //	setPrecession();
+	initModels();
+	// Kick-off
 	drawBackground();
 	setInterval(drawForeground, DISPLAY.msInterval);
 };
