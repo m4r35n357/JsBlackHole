@@ -83,7 +83,7 @@ var DISPLAY = {
 
 var drawBackground = function () {
 	DISPLAY.circularGradient(DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
-	var grd=GR.bgpotenial.createLinearGradient(0, 0, 300, 0);
+	var grd=GR.bgpotenial.createLinearGradient(0, 0, DISPLAY.width, 0);
 	grd.addColorStop(0, "white");
 	grd.addColorStop(1, "black");
 	// Stable orbit limit
@@ -97,7 +97,7 @@ var drawBackground = function () {
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
 	// Newton energy
 	NEWTON.bgpotenial.fillStyle = grd;
-	NEWTON.bgpotenial.fillRect(0, 0, 300, 200);
+	NEWTON.bgpotenial.fillRect(0, 0, DISPLAY.width, 200);
 	NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
 	NEWTON.bgpotenial.fillRect(0, 0, INIT.Rs, 200);
 	NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
@@ -105,7 +105,7 @@ var drawBackground = function () {
 	DISPLAY.energyBar(NEWTON);
 	// GR energy
 	GR.bgpotenial.fillStyle = grd;
-	GR.bgpotenial.fillRect(0, 0, 300, 200);
+	GR.bgpotenial.fillRect(0, 0, DISPLAY.width, 200);
 	GR.bgpotenial.globalAlpha = 0.2;
 	GR.bgpotenial.fillStyle = DISPLAY.YELLOW;
 	GR.bgpotenial.fillRect(0, 0, 3.0 * INIT.Rs, 200); 
@@ -159,7 +159,12 @@ var drawForeground = function () {
 var initModels = function () {
 	console.info("rDot: " + INIT.rDot + "\n");
 	console.info("TimeStep: " + INIT.time_step + "\n");
+	DISPLAY.rMin = Math.round(INIT.Rs);
 	// Newton initial conditions
+	NEWTON.collided = false;
+	NEWTON.r = INIT.r;
+	NEWTON.rOld = INIT.r;
+	NEWTON.phi = INIT.phi;
 	NEWTON.L = NEWTON.circL();
 	console.info("Ln: " + NEWTON.L + "\n");
 	NEWTON.vC = NEWTON.vEff(NEWTON.r, NEWTON.L);
@@ -171,6 +176,10 @@ var initModels = function () {
 	NEWTON.Y = DISPLAY.pointY(NEWTON.r, NEWTON.phi);
 	NEWTON.colour = DISPLAY.GREEN;
 	// GR initial conditions
+	GR.collided = false;
+	GR.r = INIT.r;
+	GR.rOld = INIT.r;
+	GR.phi = INIT.phi;
 	GR.L = GR.circL();
 	console.info("L: " + GR.L + "\n");
 	GR.vC = GR.vEff(GR.r, GR.L);
@@ -185,10 +194,12 @@ var initModels = function () {
 }
 
 window.onload = function () {
-	var canvas = document.getElementById('fgorbit');
-	DISPLAY.originX = canvas.width / 2;
-	DISPLAY.originY = canvas.height / 2;
-	DISPLAY.fg = canvas.getContext('2d');
+	var polar = document.getElementById('fgorbit');
+	var potential = document.getElementById('fgpotn');
+	DISPLAY.originX = polar.width / 2;
+	DISPLAY.originY = polar.height / 2;
+	DISPLAY.width = potential.width;
+	DISPLAY.fg = polar.getContext('2d');
 	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
 	NEWTON.fgpotenial = document.getElementById('fgpotn').getContext('2d');
 	NEWTON.bgpotenial = document.getElementById('bgpotn').getContext('2d');
