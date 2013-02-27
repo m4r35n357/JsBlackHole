@@ -7,20 +7,16 @@ var GLOBALS = {
 	// Physical constants
 	c: 1.0,
 	G: 1.0,
-	M: 40.0,			// 1.0 for precession demo, 40.0 for orbital stability demo
-//	M: 1.0,			// 1.0 for precession demo, 40.0 for orbital stability demo
+	M: 50.0,			// 1.0 for precession demo, 40.0 for orbital stability demo
 };
 
 var INIT = {
 	Rs: 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c),
-	r: 390.0,			// 100.0 for precession demo, 239.0 for orbital stability demo
-//	r: 100.0,			// 100.0 for precession demo, 239.0 for orbital stability demo
-	rDot: 0.172,			// 0.065 for precession demo, 0.001/0 for orbital stability demo
-//	rDot: 0.065,			// 0.065 for precession demo, 0.001/0 for orbital stability demo
+	r: 350.0,			// 100.0 for precession demo, 239.0 for orbital stability demo
+	rDot: 0.000,			// 0.065 for precession demo, 0.001/0 for orbital stability demo
 	phi: 0.0,
  	direction: -1.0,
 	time_step: 1.0,		// 10.0 for precession demo, 1.0 for orbital stability demo
-//	time_step: 10.0,		// 10.0 for precession demo, 1.0 for orbital stability demo
 };
 
 var NEWTON = {
@@ -68,19 +64,35 @@ var GR = {
 		return (momentum * momentum / (radius * radius) + 1.0) * (1.0 - INIT.Rs / radius);
 	},
 	update: function () {
+		var k1, k2, k3, k4;
 		if (GR.r > INIT.Rs) {
 			// update positions (GR)
 			var dRdTau2 = GR.E2 - GR.vEff(GR.r, GR.L);
 			if (dRdTau2 >= 0.0) {
 				GR.rOld = GR.r;
-				GR.r += GR.direction * Math.sqrt(dRdTau2) * INIT.time_step;
+//				GR.r += GR.direction * Math.sqrt(dRdTau2) * INIT.time_step;
+				k1 = GR.direction * Math.sqrt(dRdTau2);
+				k2 = GR.direction * Math.sqrt(GR.E2 - GR.vEff(GR.r + 0.5 * k1 * INIT.time_step, GR.L));
+				k3 = GR.direction * Math.sqrt(GR.E2 - GR.vEff(GR.r + 0.5 * k2 * INIT.time_step, GR.L));
+				k4 = GR.direction * Math.sqrt(GR.E2 - GR.vEff(GR.r + k3 * INIT.time_step, GR.L));
+				GR.r += INIT.time_step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
 			} else {
 				GR.direction = - GR.direction;
 				GR.r = GR.rOld;
 				console.log("GR - changed direction, PHI = " + GR.phi * 360.0 / GLOBALS.TWOPI % 360, + "\n");
 			}
-			GR.phi += GR.L / (GR.r * GR.r) * INIT.time_step;
-			GR.t += GR.E / (1.0 - INIT.Rs / GR.r) * INIT.time_step;
+//			GR.phi += GR.L / (GR.r * GR.r) * INIT.time_step;
+			k1 = GR.L / (GR.r * GR.r);
+			k2 = GR.L / ((GR.r + 0.5 * k1 * INIT.time_step) * (GR.r + 0.5 * k1 * INIT.time_step));
+			k3 = GR.L / ((GR.r + 0.5 * k2 * INIT.time_step) * (GR.r + 0.5 * k2 * INIT.time_step));
+			k3 = GR.L / ((GR.r + k3 * INIT.time_step) * (GR.r + k3 * INIT.time_step));
+			GR.phi += INIT.time_step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
+//			GR.t += GR.E / (1.0 - INIT.Rs / GR.r) * INIT.time_step;
+			k1 = GR.E / (1.0 - INIT.Rs / GR.r);
+			k2 = GR.E / (1.0 - INIT.Rs / (GR.r + 0.5 * k1 * INIT.time_step));
+			k3 = GR.E / (1.0 - INIT.Rs / (GR.r + 0.5 * k2 * INIT.time_step));
+			k4 = GR.E / (1.0 - INIT.Rs / (GR.r + k3 * INIT.time_step));
+			GR.t += INIT.time_step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
 		} else {
 			console.info("GR - collided\n");
 		}
@@ -101,6 +113,14 @@ var setKnifeEdge = function () {
 	INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
 	INIT.r = 239.0;
 	INIT.rDot = 0.001;
+	INIT.time_step = 1.0;
+};
+
+var setJustStable = function () {
+	GLOBALS.M = 40.0;
+	INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
+	INIT.r = 390.0;
+	INIT.rDot = 0.172;
 	INIT.time_step = 1.0;
 };
 

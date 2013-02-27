@@ -64,20 +64,18 @@ var DISPLAY = {
 	plotPotential: function (model, energy, minPotential) {
 		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
 		model.fgpotenial.clearRect(model.r - DISPLAY.blankSize, DISPLAY.potentialY - DISPLAY.blankSize, 2 * DISPLAY.blankSize, yValue2 + 2 * DISPLAY.blankSize);
-//		if (model.r > INIT.Rs) {
-			// Potential ball
-			model.fgpotenial.fillStyle = model.colour;
-				model.fgpotenial.beginPath();
-				model.fgpotenial.arc(model.r, DISPLAY.potentialY, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
-				model.fgpotenial.closePath();
-			model.fgpotenial.fill();
-			// Potential dropline
-			model.fgpotenial.strokeStyle = model.colour;
-				model.fgpotenial.beginPath();
-				model.fgpotenial.moveTo(model.r, DISPLAY.potentialY);
-				model.fgpotenial.lineTo(model.r, yValue2);
-			model.fgpotenial.stroke();
-//		}
+		// Potential ball
+		model.fgpotenial.fillStyle = model.colour;
+			model.fgpotenial.beginPath();
+			model.fgpotenial.arc(model.r, DISPLAY.potentialY, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
+			model.fgpotenial.closePath();
+		model.fgpotenial.fill();
+		// Potential dropline
+		model.fgpotenial.strokeStyle = model.colour;
+			model.fgpotenial.beginPath();
+			model.fgpotenial.moveTo(model.r, DISPLAY.potentialY);
+			model.fgpotenial.lineTo(model.r, yValue2);
+		model.fgpotenial.stroke();
 	},
 };
 
@@ -206,7 +204,8 @@ window.onload = function () {
 	GR.fgpotenial = document.getElementById('fgpotgr').getContext('2d');
 	GR.bgpotenial = document.getElementById('bgpotgr').getContext('2d');
 	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
-//	setKnifeEdge();
+	setKnifeEdge();
+//	setJustStable();
 //	setPrecession();
 	initModels();
 	// Kick-off
