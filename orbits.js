@@ -17,65 +17,74 @@ var DISPLAY = {
 	blankSize: 5,
 	potentialY: 10,
 	circularGradient: function (x, y, inner, outer) {
-		var grd = DISPLAY.bg.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
+		var canvas = DISPLAY.bg;
+		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
 		grd.addColorStop(0, inner);
 		grd.addColorStop(1, outer);
-		DISPLAY.bg.fillStyle = grd;
-		DISPLAY.bg.fillRect(0, 0, 2 * x, 2 * y);
+		canvas.fillStyle = grd;
+		canvas.fillRect(0, 0, 2 * x, 2 * y);
 	},
 	circle: function (X, Y, radius, colour) {
-		DISPLAY.bg.fillStyle = colour;
-			DISPLAY.bg.beginPath();
-			DISPLAY.bg.arc(X, Y, radius, 0, GLOBALS.TWOPI, true);
-			DISPLAY.bg.closePath();
-		DISPLAY.bg.fill();
+		var canvas = DISPLAY.bg;
+		canvas.fillStyle = colour;
+			canvas.beginPath();
+			canvas.arc(X, Y, radius, 0, GLOBALS.TWOPI, true);
+			canvas.closePath();
+		canvas.fill();
 	},
 	times: function () {
+		var canvas = DISPLAY.timedisplay;
 		if ((DISPLAY.n % 10) === 0) {
-			DISPLAY.timedisplay.clearRect(0, 0, 150, 80);
-			DISPLAY.timedisplay.fillStyle = DISPLAY.BLACK;
-			DISPLAY.timedisplay.fillText("Proper time: " + (DISPLAY.n * INIT.time_step), 10, 20); 
-			DISPLAY.timedisplay.fillText("   Map time: " + Math.round(GR.t), 10, 40);
+			canvas.clearRect(0, 0, 150, 80);
+			canvas.fillStyle = DISPLAY.BLACK;
+			canvas.fillText("Proper time: " + (DISPLAY.n * INIT.time_step), 10, 20); 
+			canvas.fillText("   Map time: " + Math.round(GR.t), 10, 40);
 		}
 	},
-	pointX: function (radius, angle) {
-		return DISPLAY.originX + radius * Math.cos(angle);
+	pointX: function (r, phi) {
+		return DISPLAY.originX + r * Math.cos(phi);
 	},
-	pointY: function (radius, angle) {
-		return DISPLAY.originY + radius * Math.sin(angle);
+	pointY: function (r, phi) {
+		return DISPLAY.originY + r * Math.sin(phi);
 	},
 	plotOrbit: function (model) {
+		var canvas = DISPLAY.fg;
+		var blank = DISPLAY.blankSize;
 		model.X = DISPLAY.pointX(model.r, model.phi);
 		model.Y = DISPLAY.pointY(model.r, model.phi);
-		DISPLAY.fg.clearRect(model.X - DISPLAY.blankSize, model.Y - DISPLAY.blankSize, 2 * DISPLAY.blankSize, 2 * DISPLAY.blankSize);
-		DISPLAY.fg.fillStyle = model.colour;
-			DISPLAY.fg.beginPath();
-			DISPLAY.fg.arc(model.X, model.Y, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
-			DISPLAY.fg.closePath();
-		DISPLAY.fg.fill();
+		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
+		canvas.fillStyle = model.colour;
+			canvas.beginPath();
+			canvas.arc(model.X, model.Y, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.closePath();
+		canvas.fill();
 	},
 	energyBar: function (model) {
-		model.bgpotenial.strokeStyle = DISPLAY.BLACK;
-			model.bgpotenial.beginPath();
-			model.bgpotenial.moveTo(0, DISPLAY.potentialY);
-			model.bgpotenial.lineTo(DISPLAY.originX, DISPLAY.potentialY);
-		model.bgpotenial.stroke();
+		var canvas = model.bgpotenial;
+		canvas.strokeStyle = DISPLAY.BLACK;
+			canvas.beginPath();
+			canvas.moveTo(0, DISPLAY.potentialY);
+			canvas.lineTo(DISPLAY.originX, DISPLAY.potentialY);
+		canvas.stroke();
 	},
 	plotPotential: function (model, energy, minPotential) {
+		var canvas = model.fgpotenial;
+		var blank = DISPLAY.blankSize;
+		var rAxis = DISPLAY.potentialY;
 		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
-		model.fgpotenial.clearRect(model.r - DISPLAY.blankSize, DISPLAY.potentialY - DISPLAY.blankSize, 2 * DISPLAY.blankSize, yValue2 + 2 * DISPLAY.blankSize);
+		canvas.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 		// Potential ball
-		model.fgpotenial.fillStyle = model.colour;
-			model.fgpotenial.beginPath();
-			model.fgpotenial.arc(model.r, DISPLAY.potentialY, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
-			model.fgpotenial.closePath();
-		model.fgpotenial.fill();
+		canvas.fillStyle = model.colour;
+			canvas.beginPath();
+			canvas.arc(model.r, rAxis, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.closePath();
+		canvas.fill();
 		// Potential dropline
-		model.fgpotenial.strokeStyle = model.colour;
-			model.fgpotenial.beginPath();
-			model.fgpotenial.moveTo(model.r, DISPLAY.potentialY);
-			model.fgpotenial.lineTo(model.r, yValue2);
-		model.fgpotenial.stroke();
+		canvas.strokeStyle = model.colour;
+			canvas.beginPath();
+			canvas.moveTo(model.r, rAxis);
+			canvas.lineTo(model.r, yValue2);
+		canvas.stroke();
 	},
 };
 
@@ -141,7 +150,7 @@ var drawBackground = function () {
 var drawForeground = function () {
 	DISPLAY.times();
 	if (! NEWTON.collided) {
-		NEWTON.update();
+		NEWTON.update(NEWTON.r, NEWTON.L);
 		DISPLAY.plotOrbit(NEWTON);
 		DISPLAY.plotPotential(NEWTON, NEWTON.E, NEWTON.vC);
 //		DISPLAY.plotPotential(NEWTON, NEWTON.E, 0.0);
@@ -204,9 +213,9 @@ window.onload = function () {
 	GR.fgpotenial = document.getElementById('fgpotgr').getContext('2d');
 	GR.bgpotenial = document.getElementById('bgpotgr').getContext('2d');
 	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
-	setKnifeEdge();
+//	setKnifeEdge();
 //	setJustStable();
-//	setPrecession();
+	setPrecession();
 	initModels();
 	// Kick-off
 	drawBackground();

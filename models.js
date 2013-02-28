@@ -28,23 +28,23 @@ var NEWTON = {
 	circL: function () {
 		return Math.sqrt(NEWTON.r * INIT.Rs / 2.0);
 	},
-	vEff: function (radius, momentum) {
-		return (momentum * momentum / (radius * radius) - INIT.Rs / radius) / 2.0;
+	vEff: function (r, L) {
+		return (L * L / (r * r) - INIT.Rs / r) / 2.0;
 	},
-	update: function () {
+	update: function (r, L) {
 		var step = INIT.time_step;
-		if (NEWTON.r > INIT.Rs) {
+		if (r > INIT.Rs) {
 			// update positions (Newton)
-			var dRdT2 = 2.0 * (NEWTON.E - NEWTON.vEff(NEWTON.r, NEWTON.L));
+			var dRdT2 = 2.0 * (NEWTON.E - NEWTON.vEff(r, L));
 			if (dRdT2 >= 0.0) {
-				NEWTON.rOld = NEWTON.r;
+				NEWTON.rOld = r;
 				NEWTON.r += NEWTON.direction * Math.sqrt(dRdT2) * step;
 			} else {
 				NEWTON.direction = - NEWTON.direction;
 				NEWTON.r = NEWTON.rOld;
 				console.log("Newton - changed direction, PHI = " + NEWTON.phi * 360.0 / GLOBALS.TWOPI % 360, + "\n");
 			}
-			NEWTON.phi += NEWTON.L / (NEWTON.r * NEWTON.r) * step;
+			NEWTON.phi += L / (r * r) * step;
 		} else {
 			console.info("Newton - collided\n");
 		}
@@ -61,41 +61,41 @@ var GR = {
 	circL: function () {
 		return GR.r / Math.sqrt(2.0 * GR.r / INIT.Rs - 3.0);
 	},
-	vEff: function (radius, momentum) {
-		return (momentum * momentum / (radius * radius) + 1.0) * (1.0 - INIT.Rs / radius);
+	vEff: function (r, L) {
+		return (L * L / (r * r) + 1.0) * (1.0 - INIT.Rs / r);
 	},
 	update: function (r, E2, E, L) {
 		var step = INIT.time_step;
 		var Rs = INIT.Rs;
 		var k1, k2, k3, k4;
-		if (GR.r > Rs) {
+		if (r > Rs) {
 			// update positions (GR)
-			var dRdTau2 = GR.E2 - GR.vEff(GR.r, GR.L);
+			var dRdTau2 = E2 - GR.vEff(r, L);
 			if (dRdTau2 >= 0.0) {
-				GR.rOld = GR.r;
-//				GR.r += GR.direction * Math.sqrt(dRdTau2) * step;
-				k1 = GR.direction * Math.sqrt(dRdTau2);
-				k2 = GR.direction * Math.sqrt(GR.E2 - GR.vEff(GR.r + 0.5 * k1 * step, GR.L));
-				k3 = GR.direction * Math.sqrt(GR.E2 - GR.vEff(GR.r + 0.5 * k2 * step, GR.L));
-				k4 = GR.direction * Math.sqrt(GR.E2 - GR.vEff(GR.r + k3 * step, GR.L));
-				GR.r += step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
+				GR.rOld = r;
+				GR.r += GR.direction * Math.sqrt(dRdTau2) * step;
+//				k1 = Math.sqrt(dRdTau2);
+//				k2 = Math.sqrt(E2 - GR.vEff(r + 0.5 * k1 * step, L));
+//				k3 = Math.sqrt(E2 - GR.vEff(r + 0.5 * k2 * step, L));
+//				k4 = Math.sqrt(E2 - GR.vEff(r + k3 * step, L));
+//				GR.r += GR.direction * step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
 			} else {
 				GR.direction = - GR.direction;
 				GR.r = GR.rOld;
 				console.log("GR - changed direction, PHI = " + GR.phi * 360.0 / GLOBALS.TWOPI % 360, + "\n");
 			}
-//			GR.phi += GR.L / (GR.r * GR.r) * step;
-			k1 = GR.L / (GR.r * GR.r);
-			k2 = GR.L / ((GR.r + 0.5 * k1 * step) * (GR.r + 0.5 * k1 * step));
-			k3 = GR.L / ((GR.r + 0.5 * k2 * step) * (GR.r + 0.5 * k2 * step));
-			k4 = GR.L / ((GR.r + k3 * step) * (GR.r + k3 * step));
-			GR.phi += step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
-//			GR.t += GR.E / (1.0 - Rs / GR.r) * step;
-			k1 = GR.E / (1.0 - Rs / GR.r);
-			k2 = GR.E / (1.0 - Rs / (GR.r + 0.5 * k1 * step));
-			k3 = GR.E / (1.0 - Rs / (GR.r + 0.5 * k2 * step));
-			k4 = GR.E / (1.0 - Rs / (GR.r + k3 * step));
-			GR.t += step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
+			GR.phi += L / (r * r) * step;
+//			k1 = L / (r * r);
+//			k2 = L / ((r + 0.5 * k1 * step) * (r + 0.5 * k1 * step));
+//			k3 = L / ((r + 0.5 * k2 * step) * (r + 0.5 * k2 * step));
+//			k4 = L / ((r + k3 * step) * (r + k3 * step));
+//			GR.phi += step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
+			GR.t += E / (1.0 - Rs / r) * step;
+//			k1 = E / (1.0 - Rs / r);
+//			k2 = E / (1.0 - Rs / (r + 0.5 * k1 * step));
+//			k3 = E / (1.0 - Rs / (r + 0.5 * k2 * step));
+//			k4 = E / (1.0 - Rs / (r + k3 * step));
+//			GR.t += step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
 		} else {
 			console.info("GR - collided\n");
 		}
