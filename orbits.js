@@ -37,7 +37,7 @@ var DISPLAY = {
 		if ((DISPLAY.n % 10) === 0) {
 			canvas.clearRect(0, 0, 150, 80);
 			canvas.fillStyle = DISPLAY.BLACK;
-			canvas.fillText("Proper time: " + (DISPLAY.n * INIT.time_step), 10, 20); 
+			canvas.fillText("Proper time: " + (DISPLAY.n * INIT.timeStep), 10, 20); 
 			canvas.fillText("   Map time: " + Math.round(GR.t), 10, 40);
 		}
 	},
@@ -89,8 +89,12 @@ var DISPLAY = {
 };
 
 var drawBackground = function () {
+	var grd;
+	var vEn;
+	var vE;
+	var i;
 	DISPLAY.circularGradient(DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
-	var grd=GR.bgpotenial.createLinearGradient(0, 0, DISPLAY.width, 0);
+	grd = GR.bgpotenial.createLinearGradient(0, 0, DISPLAY.width, 0);
 	grd.addColorStop(0, "white");
 	grd.addColorStop(1, "black");
 	// Stable orbit limit
@@ -124,23 +128,22 @@ var drawBackground = function () {
 	GR.bgpotenial.fillRect(0, 0, INIT.Rs, 200);
 	DISPLAY.energyBar(GR);
 	// Effective potentials
-	for (var i = DISPLAY.rMin; i < DISPLAY.originX; i += 1) {
+	for (i = DISPLAY.rMin; i < DISPLAY.originX; i += 1) {
 		// Newton effective potential locus
-		var vEn = NEWTON.vEff(i, NEWTON.L);
+		vEn = NEWTON.vEff(i, NEWTON.L);
 		if (vEn <= NEWTON.E) {
 			NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
 				NEWTON.bgpotenial.beginPath();
 				NEWTON.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / (NEWTON.E - NEWTON.vC), 1, 0, GLOBALS.TWOPI, true);
-//				NEWTON.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / NEWTON.E, 1, 0, GLOBALS.TWOPI, true);
 				NEWTON.bgpotenial.closePath();
 			NEWTON.bgpotenial.fill();
 		}
 		// GR effective potential locus
-		var vE = GR.vEff(i, GR.L);
+		vE = GR.vEff(i, GR.L);
 		if (vE <= GR.E2) {
 			GR.bgpotenial.fillStyle = DISPLAY.BLACK;
 				GR.bgpotenial.beginPath();
-				GR.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin()), 1, 0, GLOBALS.TWOPI, true);
+				GR.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin(GR.L, GR.Rs)), 1, 0, GLOBALS.TWOPI, true);
 				GR.bgpotenial.closePath();
 			GR.bgpotenial.fill();
 		}
@@ -150,13 +153,12 @@ var drawBackground = function () {
 var drawForeground = function () {
 	DISPLAY.times();
 	if (! NEWTON.collided) {
-		NEWTON.update(NEWTON.r, NEWTON.L);
+		NEWTON.update(INIT.timeStep, NEWTON.r, NEWTON.L, INIT.Rs);
 		DISPLAY.plotOrbit(NEWTON);
 		DISPLAY.plotPotential(NEWTON, NEWTON.E, NEWTON.vC);
-//		DISPLAY.plotPotential(NEWTON, NEWTON.E, 0.0);
 	}
 	if (! GR.collided) {
-		GR.update(GR.r, GR.E2, GR.E, GR.L);
+		GR.update(INIT.timeStep, GR.r, GR.E2, GR.E, GR.L, INIT.Rs);
 		DISPLAY.plotOrbit(GR);
 		DISPLAY.plotPotential(GR, GR.E2, GR.vMin());
 	}
@@ -165,8 +167,11 @@ var drawForeground = function () {
 
 var initModels = function () {
 	console.info("rDot: " + INIT.rDot + "\n");
-	console.info("TimeStep: " + INIT.time_step + "\n");
+	console.info("TimeStep: " + INIT.timeStep + "\n");
 	DISPLAY.rMin = Math.round(INIT.Rs);
+	// Common initial conditions
+	INIT.initialize(NEWTON);
+	INIT.initialize(GR);
 	// Newton initial conditions
 	NEWTON.collided = false;
 	NEWTON.r = INIT.r;
