@@ -64,11 +64,11 @@ var GR = {
 	vEff: function (radius, momentum) {
 		return (momentum * momentum / (radius * radius) + 1.0) * (1.0 - INIT.Rs / radius);
 	},
-	update: function () {
+	update: function (r, E2, E, L) {
 		var step = INIT.time_step;
 		var Rs = INIT.Rs;
 		var k1, k2, k3, k4;
-		if (GR.r > step) {
+		if (GR.r > Rs) {
 			// update positions (GR)
 			var dRdTau2 = GR.E2 - GR.vEff(GR.r, GR.L);
 			if (dRdTau2 >= 0.0) {
@@ -88,7 +88,7 @@ var GR = {
 			k1 = GR.L / (GR.r * GR.r);
 			k2 = GR.L / ((GR.r + 0.5 * k1 * step) * (GR.r + 0.5 * k1 * step));
 			k3 = GR.L / ((GR.r + 0.5 * k2 * step) * (GR.r + 0.5 * k2 * step));
-			k3 = GR.L / ((GR.r + k3 * step) * (GR.r + k3 * step));
+			k4 = GR.L / ((GR.r + k3 * step) * (GR.r + k3 * step));
 			GR.phi += step * (k1 + 2.0 * (k2 + k3) + k4) / 6.0;
 //			GR.t += GR.E / (1.0 - Rs / GR.r) * step;
 			k1 = GR.E / (1.0 - Rs / GR.r);

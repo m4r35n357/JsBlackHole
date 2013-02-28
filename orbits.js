@@ -147,7 +147,7 @@ var drawForeground = function () {
 //		DISPLAY.plotPotential(NEWTON, NEWTON.E, 0.0);
 	}
 	if (! GR.collided) {
-		GR.update();
+		GR.update(GR.r, GR.E2, GR.E, GR.L);
 		DISPLAY.plotOrbit(GR);
 		DISPLAY.plotPotential(GR, GR.E2, GR.vMin());
 	}
