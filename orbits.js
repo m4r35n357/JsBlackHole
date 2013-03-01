@@ -218,8 +218,15 @@ window.onload = function () {
 };
 
 var scenarioAction = function () {
+	var x = document.getElementById('scenarioForm');
 	console.info("scenarioAction() triggered\n");
-	console.info(document.form.scenario[0].value);
+	for (var i = 0; i < x.length; i++) {
+//		console.info(x.elements[i].value);
+		if (x.elements[i].type === 'radio' && x.elements[i].checked) {
+			console.info(x.elements[i].value + " selected");
+		}
+	}
+	console.info("scenarioAction() completed!\n");
 	return false;
 };
 
