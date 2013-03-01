@@ -22,6 +22,7 @@ var INIT = {
 		model.r = INIT.r;
 		model.rOld = INIT.r;
 		model.phi= INIT.phi;
+		model.direction= INIT.direction;
 	},
 };
 

@@ -60,7 +60,7 @@ var DISPLAY = {
 		canvas.fill();
 	},
 	energyBar: function (model) {
-		var canvas = model.bgpotenial;
+		var canvas = model.bgPotential;
 		canvas.strokeStyle = DISPLAY.BLACK;
 			canvas.beginPath();
 			canvas.moveTo(0, DISPLAY.potentialY);
@@ -68,7 +68,7 @@ var DISPLAY = {
 		canvas.stroke();
 	},
 	plotPotential: function (model, energy, minPotential) {
-		var canvas = model.fgpotenial;
+		var canvas = model.fgPotential;
 		var blank = DISPLAY.blankSize;
 		var rAxis = DISPLAY.potentialY;
 		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
@@ -94,7 +94,7 @@ var drawBackground = function () {
 	var vE;
 	var i;
 	DISPLAY.circularGradient(DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
-	grd = GR.bgpotenial.createLinearGradient(0, 0, DISPLAY.width, 0);
+	grd = GR.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
 	grd.addColorStop(0, "white");
 	grd.addColorStop(1, "black");
 	// Stable orbit limit
@@ -107,45 +107,45 @@ var drawBackground = function () {
 	DISPLAY.bg.globalAlpha = 1.0;
 	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
 	// Newton energy
-	NEWTON.bgpotenial.fillStyle = grd;
-	NEWTON.bgpotenial.fillRect(0, 0, DISPLAY.width, 200);
-	NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
-	NEWTON.bgpotenial.fillRect(0, 0, INIT.Rs, 200);
-	NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
-	NEWTON.bgpotenial.fillRect(0, 0, INIT.Rs, 200); 
+	NEWTON.bgPotential.fillStyle = grd;
+	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
+	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
+	NEWTON.bgPotential.fillRect(0, 0, INIT.Rs, 200);
+	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
+	NEWTON.bgPotential.fillRect(0, 0, INIT.Rs, 200); 
 	DISPLAY.energyBar(NEWTON);
 	// GR energy
-	GR.bgpotenial.fillStyle = grd;
-	GR.bgpotenial.fillRect(0, 0, DISPLAY.width, 200);
-	GR.bgpotenial.globalAlpha = 0.2;
-	GR.bgpotenial.fillStyle = DISPLAY.YELLOW;
-	GR.bgpotenial.fillRect(0, 0, 3.0 * INIT.Rs, 200); 
-	GR.bgpotenial.globalAlpha = 0.6;
-	GR.bgpotenial.fillStyle = DISPLAY.RED;
-	GR.bgpotenial.fillRect(0, 0, 1.5 * INIT.Rs, 200); 
-	GR.bgpotenial.globalAlpha = 1.0;
-	GR.bgpotenial.fillStyle = DISPLAY.BLACK;
-	GR.bgpotenial.fillRect(0, 0, INIT.Rs, 200);
+	GR.bgPotential.fillStyle = grd;
+	GR.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
+	GR.bgPotential.globalAlpha = 0.2;
+	GR.bgPotential.fillStyle = DISPLAY.YELLOW;
+	GR.bgPotential.fillRect(0, 0, 3.0 * INIT.Rs, 200); 
+	GR.bgPotential.globalAlpha = 0.6;
+	GR.bgPotential.fillStyle = DISPLAY.RED;
+	GR.bgPotential.fillRect(0, 0, 1.5 * INIT.Rs, 200); 
+	GR.bgPotential.globalAlpha = 1.0;
+	GR.bgPotential.fillStyle = DISPLAY.BLACK;
+	GR.bgPotential.fillRect(0, 0, INIT.Rs, 200);
 	DISPLAY.energyBar(GR);
 	// Effective potentials
 	for (i = DISPLAY.rMin; i < DISPLAY.originX; i += 1) {
 		// Newton effective potential locus
 		vEn = NEWTON.vEff(i, NEWTON.L);
 		if (vEn <= NEWTON.E) {
-			NEWTON.bgpotenial.fillStyle = DISPLAY.BLACK;
-				NEWTON.bgpotenial.beginPath();
-				NEWTON.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / (NEWTON.E - NEWTON.vC), 1, 0, GLOBALS.TWOPI, true);
-				NEWTON.bgpotenial.closePath();
-			NEWTON.bgpotenial.fill();
+			NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
+				NEWTON.bgPotential.beginPath();
+				NEWTON.bgPotential.arc(i, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / (NEWTON.E - NEWTON.vC), 1, 0, GLOBALS.TWOPI, true);
+				NEWTON.bgPotential.closePath();
+			NEWTON.bgPotential.fill();
 		}
 		// GR effective potential locus
 		vE = GR.vEff(i, GR.L);
 		if (vE <= GR.E2) {
-			GR.bgpotenial.fillStyle = DISPLAY.BLACK;
-				GR.bgpotenial.beginPath();
-				GR.bgpotenial.arc(i, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin(GR.L, GR.Rs)), 1, 0, GLOBALS.TWOPI, true);
-				GR.bgpotenial.closePath();
-			GR.bgpotenial.fill();
+			GR.bgPotential.fillStyle = DISPLAY.BLACK;
+				GR.bgPotential.beginPath();
+				GR.bgPotential.arc(i, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin(GR.L, INIT.Rs)), 1, 0, GLOBALS.TWOPI, true);
+				GR.bgPotential.closePath();
+			GR.bgPotential.fill();
 		}
 	}
 };
@@ -160,7 +160,7 @@ var drawForeground = function () {
 	if (! GR.collided) {
 		GR.update(INIT.timeStep, GR.r, GR.E2, GR.E, GR.L, INIT.Rs);
 		DISPLAY.plotOrbit(GR);
-		DISPLAY.plotPotential(GR, GR.E2, GR.vMin());
+		DISPLAY.plotPotential(GR, GR.E2, GR.vMin(GR.L, INIT.Rs));
 	}
 	DISPLAY.n = DISPLAY.n + 1;
 };
@@ -169,29 +169,20 @@ var initModels = function () {
 	console.info("rDot: " + INIT.rDot + "\n");
 	console.info("TimeStep: " + INIT.timeStep + "\n");
 	DISPLAY.rMin = Math.round(INIT.Rs);
-	// Common initial conditions
-	INIT.initialize(NEWTON);
-	INIT.initialize(GR);
 	// Newton initial conditions
-	NEWTON.collided = false;
-	NEWTON.r = INIT.r;
-	NEWTON.rOld = INIT.r;
-	NEWTON.phi = INIT.phi;
+	INIT.initialize(NEWTON);
 	NEWTON.L = NEWTON.circL();
 	console.info("Ln: " + NEWTON.L + "\n");
 	NEWTON.vC = NEWTON.vEff(NEWTON.r, NEWTON.L);
 	console.info("vCN: " + NEWTON.vC + "\n");
 	NEWTON.E = INIT.rDot * INIT.rDot / 2.0 + NEWTON.vC;
 	console.info("En: " + NEWTON.E + "\n");
-	NEWTON.direction = INIT.direction;
 	NEWTON.X = DISPLAY.pointX(NEWTON.r, NEWTON.phi);
 	NEWTON.Y = DISPLAY.pointY(NEWTON.r, NEWTON.phi);
 	NEWTON.colour = DISPLAY.GREEN;
 	// GR initial conditions
-	GR.collided = false;
-	GR.r = INIT.r;
-	GR.rOld = INIT.r;
-	GR.phi = INIT.phi;
+	INIT.initialize(GR);
+	GR.t = 0.0;
 	GR.L = GR.circL();
 	console.info("L: " + GR.L + "\n");
 	GR.vC = GR.vEff(GR.r, GR.L);
@@ -199,7 +190,6 @@ var initModels = function () {
 	GR.E2 = INIT.rDot * INIT.rDot + GR.vC;
 	GR.E = Math.sqrt(GR.E2);
 	console.info("E: " + GR.E + "\n");
-	GR.direction = INIT.direction;
 	GR.X = DISPLAY.pointX(GR.r, GR.phi);
 	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
 	GR.colour = DISPLAY.BLUE;
@@ -213,14 +203,14 @@ window.onload = function () {
 	DISPLAY.width = potential.width;
 	DISPLAY.fg = polar.getContext('2d');
 	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
-	NEWTON.fgpotenial = document.getElementById('fgpotn').getContext('2d');
-	NEWTON.bgpotenial = document.getElementById('bgpotn').getContext('2d');
-	GR.fgpotenial = document.getElementById('fgpotgr').getContext('2d');
-	GR.bgpotenial = document.getElementById('bgpotgr').getContext('2d');
+	NEWTON.fgPotential = document.getElementById('fgpotn').getContext('2d');
+	NEWTON.bgPotential = document.getElementById('bgpotn').getContext('2d');
+	GR.fgPotential = document.getElementById('fgpotgr').getContext('2d');
+	GR.bgPotential = document.getElementById('bgpotgr').getContext('2d');
 	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
-//	setKnifeEdge();
+	setKnifeEdge();
 //	setJustStable();
-	setPrecession();
+//	setPrecession();
 	initModels();
 	// Kick-off
 	drawBackground();
