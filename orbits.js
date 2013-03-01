@@ -223,9 +223,17 @@ var scenarioAction = function () {
 	for (var i = 0; i < x.length; i++) {
 //		console.info(x.elements[i].value);
 		if (x.elements[i].type === 'radio' && x.elements[i].checked) {
+			if (x.elements[i].value == 'edge') {
+				setKnifeEdge();
+			} else if (x.elements[i].value == 'stable') {
+				setJustStable();
+			} else if (x.elements[i].value == 'precess') {
+				setPrecession();
+			}
 			console.info(x.elements[i].value + " selected");
 		}
 	}
+	initModels();
 	console.info("scenarioAction() completed!\n");
 	return false;
 };
