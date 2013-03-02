@@ -15,13 +15,30 @@
 		<p><canvas id="bgpotgr" class="canvas bg" width="400" height="200" /></p>
 		<p><canvas id="fgpotgr" class="canvas fg" width="400" height="200" /></p>
 
-		<p><canvas id="times" class="canvas fg" width="200" height="100" /></p>
+		<!--<p><canvas id="times" class="canvas fg" width="200" height="100" /></p>-->
 
-		<form id="scenarioForm" action="" onsubmit="return scenarioAction();" method="post">
+		<form id="scenarioForm" action="" onsubmit="return scenarioChange();" method="post">
 			<input type="radio" id="scenario1" name="scenario" value="edge" checked = "checked" />Knife-Edge Orbit<br />
 			<input type="radio" id="scenario2" name="scenario" value="stable" />Just Stable<br />
 			<input type="radio" id="scenario3" name="scenario" value="precess" />Precession<br />
 			<input type="submit" value="GO !">
 		</form> 
+		<table border="0">
+			<tr>
+				<th></th><th>Newton</th><th>GR</th>
+			</tr>			
+			<tr>
+				<td>Map Time</td><td> </td><td id="tGR"></td>
+			</tr>
+			<tr>
+				<td>Radius</td><td id="rNEWTON"></td><td id="rGR"></td>
+			</tr>
+			<tr>
+				<td>Azimuth</td><td id="phiNEWTON"></td><td id="phiGR"></td>
+			</tr>
+			<tr>
+				<td>Proper Time</td><td id="timeNEWTON"></td><td id="tauGR"></td>
+			</tr>
+		</table> 
 	</body>
 </html>

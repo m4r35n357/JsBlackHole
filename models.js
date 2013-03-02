@@ -7,16 +7,14 @@ var GLOBALS = {
 	// Physical constants
 	c: 1.0,
 	G: 1.0,
-//	M: 17.5,			// 1.0 for precession demo, 40.0 for orbital stability demo
+	phiDegrees: function (phi) {
+		return (phi * 360.0 / GLOBALS.TWOPI % 360).toFixed(1);
+	},
 };
 
 var INIT = {
-//	Rs: 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c),
-//	r: 350.0,			// 100.0 for precession demo, 239.0 for orbital stability demo
-//	rDot: 0.000,			// 0.065 for precession demo, 0.001/0 for orbital stability demo
 	phi: 0.0,
  	direction: -1.0,
-//	timeStep: 1.0,		// 10.0 for precession demo, 1.0 for orbital stability demo
 	initialize: function (model) {
 		model.collided = false;
 		model.r = INIT.r;
@@ -45,7 +43,7 @@ var NEWTON = {
 			} else {
 				NEWTON.direction = - NEWTON.direction;
 				NEWTON.r = NEWTON.rOld;
-				console.log("Newton - changed direction, PHI = " + NEWTON.phi * 360.0 / GLOBALS.TWOPI % 360, + "\n");
+				console.log("Newton - changed direction, PHI = " + GLOBALS.phiDegrees(NEWTON.phi), + "\n");
 			}
 			NEWTON.phi += L / (r * r) * step;
 		} else {
@@ -73,7 +71,7 @@ var GR = {
 			} else {
 				GR.direction = - GR.direction;
 				GR.r = GR.rOld;
-				console.log("GR - changed direction, PHI = " + GR.phi * 360.0 / GLOBALS.TWOPI % 360, + "\n");
+				console.log("GR - changed direction, PHI = " + GLOBALS.phiDegrees(GR.phi), + "\n");
 			}
 			GR.phi += L / (r * r) * step;
 			GR.t += E / (1.0 - Rs / r) * step;

@@ -11,7 +11,6 @@ var DISPLAY = {
 	BLUE: "#0000ff",
 	YELLOW: "#ffff00",
 	WHITE: "#ffffff",
-//	n: 0,
 	rMin: Math.round(INIT.Rs),
 	ballSize: 3,
 	blankSize: 5,
@@ -33,12 +32,22 @@ var DISPLAY = {
 		canvas.fill();
 	},
 	times: function () {
-		var canvas = DISPLAY.timedisplay;
+//		var canvas = DISPLAY.timedisplay;
+//		if ((DISPLAY.n % 10) === 0) {
+//			canvas.clearRect(0, 0, 150, 80);
+//			canvas.fillStyle = DISPLAY.BLACK;
+//			canvas.fillText("Proper time: " + (DISPLAY.n * INIT.timeStep), 10, 20); 
+//			canvas.fillText("   Map time: " + Math.round(GR.t), 10, 40);
+//		}
+		var properTime = DISPLAY.n * INIT.timeStep;
 		if ((DISPLAY.n % 10) === 0) {
-			canvas.clearRect(0, 0, 150, 80);
-			canvas.fillStyle = DISPLAY.BLACK;
-			canvas.fillText("Proper time: " + (DISPLAY.n * INIT.timeStep), 10, 20); 
-			canvas.fillText("   Map time: " + Math.round(GR.t), 10, 40);
+			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
+			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
+			NEWTON.tDisplay.innerHTML = properTime.toFixed(1);
+			GR.tDisplay.innerHTML = GR.t.toFixed(1);
+			GR.rDisplay.innerHTML = GR.r.toFixed(1);
+			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
+			GR.tauDisplay.innerHTML = properTime.toFixed(1);
 		}
 	},
 	pointX: function (r, phi) {
@@ -221,10 +230,14 @@ var initOrbits = function () {
 	NEWTON.bgPotential = document.getElementById('bgpotn').getContext('2d');
 	GR.fgPotential = document.getElementById('fgpotgr').getContext('2d');
 	GR.bgPotential = document.getElementById('bgpotgr').getContext('2d');
-	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
-//	setKnifeEdge();
-//	setJustStable();
-//	setPrecession();
+//	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
+	NEWTON.tDisplay = document.getElementById('timeNEWTON');
+	NEWTON.rDisplay = document.getElementById('rNEWTON');
+	NEWTON.phiDisplay = document.getElementById('phiNEWTON');
+	GR.tDisplay = document.getElementById('tGR');
+	GR.rDisplay = document.getElementById('rGR');
+	GR.phiDisplay = document.getElementById('phiGR');
+	GR.tauDisplay = document.getElementById('tauGR');
 };
 
 var redraw = function () {
@@ -235,34 +248,32 @@ var redraw = function () {
 }
 
 window.onload = function () {
-//	initOrbits();
-//	redraw();
-	scenarioAction();
+	scenarioChange();
 };
 
-var scenarioAction = function () {
-	var x = document.getElementById('scenarioForm');
-	console.info("scenarioAction() triggered\n");
+var scenarioChange = function () {
+	var form = document.getElementById('scenarioForm');
+//	console.info("scenarioAction() triggered\n");
 	initOrbits();
 	DISPLAY.clearOrbit(NEWTON);
 	DISPLAY.clearPotential(NEWTON, NEWTON.E, NEWTON.vC);
 	DISPLAY.clearOrbit(GR);
 	DISPLAY.clearPotential(GR, GR.E2, GR.vMin(GR.L, INIT.Rs));
 	DISPLAY.n = 0;
-	for (var i = 0; i < x.length; i++) {
-		if (x.elements[i].type === 'radio' && x.elements[i].checked) {
-			if (x.elements[i].value == 'edge') {
+	for (var i = 0; i < form.length; i++) {
+		if (form.elements[i].type === 'radio' && form.elements[i].checked) {
+			if (form.elements[i].value == 'edge') {
 				setKnifeEdge();
-			} else if (x.elements[i].value == 'stable') {
+			} else if (form.elements[i].value == 'stable') {
 				setJustStable();
-			} else if (x.elements[i].value == 'precess') {
+			} else if (form.elements[i].value == 'precess') {
 				setPrecession();
 			}
-			console.info(x.elements[i].value + " selected");
+			console.info(form.elements[i].value + " selected");
 		}
 	}
 	redraw();
-	console.info("scenarioAction() completed!\n");
+//	console.info("scenarioAction() completed!\n");
 	return false;
 };
 
