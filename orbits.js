@@ -32,13 +32,6 @@ var DISPLAY = {
 		canvas.fill();
 	},
 	times: function () {
-//		var canvas = DISPLAY.timedisplay;
-//		if ((DISPLAY.n % 10) === 0) {
-//			canvas.clearRect(0, 0, 150, 80);
-//			canvas.fillStyle = DISPLAY.BLACK;
-//			canvas.fillText("Proper time: " + (DISPLAY.n * INIT.timeStep), 10, 20); 
-//			canvas.fillText("   Map time: " + Math.round(GR.t), 10, 40);
-//		}
 		var properTime = DISPLAY.n * INIT.timeStep;
 		if ((DISPLAY.n % 10) === 0) {
 			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
@@ -194,31 +187,23 @@ var initModels = function () {
 	DISPLAY.rMin = Math.round(INIT.Rs);
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
-	NEWTON.L = NEWTON.circL();
-	console.info("Ln: " + NEWTON.L + "\n");
-	NEWTON.vC = NEWTON.vEff(NEWTON.r, NEWTON.L);
-	console.info("vCN: " + NEWTON.vC + "\n");
-	NEWTON.E = INIT.rDot * INIT.rDot / 2.0 + NEWTON.vC;
-	console.info("En: " + NEWTON.E + "\n");
+	NEWTON.initialize();
 	NEWTON.X = DISPLAY.pointX(NEWTON.r, NEWTON.phi);
 	NEWTON.Y = DISPLAY.pointY(NEWTON.r, NEWTON.phi);
 	NEWTON.colour = DISPLAY.GREEN;
 	// GR initial conditions
 	INIT.initialize(GR);
-	GR.t = 0.0;
-	GR.L = GR.circL();
-	console.info("L: " + GR.L + "\n");
-	GR.vC = GR.vEff(GR.r, GR.L);
-	console.info("vC: " + GR.vC + "\n");
-	GR.E2 = INIT.rDot * INIT.rDot + GR.vC;
-	GR.E = Math.sqrt(GR.E2);
-	console.info("E: " + GR.E + "\n");
+	GR.initialize();
 	GR.X = DISPLAY.pointX(GR.r, GR.phi);
 	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
 	GR.colour = DISPLAY.BLUE;
 }
 
-var initOrbits = function () {
+window.onload = function () {
+	scenarioChange();
+};
+
+var getDom = function () {
 	var polar = document.getElementById('fgorbit');
 	var potential = document.getElementById('fgpotn');
 	DISPLAY.originX = polar.width / 2;
@@ -230,7 +215,6 @@ var initOrbits = function () {
 	NEWTON.bgPotential = document.getElementById('bgpotn').getContext('2d');
 	GR.fgPotential = document.getElementById('fgpotgr').getContext('2d');
 	GR.bgPotential = document.getElementById('bgpotgr').getContext('2d');
-//	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
 	NEWTON.tDisplay = document.getElementById('timeNEWTON');
 	NEWTON.rDisplay = document.getElementById('rNEWTON');
 	NEWTON.phiDisplay = document.getElementById('phiNEWTON');
@@ -242,19 +226,13 @@ var initOrbits = function () {
 
 var redraw = function () {
 	initModels();
-	// Kick-off
 	drawBackground();
 	setInterval(drawForeground, DISPLAY.msRefresh);
 }
 
-window.onload = function () {
-	scenarioChange();
-};
-
 var scenarioChange = function () {
 	var form = document.getElementById('scenarioForm');
-//	console.info("scenarioAction() triggered\n");
-	initOrbits();
+	getDom();
 	DISPLAY.clearOrbit(NEWTON);
 	DISPLAY.clearPotential(NEWTON, NEWTON.E, NEWTON.vC);
 	DISPLAY.clearOrbit(GR);
@@ -263,17 +241,16 @@ var scenarioChange = function () {
 	for (var i = 0; i < form.length; i++) {
 		if (form.elements[i].type === 'radio' && form.elements[i].checked) {
 			if (form.elements[i].value == 'edge') {
-				setKnifeEdge();
+				INIT.setKnifeEdge();
 			} else if (form.elements[i].value == 'stable') {
-				setJustStable();
+				INIT.setJustStable();
 			} else if (form.elements[i].value == 'precess') {
-				setPrecession();
+				INIT.setPrecession();
 			}
 			console.info(form.elements[i].value + " selected");
 		}
 	}
 	redraw();
-//	console.info("scenarioAction() completed!\n");
 	return false;
 };
 

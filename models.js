@@ -22,10 +22,39 @@ var INIT = {
 		model.phi= INIT.phi;
 		model.direction= INIT.direction;
 	},
+	setKnifeEdge: function () {
+		GLOBALS.M = 40.0;
+		INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
+		INIT.r = 239.0;
+		INIT.rDot = 0.001;
+		INIT.timeStep = 1.0;
+	},
+	setJustStable: function () {
+		GLOBALS.M = 40.0;
+		INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
+		INIT.r = 390.0;
+		INIT.rDot = 0.172;
+		INIT.timeStep = 1.0;
+	},
+	setPrecession: function () {
+		GLOBALS.M = 1.0;
+		INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
+		INIT.r = 100.0;
+		INIT.rDot = 0.065;
+		INIT.timeStep = 10.0;
+	},
 };
 
 var NEWTON = {
 	name: "Newton",
+	initialize: function () {
+		NEWTON.L = NEWTON.circL();
+		console.info("Ln: " + NEWTON.L.toFixed(3));
+		NEWTON.vC = NEWTON.vEff(NEWTON.r, NEWTON.L);
+		console.info("vCN: " + NEWTON.vC.toFixed(6));
+		NEWTON.E = INIT.rDot * INIT.rDot / 2.0 + NEWTON.vC;
+		console.info("En: " + NEWTON.E.toFixed(6));
+	},
 	circL: function () {
 		return Math.sqrt(NEWTON.r * INIT.Rs / 2.0);
 	},
@@ -43,7 +72,7 @@ var NEWTON = {
 			} else {
 				NEWTON.direction = - NEWTON.direction;
 				NEWTON.r = NEWTON.rOld;
-				console.log("Newton - changed direction, PHI = " + GLOBALS.phiDegrees(NEWTON.phi), + "\n");
+				console.log("Newton - changed direction, PHI = " + GLOBALS.phiDegrees(NEWTON.phi));
 			}
 			NEWTON.phi += L / (r * r) * step;
 		} else {
@@ -54,6 +83,17 @@ var NEWTON = {
 
 var GR = {
 	name: "GR",
+	initialize: function () {
+		GR.t = 0.0;
+		GR.L = GR.circL();
+		console.info("L: " + GR.L.toFixed(3));
+		GR.vC = GR.vEff(GR.r, GR.L);
+		console.info("vC: " + GR.vC.toFixed(6));
+		GR.E2 = INIT.rDot * INIT.rDot + GR.vC;
+		console.info("E2: " + GR.E2.toFixed(6));
+		GR.E = Math.sqrt(GR.E2);
+		console.info("E: " + GR.E.toFixed(6));
+	},
 	circL: function () {
 		return GR.r / Math.sqrt(2.0 * GR.r / INIT.Rs - 3.0);
 	},
@@ -71,7 +111,7 @@ var GR = {
 			} else {
 				GR.direction = - GR.direction;
 				GR.r = GR.rOld;
-				console.log("GR - changed direction, PHI = " + GLOBALS.phiDegrees(GR.phi), + "\n");
+				console.log("GR - changed direction, PHI = " + GLOBALS.phiDegrees(GR.phi));
 			}
 			GR.phi += L / (r * r) * step;
 			GR.t += E / (1.0 - Rs / r) * step;
@@ -92,27 +132,4 @@ var GR = {
 	},
 };
 
-var setKnifeEdge = function () {
-	GLOBALS.M = 40.0;
-	INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
-	INIT.r = 239.0;
-	INIT.rDot = 0.001;
-	INIT.timeStep = 1.0;
-};
-
-var setJustStable = function () {
-	GLOBALS.M = 40.0;
-	INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
-	INIT.r = 390.0;
-	INIT.rDot = 0.172;
-	INIT.timeStep = 1.0;
-};
-
-var setPrecession = function () {
-	GLOBALS.M = 1.0;
-	INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
-	INIT.r = 100.0;
-	INIT.rDot = 0.065;
-	INIT.timeStep = 10.0;
-};
 
