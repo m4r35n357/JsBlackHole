@@ -80,7 +80,7 @@ var DISPLAY = {
 		var canvas = model.fgPotential;
 		var blank = DISPLAY.blankSize;
 		var rAxis = DISPLAY.potentialY;
-		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
+		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
 		canvas.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = model.colour;
@@ -99,7 +99,7 @@ var DISPLAY = {
 		var canvas = model.fgPotential;
 		var blank = DISPLAY.blankSize;
 		var rAxis = DISPLAY.potentialY;
-		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
+		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
 		canvas.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 	},
 };
@@ -146,7 +146,7 @@ var drawBackground = function () {
 	// Effective potentials
 	for (i = DISPLAY.rMin; i < DISPLAY.originX; i += 1) {
 		// Newton effective potential locus
-		vEn = NEWTON.vEff(i, NEWTON.L);
+		vEn = NEWTON.V(i, NEWTON.L);
 		if (vEn <= NEWTON.E) {
 			NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
 				NEWTON.bgPotential.beginPath();
@@ -155,7 +155,7 @@ var drawBackground = function () {
 			NEWTON.bgPotential.fill();
 		}
 		// GR effective potential locus
-		vE = GR.vEff(i, GR.L);
+		vE = GR.V(i, GR.L);
 		if (vE <= GR.E2) {
 			GR.bgPotential.fillStyle = DISPLAY.BLACK;
 				GR.bgPotential.beginPath();

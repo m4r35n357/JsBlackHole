@@ -50,7 +50,7 @@ var NEWTON = {
 	initialize: function () {
 		NEWTON.L = NEWTON.circL();
 		console.info("Ln: " + NEWTON.L.toFixed(3));
-		NEWTON.vC = NEWTON.vEff(NEWTON.r, NEWTON.L);
+		NEWTON.vC = NEWTON.V(NEWTON.r, NEWTON.L);
 		console.info("vCN: " + NEWTON.vC.toFixed(6));
 		NEWTON.E = INIT.rDot * INIT.rDot / 2.0 + NEWTON.vC;
 		console.info("En: " + NEWTON.E.toFixed(6));
@@ -58,20 +58,22 @@ var NEWTON = {
 	circL: function () {
 		return Math.sqrt(NEWTON.r * INIT.Rs / 2.0);
 	},
-	vEff: function (r, L) {
+	V: function (r, L) {
 		return (L * L / (r * r) - INIT.Rs / r) / 2.0;
 	},
 	update: function (step, r, L, Rs) {
 		var rDot2;
+		var vNew;
 		if (r > Rs) {
+			vNew = NEWTON.V(r, L);
 			// update positions (Newton)
-			rDot2 = 2.0 * (NEWTON.E - NEWTON.vEff(r, L));
+			rDot2 = 2.0 * (NEWTON.E - vNew);
 			if (rDot2 >= 0.0) {
 				NEWTON.rOld = r;
 				NEWTON.r += NEWTON.direction * Math.sqrt(rDot2) * step;
 			} else {
 				NEWTON.direction = - NEWTON.direction;
-				NEWTON.r = NEWTON.rOld;
+				NEWTON.r = NEWTON.rOld + 2.0 * ((vNew - NEWTON.E) / (vNew - NEWTON.V(NEWTON.rOld, L)) - 0.5) * NEWTON.direction * Math.sqrt(-rDot2) * step;
 				console.log("Newton - changed direction, PHI = " + GLOBALS.phiDegrees(NEWTON.phi));
 			}
 			NEWTON.phi += L / (r * r) * step;
@@ -87,7 +89,7 @@ var GR = {
 		GR.t = 0.0;
 		GR.L = GR.circL();
 		console.info("L: " + GR.L.toFixed(3));
-		GR.vC = GR.vEff(GR.r, GR.L);
+		GR.vC = GR.V(GR.r, GR.L);
 		console.info("vC: " + GR.vC.toFixed(6));
 		GR.E2 = INIT.rDot * INIT.rDot + GR.vC;
 		console.info("E2: " + GR.E2.toFixed(6));
@@ -97,14 +99,14 @@ var GR = {
 	circL: function () {
 		return GR.r / Math.sqrt(2.0 * GR.r / INIT.Rs - 3.0);
 	},
-	vEff: function (r, L) {
+	V: function (r, L) {
 		return (L * L / (r * r) + 1.0) * (1.0 - INIT.Rs / r);
 	},
 	update: function (step, r, E2, E, L, Rs) {
 		var rDot2;
 		if (r > Rs) {
 			// update positions (GR)
-			rDot2 = E2 - GR.vEff(r, L);
+			rDot2 = E2 - GR.V(r, L);
 			if (rDot2 >= 0.0) {
 				GR.rOld = r;
 				GR.r += GR.direction * Math.sqrt(rDot2) * step;
@@ -121,9 +123,9 @@ var GR = {
 	},
 	vMin: function (L, Rs) {
 		var Vmin;
-		if (GR.E2 > GR.vEff((L * L - L * Math.sqrt(L * L - 3.0 * Rs * Rs)) / Rs, L)) {
+		if (GR.E2 > GR.V((L * L - L * Math.sqrt(L * L - 3.0 * Rs * Rs)) / Rs, L)) {
 			// lower vertical limit is potential at the horizon
-			Vmin = GR.vEff(Rs, L);
+			Vmin = GR.V(Rs, L);
 		} else {
 			// lower vertical limit is potential of circular orbit
 			Vmin = GR.vC;
