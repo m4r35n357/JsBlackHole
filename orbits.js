@@ -3,7 +3,7 @@
 "use strict";
 
 var DISPLAY = {
-	msInterval: 10,
+	msRefresh: 10,
 	// Misc. constants
 	BLACK: "#000000",
 	RED: "#ff0000",
@@ -11,7 +11,7 @@ var DISPLAY = {
 	BLUE: "#0000ff",
 	YELLOW: "#ffff00",
 	WHITE: "#ffffff",
-	n: 0,
+//	n: 0,
 	rMin: Math.round(INIT.Rs),
 	ballSize: 3,
 	blankSize: 5,
@@ -59,6 +59,13 @@ var DISPLAY = {
 			canvas.closePath();
 		canvas.fill();
 	},
+	clearOrbit: function (model) {
+		var canvas = DISPLAY.fg;
+		var blank = DISPLAY.blankSize;
+		model.X = DISPLAY.pointX(model.r, model.phi);
+		model.Y = DISPLAY.pointY(model.r, model.phi);
+		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
+	},
 	energyBar: function (model) {
 		var canvas = model.bgPotential;
 		canvas.strokeStyle = DISPLAY.BLACK;
@@ -85,6 +92,13 @@ var DISPLAY = {
 			canvas.moveTo(model.r, rAxis);
 			canvas.lineTo(model.r, yValue2);
 		canvas.stroke();
+	},
+	clearPotential: function (model, energy, minPotential) {
+		var canvas = model.fgPotential;
+		var blank = DISPLAY.blankSize;
+		var rAxis = DISPLAY.potentialY;
+		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.vEff(model.r, model.L)) / (energy - minPotential);
+		canvas.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 	},
 };
 
@@ -195,7 +209,7 @@ var initModels = function () {
 	GR.colour = DISPLAY.BLUE;
 }
 
-window.onload = function () {
+var initOrbits = function () {
 	var polar = document.getElementById('fgorbit');
 	var potential = document.getElementById('fgpotn');
 	DISPLAY.originX = polar.width / 2;
@@ -208,20 +222,34 @@ window.onload = function () {
 	GR.fgPotential = document.getElementById('fgpotgr').getContext('2d');
 	GR.bgPotential = document.getElementById('bgpotgr').getContext('2d');
 	DISPLAY.timedisplay = document.getElementById('times').getContext('2d');
-	setKnifeEdge();
+//	setKnifeEdge();
 //	setJustStable();
 //	setPrecession();
+};
+
+var redraw = function () {
 	initModels();
 	// Kick-off
 	drawBackground();
-	setInterval(drawForeground, DISPLAY.msInterval);
+	setInterval(drawForeground, DISPLAY.msRefresh);
+}
+
+window.onload = function () {
+//	initOrbits();
+//	redraw();
+	scenarioAction();
 };
 
 var scenarioAction = function () {
 	var x = document.getElementById('scenarioForm');
 	console.info("scenarioAction() triggered\n");
+	initOrbits();
+	DISPLAY.clearOrbit(NEWTON);
+	DISPLAY.clearPotential(NEWTON, NEWTON.E, NEWTON.vC);
+	DISPLAY.clearOrbit(GR);
+	DISPLAY.clearPotential(GR, GR.E2, GR.vMin(GR.L, INIT.Rs));
+	DISPLAY.n = 0;
 	for (var i = 0; i < x.length; i++) {
-//		console.info(x.elements[i].value);
 		if (x.elements[i].type === 'radio' && x.elements[i].checked) {
 			if (x.elements[i].value == 'edge') {
 				setKnifeEdge();
@@ -233,7 +261,7 @@ var scenarioAction = function () {
 			console.info(x.elements[i].value + " selected");
 		}
 	}
-	initModels();
+	redraw();
 	console.info("scenarioAction() completed!\n");
 	return false;
 };

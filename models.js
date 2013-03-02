@@ -7,16 +7,16 @@ var GLOBALS = {
 	// Physical constants
 	c: 1.0,
 	G: 1.0,
-	M: 17.5,			// 1.0 for precession demo, 40.0 for orbital stability demo
+//	M: 17.5,			// 1.0 for precession demo, 40.0 for orbital stability demo
 };
 
 var INIT = {
-	Rs: 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c),
-	r: 350.0,			// 100.0 for precession demo, 239.0 for orbital stability demo
-	rDot: 0.000,			// 0.065 for precession demo, 0.001/0 for orbital stability demo
+//	Rs: 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c),
+//	r: 350.0,			// 100.0 for precession demo, 239.0 for orbital stability demo
+//	rDot: 0.000,			// 0.065 for precession demo, 0.001/0 for orbital stability demo
 	phi: 0.0,
  	direction: -1.0,
-	timeStep: 1.0,		// 10.0 for precession demo, 1.0 for orbital stability demo
+//	timeStep: 1.0,		// 10.0 for precession demo, 1.0 for orbital stability demo
 	initialize: function (model) {
 		model.collided = false;
 		model.r = INIT.r;
