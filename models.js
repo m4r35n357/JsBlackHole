@@ -8,7 +8,7 @@ var GLOBALS = {
 	c: 1.0,
 	G: 1.0,
 	phiDegrees: function (phi) {
-		return (phi * 360.0 / GLOBALS.TWOPI % 360).toFixed(1);
+		return (phi * 360.0 / GLOBALS.TWOPI % 360).toFixed(0);
 	},
 };
 
@@ -104,15 +104,19 @@ var GR = {
 	},
 	update: function (step, r, E2, E, L, Rs) {
 		var rDot2;
+		var vNew;
 		if (r > Rs) {
+			vNew = GR.V(r, L);
 			// update positions (GR)
-			rDot2 = E2 - GR.V(r, L);
+			rDot2 = E2 - vNew;
 			if (rDot2 >= 0.0) {
 				GR.rOld = r;
 				GR.r += GR.direction * Math.sqrt(rDot2) * step;
 			} else {
 				GR.direction = - GR.direction;
-				GR.r = GR.rOld;
+				GR.r = GR.rOld + 2.0 * ((vNew - GR.E2) / (vNew - GR.V(GR.rOld, L)) - 0.5) * GR.direction * Math.sqrt(-rDot2) * step;
+//				GR.direction = - GR.direction;
+//				GR.r = GR.rOld;
 				console.log("GR - changed direction, PHI = " + GLOBALS.phiDegrees(GR.phi));
 			}
 			GR.phi += L / (r * r) * step;

@@ -31,16 +31,16 @@ var DISPLAY = {
 			canvas.closePath();
 		canvas.fill();
 	},
-	times: function () {
+	varTable: function () {
 		var properTime = DISPLAY.n * INIT.timeStep;
 		if ((DISPLAY.n % 10) === 0) {
 			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
-			NEWTON.tDisplay.innerHTML = properTime.toFixed(1);
-			GR.tDisplay.innerHTML = GR.t.toFixed(1);
+			NEWTON.tDisplay.innerHTML = properTime.toFixed(0);
+			GR.tDisplay.innerHTML = GR.t.toFixed(0);
 			GR.rDisplay.innerHTML = GR.r.toFixed(1);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
-			GR.tauDisplay.innerHTML = properTime.toFixed(1);
+			GR.tauDisplay.innerHTML = properTime.toFixed(0);
 		}
 	},
 	pointX: function (r, phi) {
@@ -167,7 +167,7 @@ var drawBackground = function () {
 };
 
 var drawForeground = function () {
-	DISPLAY.times();
+	DISPLAY.varTable();
 	if (! NEWTON.collided) {
 		NEWTON.update(INIT.timeStep, NEWTON.r, NEWTON.L, INIT.Rs);
 		DISPLAY.plotOrbit(NEWTON);
