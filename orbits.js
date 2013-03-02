@@ -164,6 +164,10 @@ var drawBackground = function () {
 			GR.bgPotential.fill();
 		}
 	}
+	NEWTON.eDisplay.innerHTML = NEWTON.E.toFixed(6);
+	NEWTON.lDisplay.innerHTML = NEWTON.L.toFixed(2);
+	GR.eDisplay.innerHTML = GR.E.toFixed(6);
+	GR.lDisplay.innerHTML = GR.L.toFixed(2);
 };
 
 var drawForeground = function () {
@@ -215,13 +219,21 @@ var getDom = function () {
 	NEWTON.bgPotential = document.getElementById('bgpotn').getContext('2d');
 	GR.fgPotential = document.getElementById('fgpotgr').getContext('2d');
 	GR.bgPotential = document.getElementById('bgpotgr').getContext('2d');
+	NEWTON.eDisplay = document.getElementById('eNEWTON');
+	NEWTON.lDisplay = document.getElementById('lNEWTON');
 	NEWTON.tDisplay = document.getElementById('timeNEWTON');
 	NEWTON.rDisplay = document.getElementById('rNEWTON');
 	NEWTON.phiDisplay = document.getElementById('phiNEWTON');
+	NEWTON.pDisplay = document.getElementById('pNEWTON');
+	NEWTON.aDisplay = document.getElementById('aNEWTON');
+	GR.eDisplay = document.getElementById('eGR');
+	GR.lDisplay = document.getElementById('lGR');
 	GR.tDisplay = document.getElementById('tGR');
 	GR.rDisplay = document.getElementById('rGR');
 	GR.phiDisplay = document.getElementById('phiGR');
 	GR.tauDisplay = document.getElementById('tauGR');
+	GR.pDisplay = document.getElementById('pGR');
+	GR.aDisplay = document.getElementById('aGR');
 };
 
 var redraw = function () {

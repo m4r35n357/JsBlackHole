@@ -75,6 +75,11 @@ var NEWTON = {
 				NEWTON.direction = - NEWTON.direction;
 				NEWTON.r = NEWTON.rOld + 2.0 * ((vNew - NEWTON.E) / (vNew - NEWTON.V(NEWTON.rOld, L)) - 0.5) * NEWTON.direction * Math.sqrt(-rDot2) * step;
 				console.log("Newton - changed direction, PHI = " + GLOBALS.phiDegrees(NEWTON.phi));
+				if (NEWTON.direction === 1) {
+					NEWTON.pDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
+				} else {
+					NEWTON.aDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
+				}
 			}
 			NEWTON.phi += L / (r * r) * step;
 		} else {
@@ -115,9 +120,12 @@ var GR = {
 			} else {
 				GR.direction = - GR.direction;
 				GR.r = GR.rOld + 2.0 * ((vNew - GR.E2) / (vNew - GR.V(GR.rOld, L)) - 0.5) * GR.direction * Math.sqrt(-rDot2) * step;
-//				GR.direction = - GR.direction;
-//				GR.r = GR.rOld;
 				console.log("GR - changed direction, PHI = " + GLOBALS.phiDegrees(GR.phi));
+				if (GR.direction === 1) {
+					GR.pDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
+				} else {
+					GR.aDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
+				}
 			}
 			GR.phi += L / (r * r) * step;
 			GR.t += E / (1.0 - Rs / r) * step;

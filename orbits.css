@@ -7,19 +7,19 @@
 
 #fgpotn, #bgpotn {
 	left: 10px;
-	top: 311px;
+	top: 411px;
 }
 
 #fgpotgr, #bgpotgr {
 	left: 10px;
-	top: 511px;
+	top: 611px;
 }
-
+/*
 #times {
 	left: 10px;
 	top: 711px;
 }
-
+*/
 .bg {
 	z-index: 0;
 }
@@ -31,5 +31,13 @@
 .canvas {
 	position: absolute;
 	border: 1px solid #404040;
+}
+
+.newton {
+	color: #008000;
+}
+
+.gr {
+	color: #000080;
 }
 
