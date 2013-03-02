@@ -8,7 +8,10 @@ var GLOBALS = {
 	c: 1.0,
 	G: 1.0,
 	phiDegrees: function (phi) {
-		return (phi * 360.0 / GLOBALS.TWOPI % 360).toFixed(0);
+		return (phi * 360.0 / this.TWOPI % 360).toFixed(0);
+	},
+	rTurnAround: function (vNew, vOld, E, L, rDot2, step, direction) {
+		return 2.0 * ((vNew - E) / (vNew - vOld) - 0.5) * direction * Math.sqrt(-rDot2) * step;
 	},
 };
 
@@ -17,46 +20,46 @@ var INIT = {
  	direction: -1.0,
 	initialize: function (model) {
 		model.collided = false;
-		model.r = INIT.r;
-		model.rOld = INIT.r;
-		model.phi= INIT.phi;
-		model.direction= INIT.direction;
+		model.r = this.r;
+		model.rOld = this.r;
+		model.phi= this.phi;
+		model.direction= this.direction;
 	},
 	setKnifeEdge: function () {
-		GLOBALS.M = 40.0;
-		INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
-		INIT.r = 239.0;
-		INIT.rDot = 0.001;
-		INIT.timeStep = 1.0;
+		this.M = 40.0;
+		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
+		this.r = 239.0;
+		this.rDot = 0.001;
+		this.timeStep = 1.0;
 	},
 	setJustStable: function () {
-		GLOBALS.M = 40.0;
-		INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
-		INIT.r = 390.0;
-		INIT.rDot = 0.172;
-		INIT.timeStep = 1.0;
+		this.M = 40.0;
+		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
+		this.r = 390.0;
+		this.rDot = 0.172;
+		this.timeStep = 1.0;
 	},
 	setPrecession: function () {
-		GLOBALS.M = 1.0;
-		INIT.Rs = 2.0 * GLOBALS.G * GLOBALS.M / (GLOBALS.c * GLOBALS.c)
-		INIT.r = 100.0;
-		INIT.rDot = 0.065;
-		INIT.timeStep = 10.0;
+		this.M = 1.0;
+		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
+		this.r = 100.0;
+		this.rDot = 0.065;
+		this.timeStep = 10.0;
 	},
 };
 
 var NEWTON = {
 	name: "Newton",
 	initialize: function () {
-		NEWTON.L = NEWTON.circL();
-		console.info("Ln: " + NEWTON.L.toFixed(3));
-		NEWTON.vC = NEWTON.V(NEWTON.r, NEWTON.L);
-		console.info("vCN: " + NEWTON.vC.toFixed(6));
-		NEWTON.E = INIT.rDot * INIT.rDot / 2.0 + NEWTON.vC;
-		console.info("En: " + NEWTON.E.toFixed(6));
+		this.L = this.circL();
+		console.info("Ln: " + this.L.toFixed(3));
+		this.vC = this.V(this.r, this.L);
+		console.info("vCN: " + this.vC.toFixed(6));
+		this.E = INIT.rDot * INIT.rDot / 2.0 + this.vC;
+		console.info("En: " + this.E.toFixed(6));
 	},
 	circL: function () {
-		return Math.sqrt(NEWTON.r * INIT.Rs / 2.0);
+		return Math.sqrt(this.r * INIT.Rs / 2.0);
 	},
 	V: function (r, L) {
 		return (L * L / (r * r) - INIT.Rs / r) / 2.0;
@@ -65,25 +68,26 @@ var NEWTON = {
 		var rDot2;
 		var vNew;
 		if (r > Rs) {
-			vNew = NEWTON.V(r, L);
+			vNew = this.V(r, L);
 			// update positions (Newton)
-			rDot2 = 2.0 * (NEWTON.E - vNew);
+			rDot2 = 2.0 * (this.E - vNew);
 			if (rDot2 >= 0.0) {
-				NEWTON.rOld = r;
-				NEWTON.r += NEWTON.direction * Math.sqrt(rDot2) * step;
+				this.rOld = r;
+				this.r += this.direction * Math.sqrt(rDot2) * step;
 			} else {
-				NEWTON.direction = - NEWTON.direction;
-				NEWTON.r = NEWTON.rOld + 2.0 * ((vNew - NEWTON.E) / (vNew - NEWTON.V(NEWTON.rOld, L)) - 0.5) * NEWTON.direction * Math.sqrt(-rDot2) * step;
-				console.log("Newton - changed direction, PHI = " + GLOBALS.phiDegrees(NEWTON.phi));
-				if (NEWTON.direction === 1) {
-					NEWTON.pDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
+				this.direction = - this.direction;
+//				this.r = this.rOld + 2.0 * ((vNew - this.E) / (vNew - this.V(this.rOld, L)) - 0.5) * this.direction * Math.sqrt(-rDot2) * step;
+				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, L), this.E, this.L, rDot2, step, this.direction);
+				console.log(this.name + " - changed direction, PHI = " + GLOBALS.phiDegrees(this.phi));
+				if (this.direction === 1) {
+					this.pDisplay.innerHTML = GLOBALS.phiDegrees(this.phi);
 				} else {
-					NEWTON.aDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
+					this.aDisplay.innerHTML = GLOBALS.phiDegrees(this.phi);
 				}
 			}
-			NEWTON.phi += L / (r * r) * step;
+			this.phi += L / (r * r) * step;
 		} else {
-			console.info("Newton - collided\n");
+			console.info(this.name + " - collided\n");
 		}
 	},
 };
@@ -91,18 +95,18 @@ var NEWTON = {
 var GR = {
 	name: "GR",
 	initialize: function () {
-		GR.t = 0.0;
-		GR.L = GR.circL();
-		console.info("L: " + GR.L.toFixed(3));
-		GR.vC = GR.V(GR.r, GR.L);
-		console.info("vC: " + GR.vC.toFixed(6));
-		GR.E2 = INIT.rDot * INIT.rDot + GR.vC;
-		console.info("E2: " + GR.E2.toFixed(6));
-		GR.E = Math.sqrt(GR.E2);
-		console.info("E: " + GR.E.toFixed(6));
+		this.t = 0.0;
+		this.L = this.circL();
+		console.info("L: " + this.L.toFixed(3));
+		this.vC = this.V(this.r, this.L);
+		console.info("vC: " + this.vC.toFixed(6));
+		this.E2 = INIT.rDot * INIT.rDot + this.vC;
+		console.info("E2: " + this.E2.toFixed(6));
+		this.E = Math.sqrt(this.E2);
+		console.info("E: " + this.E.toFixed(6));
 	},
 	circL: function () {
-		return GR.r / Math.sqrt(2.0 * GR.r / INIT.Rs - 3.0);
+		return this.r / Math.sqrt(2.0 * this.r / INIT.Rs - 3.0);
 	},
 	V: function (r, L) {
 		return (L * L / (r * r) + 1.0) * (1.0 - INIT.Rs / r);
@@ -111,36 +115,37 @@ var GR = {
 		var rDot2;
 		var vNew;
 		if (r > Rs) {
-			vNew = GR.V(r, L);
+			vNew = this.V(r, L);
 			// update positions (GR)
 			rDot2 = E2 - vNew;
 			if (rDot2 >= 0.0) {
-				GR.rOld = r;
-				GR.r += GR.direction * Math.sqrt(rDot2) * step;
+				this.rOld = r;
+				this.r += this.direction * Math.sqrt(rDot2) * step;
 			} else {
-				GR.direction = - GR.direction;
-				GR.r = GR.rOld + 2.0 * ((vNew - GR.E2) / (vNew - GR.V(GR.rOld, L)) - 0.5) * GR.direction * Math.sqrt(-rDot2) * step;
-				console.log("GR - changed direction, PHI = " + GLOBALS.phiDegrees(GR.phi));
-				if (GR.direction === 1) {
-					GR.pDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
+				this.direction = - this.direction;
+//				this.r = this.rOld + 2.0 * ((vNew - this.E2) / (vNew - this.V(this.rOld, L)) - 0.5) * this.direction * Math.sqrt(-rDot2) * step;
+				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, L), this.E2, this.L, rDot2, step, this.direction);
+				console.log(this.name + " - changed direction, PHI = " + GLOBALS.phiDegrees(this.phi));
+				if (this.direction === 1) {
+					this.pDisplay.innerHTML = GLOBALS.phiDegrees(this.phi);
 				} else {
-					GR.aDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
+					this.aDisplay.innerHTML = GLOBALS.phiDegrees(this.phi);
 				}
 			}
-			GR.phi += L / (r * r) * step;
-			GR.t += E / (1.0 - Rs / r) * step;
+			this.phi += L / (r * r) * step;
+			this.t += E / (1.0 - Rs / r) * step;
 		} else {
-			console.info("GR - collided\n");
+			console.info(this.name + " - collided\n");
 		}
 	},
 	vMin: function (L, Rs) {
 		var Vmin;
-		if (GR.E2 > GR.V((L * L - L * Math.sqrt(L * L - 3.0 * Rs * Rs)) / Rs, L)) {
+		if (this.E2 > this.V((L * L - L * Math.sqrt(L * L - 3.0 * Rs * Rs)) / Rs, L)) {
 			// lower vertical limit is potential at the horizon
-			Vmin = GR.V(Rs, L);
+			Vmin = this.V(Rs, L);
 		} else {
 			// lower vertical limit is potential of circular orbit
-			Vmin = GR.vC;
+			Vmin = this.vC;
 		}
 		return Vmin;
 	},

@@ -1,5 +1,9 @@
 /* Styling for orbits.html, currently only canvas elements */
 
+body {
+	background-color: #808080;
+}
+
 #fgorbit, #bgorbit {
 	left: 411px;
 	top: 10px;
@@ -14,12 +18,7 @@
 	left: 10px;
 	top: 611px;
 }
-/*
-#times {
-	left: 10px;
-	top: 711px;
-}
-*/
+
 .bg {
 	z-index: 0;
 }
@@ -34,10 +33,10 @@
 }
 
 .newton {
-	color: #008000;
+	color: #00ff00;
 }
 
 .gr {
-	color: #000080;
+	color: #0000ff;
 }
 

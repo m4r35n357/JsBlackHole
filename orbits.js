@@ -15,16 +15,14 @@ var DISPLAY = {
 	ballSize: 3,
 	blankSize: 5,
 	potentialY: 10,
-	circularGradient: function (x, y, inner, outer) {
-		var canvas = DISPLAY.bg;
+	circularGradient: function (canvas, x, y, inner, outer) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
 		grd.addColorStop(0, inner);
 		grd.addColorStop(1, outer);
 		canvas.fillStyle = grd;
 		canvas.fillRect(0, 0, 2 * x, 2 * y);
 	},
-	circle: function (X, Y, radius, colour) {
-		var canvas = DISPLAY.bg;
+	circle: function (canvas, X, Y, radius, colour) {
 		canvas.fillStyle = colour;
 			canvas.beginPath();
 			canvas.arc(X, Y, radius, 0, GLOBALS.TWOPI, true);
@@ -49,8 +47,7 @@ var DISPLAY = {
 	pointY: function (r, phi) {
 		return DISPLAY.originY + r * Math.sin(phi);
 	},
-	plotOrbit: function (model) {
-		var canvas = DISPLAY.fg;
+	plotOrbit: function (canvas, model) {
 		var blank = DISPLAY.blankSize;
 		model.X = DISPLAY.pointX(model.r, model.phi);
 		model.Y = DISPLAY.pointY(model.r, model.phi);
@@ -61,8 +58,7 @@ var DISPLAY = {
 			canvas.closePath();
 		canvas.fill();
 	},
-	clearOrbit: function (model) {
-		var canvas = DISPLAY.fg;
+	clearOrbit: function (canvas, model) {
 		var blank = DISPLAY.blankSize;
 		model.X = DISPLAY.pointX(model.r, model.phi);
 		model.Y = DISPLAY.pointY(model.r, model.phi);
@@ -109,19 +105,19 @@ var drawBackground = function () {
 	var vEn;
 	var vE;
 	var i;
-	DISPLAY.circularGradient(DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
+	DISPLAY.circularGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
 	grd = GR.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
 	grd.addColorStop(0, "white");
 	grd.addColorStop(1, "black");
 	// Stable orbit limit
 	DISPLAY.bg.globalAlpha = 0.2;
-	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, 3.0 * INIT.Rs, DISPLAY.YELLOW);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, 3.0 * INIT.Rs, DISPLAY.YELLOW);
 	// Unstable orbit limit
 	DISPLAY.bg.globalAlpha = 0.6;
-	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.RED);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.RED);
 	// Gravitational radius
 	DISPLAY.bg.globalAlpha = 1.0;
-	DISPLAY.circle(DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
 	// Newton energy
 	NEWTON.bgPotential.fillStyle = grd;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
@@ -174,12 +170,12 @@ var drawForeground = function () {
 	DISPLAY.varTable();
 	if (! NEWTON.collided) {
 		NEWTON.update(INIT.timeStep, NEWTON.r, NEWTON.L, INIT.Rs);
-		DISPLAY.plotOrbit(NEWTON);
+		DISPLAY.plotOrbit(DISPLAY.fg, NEWTON);
 		DISPLAY.plotPotential(NEWTON, NEWTON.E, NEWTON.vC);
 	}
 	if (! GR.collided) {
 		GR.update(INIT.timeStep, GR.r, GR.E2, GR.E, GR.L, INIT.Rs);
-		DISPLAY.plotOrbit(GR);
+		DISPLAY.plotOrbit(DISPLAY.fg, GR);
 		DISPLAY.plotPotential(GR, GR.E2, GR.vMin(GR.L, INIT.Rs));
 	}
 	DISPLAY.n = DISPLAY.n + 1;
@@ -245,9 +241,9 @@ var redraw = function () {
 var scenarioChange = function () {
 	var form = document.getElementById('scenarioForm');
 	getDom();
-	DISPLAY.clearOrbit(NEWTON);
+	DISPLAY.clearOrbit(DISPLAY.fg, NEWTON);
 	DISPLAY.clearPotential(NEWTON, NEWTON.E, NEWTON.vC);
-	DISPLAY.clearOrbit(GR);
+	DISPLAY.clearOrbit(DISPLAY.fg, GR);
 	DISPLAY.clearPotential(GR, GR.E2, GR.vMin(GR.L, INIT.Rs));
 	DISPLAY.n = 0;
 	for (var i = 0; i < form.length; i++) {
