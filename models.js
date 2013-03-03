@@ -11,7 +11,7 @@ var GLOBALS = {
 		return (phi * 360.0 / this.TWOPI % 360).toFixed(0);
 	},
 	rTurnAround: function (vNew, vOld, E, L, rDot2, step, direction) {
-		return 2.0 * ((vNew - E) / (vNew - vOld) - 0.5) * direction * Math.sqrt(-rDot2) * step;
+		return -2.0 * ((vNew - E) / (vNew - vOld) - 0.5) * direction * Math.sqrt(-rDot2) * step;
 	},
 };
 
