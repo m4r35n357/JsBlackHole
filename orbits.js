@@ -30,8 +30,8 @@ var DISPLAY = {
 		canvas.fill();
 	},
 	varTable: function () {
-		var properTime = DISPLAY.n * INIT.timeStep;
-		if ((DISPLAY.n % 10) === 0) {
+		var properTime = this.n * INIT.timeStep;
+		if ((this.n % 10) === 0) {
 			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
 			NEWTON.tDisplay.innerHTML = properTime.toFixed(0);
@@ -42,46 +42,46 @@ var DISPLAY = {
 		}
 	},
 	pointX: function (r, phi) {
-		return DISPLAY.originX + r * Math.cos(phi);
+		return this.originX + r * Math.cos(phi);
 	},
 	pointY: function (r, phi) {
-		return DISPLAY.originY + r * Math.sin(phi);
+		return this.originY + r * Math.sin(phi);
 	},
 	plotOrbit: function (canvas, model) {
-		var blank = DISPLAY.blankSize;
-		model.X = DISPLAY.pointX(model.r, model.phi);
-		model.Y = DISPLAY.pointY(model.r, model.phi);
+		var blank = this.blankSize;
+		model.X = this.pointX(model.r, model.phi);
+		model.Y = this.pointY(model.r, model.phi);
 		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
-			canvas.arc(model.X, model.Y, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.arc(model.X, model.Y, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 	},
 	clearOrbit: function (canvas, model) {
-		var blank = DISPLAY.blankSize;
-		model.X = DISPLAY.pointX(model.r, model.phi);
-		model.Y = DISPLAY.pointY(model.r, model.phi);
+		var blank = this.blankSize;
+		model.X = this.pointX(model.r, model.phi);
+		model.Y = this.pointY(model.r, model.phi);
 		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
 	},
 	energyBar: function (model) {
 		var canvas = model.bgPotential;
-		canvas.strokeStyle = DISPLAY.BLACK;
+		canvas.strokeStyle = this.BLACK;
 			canvas.beginPath();
-			canvas.moveTo(0, DISPLAY.potentialY);
-			canvas.lineTo(DISPLAY.originX, DISPLAY.potentialY);
+			canvas.moveTo(0, this.potentialY);
+			canvas.lineTo(this.originX, this.potentialY);
 		canvas.stroke();
 	},
 	plotPotential: function (model, energy, minPotential) {
 		var canvas = model.fgPotential;
-		var blank = DISPLAY.blankSize;
-		var rAxis = DISPLAY.potentialY;
-		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
+		var blank = this.blankSize;
+		var rAxis = this.potentialY;
+		var yValue2 = this.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
 		canvas.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
-			canvas.arc(model.r, rAxis, DISPLAY.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.arc(model.r, rAxis, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 		// Potential dropline
@@ -93,9 +93,9 @@ var DISPLAY = {
 	},
 	clearPotential: function (model, energy, minPotential) {
 		var canvas = model.fgPotential;
-		var blank = DISPLAY.blankSize;
-		var rAxis = DISPLAY.potentialY;
-		var yValue2 = DISPLAY.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
+		var blank = this.blankSize;
+		var rAxis = this.potentialY;
+		var yValue2 = this.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
 		canvas.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 	},
 };

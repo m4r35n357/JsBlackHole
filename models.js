@@ -76,7 +76,6 @@ var NEWTON = {
 				this.r += this.direction * Math.sqrt(rDot2) * step;
 			} else {
 				this.direction = - this.direction;
-//				this.r = this.rOld + 2.0 * ((vNew - this.E) / (vNew - this.V(this.rOld, L)) - 0.5) * this.direction * Math.sqrt(-rDot2) * step;
 				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, L), this.E, this.L, rDot2, step, this.direction);
 				console.log(this.name + " - changed direction, PHI = " + GLOBALS.phiDegrees(this.phi));
 				if (this.direction === 1) {
@@ -123,7 +122,6 @@ var GR = {
 				this.r += this.direction * Math.sqrt(rDot2) * step;
 			} else {
 				this.direction = - this.direction;
-//				this.r = this.rOld + 2.0 * ((vNew - this.E2) / (vNew - this.V(this.rOld, L)) - 0.5) * this.direction * Math.sqrt(-rDot2) * step;
 				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, L), this.E2, this.L, rDot2, step, this.direction);
 				console.log(this.name + " - changed direction, PHI = " + GLOBALS.phiDegrees(this.phi));
 				if (this.direction === 1) {
