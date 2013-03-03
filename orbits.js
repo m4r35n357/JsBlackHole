@@ -2,117 +2,6 @@
 
 "use strict";
 
-var DISPLAY = {
-//	scale: 1.0,
-	msRefresh: 10,
-	// Misc. constants
-	BLACK: "#000000",
-	RED: "#ff0000",
-	GREEN: "#00ff00",
-	BLUE: "#0000ff",
-	YELLOW: "#ffff00",
-	WHITE: "#ffffff",
-	rMin: Math.round(INIT.Rs),
-	ballSize: 3,
-	blankSize: 5,
-	potentialY: 10,
-	circularGradient: function (canvas, x, y, inner, outer) {
-		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
-		grd.addColorStop(0, inner);
-		grd.addColorStop(1, outer);
-		canvas.fillStyle = grd;
-		canvas.fillRect(0, 0, 2 * x, 2 * y);
-	},
-	circle: function (canvas, X, Y, radius, colour) {
-		canvas.fillStyle = colour;
-			canvas.beginPath();
-			canvas.arc(X, Y, this.scale * radius, 0, GLOBALS.TWOPI, true);
-			canvas.closePath();
-		canvas.fill();
-	},
-	varTable: function () {
-		var properTime = this.n * INIT.timeStep;
-		if (! NEWTON.collided) {
-			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
-			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
-			NEWTON.tDisplay.innerHTML = properTime.toFixed(0);
-		}
-		if (! GR.collided) {
-			GR.tDisplay.innerHTML = GR.t.toFixed(0);
-			GR.rDisplay.innerHTML = GR.r.toFixed(1);
-			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
-			GR.tauDisplay.innerHTML = properTime.toFixed(0);
-		}
-	},
-	pointX: function (r, phi) {
-		return this.originX + this.scale * r * Math.cos(phi);
-	},
-	pointY: function (r, phi) {
-		return this.originY + this.scale * r * Math.sin(phi);
-	},
-	plotOrbit: function (model) {
-		var canvas = this.fg;
-		var blank = this.blankSize;
-		model.X = this.pointX(model.r, model.phi);
-		model.Y = this.pointY(model.r, model.phi);
-		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
-		canvas.fillStyle = model.colour;
-			canvas.beginPath();
-			canvas.arc(model.X, model.Y, this.ballSize, 0, GLOBALS.TWOPI, true);
-			canvas.closePath();
-		canvas.fill();
-	},
-	clearOrbit: function (model) {
-		var blank = this.blankSize;
-		model.X = this.pointX(model.r, model.phi);
-		model.Y = this.pointY(model.r, model.phi);
-		this.fg.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
-	},
-	energyBar: function (model) {
-		var canvas = model.bgPotential;
-		canvas.strokeStyle = this.BLACK;
-			canvas.beginPath();
-			canvas.moveTo(0, this.potentialY);
-			canvas.lineTo(this.originX, this.potentialY);
-		canvas.stroke();
-	},
-	plotPotential: function (model, energy, minPotential) {
-		var canvas = model.fgPotential;
-		var blank = this.blankSize;
-		var rAxis = this.potentialY;
-		var yValue2 = this.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
-		canvas.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
-		// Potential ball
-		canvas.fillStyle = model.colour;
-			canvas.beginPath();
-			canvas.arc(model.r * this.scale, rAxis, this.ballSize, 0, GLOBALS.TWOPI, true);
-			canvas.closePath();
-		canvas.fill();
-		// Potential dropline
-		canvas.strokeStyle = model.colour;
-			canvas.beginPath();
-			canvas.moveTo(model.r * this.scale, rAxis);
-			canvas.lineTo(model.r * this.scale, yValue2);
-		canvas.stroke();
-	},
-	clearPotential: function (model, energy, minPotential) {
-		var blank = this.blankSize;
-		var rAxis = this.potentialY;
-		var yValue2 = this.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
-		model.fgPotential.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
-	},
-	directionChange: function (model) {
-		var phiDegrees = GLOBALS.phiDegrees(model.phi);
-		if (model.direction === 1) {
-			model.pDisplay.innerHTML = phiDegrees;
-			console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
-		} else {
-			model.aDisplay.innerHTML = phiDegrees;
-			console.log(model.name + " - Atapsis: PHI = " + phiDegrees);
-		}
-	},
-};
-
 var drawBackground = function () {
 	var grd;
 	var vEn;
@@ -136,8 +25,6 @@ var drawBackground = function () {
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
 	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.Rs, 200);
-//	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
-//	NEWTON.bgPotential.fillRect(0, 0, INIT.Rs, 200); 
 	DISPLAY.energyBar(NEWTON);
 	// GR energy
 	GR.bgPotential.fillStyle = grd;
@@ -196,24 +83,6 @@ var drawForeground = function () {
 	DISPLAY.n = DISPLAY.n + 1;
 };
 
-var initModels = function () {
-	console.info("rDot: " + INIT.rDot + "\n");
-	console.info("TimeStep: " + INIT.timeStep + "\n");
-	DISPLAY.rMin = Math.round(INIT.Rs);
-	// Newton initial conditions
-	INIT.initialize(NEWTON);
-	NEWTON.initialize();
-	NEWTON.X = DISPLAY.pointX(NEWTON.r, NEWTON.phi);
-	NEWTON.Y = DISPLAY.pointY(NEWTON.r, NEWTON.phi);
-	NEWTON.colour = DISPLAY.GREEN;
-	// GR initial conditions
-	INIT.initialize(GR);
-	GR.initialize();
-	GR.X = DISPLAY.pointX(GR.r, GR.phi);
-	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
-	GR.colour = DISPLAY.BLUE;
-}
-
 var getDom = function () {
 	var polar = document.getElementById('fgorbit');
 	var potential = document.getElementById('fgpotn');
@@ -266,9 +135,27 @@ var scenarioChange = function () {
 			console.info(element.value + " selected");
 		} else if (element.type === 'text' && element.name === 'scale') {
 			DISPLAY.scale = parseFloat(element.value);
+			console.info(element.name + ": " + element.value);
+		} else if (element.type === 'text' && element.name === 'timestep') {
+			INIT.timeStep = parseFloat(element.value);
+			console.info(element.name + ": " + element.value);
 		}
 	}
-	initModels();
+	console.info("rDot: " + INIT.rDot + "\n");
+	console.info("TimeStep: " + INIT.timeStep + "\n");
+	DISPLAY.rMin = Math.round(INIT.Rs);
+	// Newton initial conditions
+	INIT.initialize(NEWTON);
+	NEWTON.initialize();
+	NEWTON.X = DISPLAY.pointX(NEWTON.r, NEWTON.phi);
+	NEWTON.Y = DISPLAY.pointY(NEWTON.r, NEWTON.phi);
+	NEWTON.colour = DISPLAY.GREEN;
+	// GR initial conditions
+	INIT.initialize(GR);
+	GR.initialize();
+	GR.X = DISPLAY.pointX(GR.r, GR.phi);
+	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
+	GR.colour = DISPLAY.BLUE;
 	drawBackground();
 	DISPLAY.refreshId = setInterval(drawForeground, DISPLAY.msRefresh);
 	return false;

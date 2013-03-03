@@ -3,6 +3,7 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="orbits.css">
 		<script type="text/javascript" src="models.js"></script>
+		<script type="text/javascript" src="display.js"></script>
 		<script type="text/javascript" src="orbits.js"></script>
 	</head>
 	<body>
@@ -16,11 +17,20 @@
 		<p><canvas id="fgpotgr" class="canvas fg" width="400" height="200" /></p>
 
 		<form id="scenarioForm" action="" onsubmit="return scenarioChange();" method="post">
-			<input type="radio" name="scenario" value="edge" checked = "checked" /> Knife-Edge Orbit<br />
-			<input type="radio" name="scenario" value="stable" /> Just Stable<br />
-			<input type="radio" name="scenario" value="precess" /> Precession<br />
-			<input type="text" name="scale" value="1.0" size="4" /> Scale<br />
-			<input type="submit" value="Change">
+			<table border="0">
+				<tr>
+					<td>Scale</td><td><input type="text" name="scale" value="1.0" size="4" /></td>
+					<td><input type="radio" name="scenario" value="edge" checked="checked" /></td><td>Knife-Edge Orbit</td>
+				</tr>
+				<tr>
+					<td>Time Step</td><td><input type="text" name="timestep" value="1.0" size="4" /></td>
+					<td><input type="radio" name="scenario" value="stable" /></td><td>Just Stable</td>
+				</tr>
+				<tr>
+					<td><input type="submit" value="Change"></td><td></td>
+					<td><input type="radio" name="scenario" value="precess" /></td><td>Precession</td>
+				</tr>
+			</table> 
 		</form>
 
 		<table border="0">
