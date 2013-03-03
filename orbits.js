@@ -47,7 +47,8 @@ var DISPLAY = {
 	pointY: function (r, phi) {
 		return this.originY + r * Math.sin(phi);
 	},
-	plotOrbit: function (canvas, model) {
+	plotOrbit: function (model) {
+		var canvas = this.fg;
 		var blank = this.blankSize;
 		model.X = this.pointX(model.r, model.phi);
 		model.Y = this.pointY(model.r, model.phi);
@@ -58,11 +59,11 @@ var DISPLAY = {
 			canvas.closePath();
 		canvas.fill();
 	},
-	clearOrbit: function (canvas, model) {
+	clearOrbit: function (model) {
 		var blank = this.blankSize;
 		model.X = this.pointX(model.r, model.phi);
 		model.Y = this.pointY(model.r, model.phi);
-		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
+		this.fg.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
 	},
 	energyBar: function (model) {
 		var canvas = model.bgPotential;
@@ -92,11 +93,20 @@ var DISPLAY = {
 		canvas.stroke();
 	},
 	clearPotential: function (model, energy, minPotential) {
-		var canvas = model.fgPotential;
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
 		var yValue2 = this.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
-		canvas.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
+		model.fgPotential.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
+	},
+	directionChange: function (model) {
+		var phiDegrees = GLOBALS.phiDegrees(model.phi);
+		if (model.direction === 1) {
+			model.pDisplay.innerHTML = phiDegrees;
+			console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
+		} else {
+			model.aDisplay.innerHTML = phiDegrees;
+			console.log(model.name + " - Atapsis: PHI = " + phiDegrees);
+		}
 	},
 };
 
@@ -155,7 +165,7 @@ var drawBackground = function () {
 		if (vE <= GR.E2) {
 			GR.bgPotential.fillStyle = DISPLAY.BLACK;
 				GR.bgPotential.beginPath();
-				GR.bgPotential.arc(i, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin(GR.L, INIT.Rs)), 1, 0, GLOBALS.TWOPI, true);
+				GR.bgPotential.arc(i, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin()), 1, 0, GLOBALS.TWOPI, true);
 				GR.bgPotential.closePath();
 			GR.bgPotential.fill();
 		}
@@ -169,14 +179,14 @@ var drawBackground = function () {
 var drawForeground = function () {
 	DISPLAY.varTable();
 	if (! NEWTON.collided) {
-		NEWTON.update(INIT.timeStep, NEWTON.r, NEWTON.L, INIT.Rs);
-		DISPLAY.plotOrbit(DISPLAY.fg, NEWTON);
+		NEWTON.update();
+		DISPLAY.plotOrbit(NEWTON);
 		DISPLAY.plotPotential(NEWTON, NEWTON.E, NEWTON.vC);
 	}
 	if (! GR.collided) {
-		GR.update(INIT.timeStep, GR.r, GR.E2, GR.E, GR.L, INIT.Rs);
-		DISPLAY.plotOrbit(DISPLAY.fg, GR);
-		DISPLAY.plotPotential(GR, GR.E2, GR.vMin(GR.L, INIT.Rs));
+		GR.update();
+		DISPLAY.plotOrbit(GR);
+		DISPLAY.plotPotential(GR, GR.E2, GR.vMin());
 	}
 	DISPLAY.n = DISPLAY.n + 1;
 };
@@ -198,10 +208,6 @@ var initModels = function () {
 	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
 	GR.colour = DISPLAY.BLUE;
 }
-
-window.onload = function () {
-	scenarioChange();
-};
 
 var getDom = function () {
 	var polar = document.getElementById('fgorbit');
@@ -232,33 +238,33 @@ var getDom = function () {
 	GR.aDisplay = document.getElementById('aGR');
 };
 
-var redraw = function () {
-	initModels();
-	drawBackground();
-	setInterval(drawForeground, DISPLAY.msRefresh);
-}
-
 var scenarioChange = function () {
 	var form = document.getElementById('scenarioForm');
 	getDom();
-	DISPLAY.clearOrbit(DISPLAY.fg, NEWTON);
+	DISPLAY.clearOrbit(NEWTON);
 	DISPLAY.clearPotential(NEWTON, NEWTON.E, NEWTON.vC);
-	DISPLAY.clearOrbit(DISPLAY.fg, GR);
-	DISPLAY.clearPotential(GR, GR.E2, GR.vMin(GR.L, INIT.Rs));
+	DISPLAY.clearOrbit(GR);
+	DISPLAY.clearPotential(GR, GR.E2, GR.vMin());
 	DISPLAY.n = 0;
 	for (var i = 0; i < form.length; i++) {
 		if (form.elements[i].type === 'radio' && form.elements[i].checked) {
-			if (form.elements[i].value == 'edge') {
+			if (form.elements[i].value === 'edge') {
 				INIT.setKnifeEdge();
-			} else if (form.elements[i].value == 'stable') {
+			} else if (form.elements[i].value === 'stable') {
 				INIT.setJustStable();
-			} else if (form.elements[i].value == 'precess') {
+			} else if (form.elements[i].value === 'precess') {
 				INIT.setPrecession();
 			}
 			console.info(form.elements[i].value + " selected");
 		}
 	}
-	redraw();
+	initModels();
+	drawBackground();
+	setInterval(drawForeground, DISPLAY.msRefresh);
 	return false;
+};
+
+window.onload = function () {
+	scenarioChange();
 };
 

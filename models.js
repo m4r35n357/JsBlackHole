@@ -64,27 +64,23 @@ var NEWTON = {
 	V: function (r, L) {
 		return (L * L / (r * r) - INIT.Rs / r) / 2.0;
 	},
-	update: function (step, r, L, Rs) {
+	update: function () {
+		var step = INIT.timeStep;
 		var rDot2;
 		var vNew;
-		if (r > Rs) {
-			vNew = this.V(r, L);
+		if (this.r > INIT.Rs) {
+			vNew = this.V(this.r, this.L);
 			// update positions (Newton)
 			rDot2 = 2.0 * (this.E - vNew);
 			if (rDot2 >= 0.0) {
-				this.rOld = r;
+				this.rOld = this.r;
 				this.r += this.direction * Math.sqrt(rDot2) * step;
 			} else {
 				this.direction = - this.direction;
-				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, L), this.E, this.L, rDot2, step, this.direction);
-				console.log(this.name + " - changed direction, PHI = " + GLOBALS.phiDegrees(this.phi));
-				if (this.direction === 1) {
-					this.pDisplay.innerHTML = GLOBALS.phiDegrees(this.phi);
-				} else {
-					this.aDisplay.innerHTML = GLOBALS.phiDegrees(this.phi);
-				}
+				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, this.L), this.E, this.L, rDot2, step, this.direction);
+				DISPLAY.directionChange(this);
 			}
-			this.phi += L / (r * r) * step;
+			this.phi += this.L / (this.r * this.r) * step;
 		} else {
 			console.info(this.name + " - collided\n");
 		}
@@ -110,33 +106,32 @@ var GR = {
 	V: function (r, L) {
 		return (L * L / (r * r) + 1.0) * (1.0 - INIT.Rs / r);
 	},
-	update: function (step, r, E2, E, L, Rs) {
+	update: function () {
+		var Rs = INIT.Rs;
+		var step = INIT.timeStep;
 		var rDot2;
 		var vNew;
-		if (r > Rs) {
-			vNew = this.V(r, L);
+		if (this.r > Rs) {
+			vNew = this.V(this.r, this.L);
 			// update positions (GR)
-			rDot2 = E2 - vNew;
+			rDot2 = this.E2 - vNew;
 			if (rDot2 >= 0.0) {
-				this.rOld = r;
+				this.rOld = this.r;
 				this.r += this.direction * Math.sqrt(rDot2) * step;
 			} else {
 				this.direction = - this.direction;
-				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, L), this.E2, this.L, rDot2, step, this.direction);
-				console.log(this.name + " - changed direction, PHI = " + GLOBALS.phiDegrees(this.phi));
-				if (this.direction === 1) {
-					this.pDisplay.innerHTML = GLOBALS.phiDegrees(this.phi);
-				} else {
-					this.aDisplay.innerHTML = GLOBALS.phiDegrees(this.phi);
-				}
+				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, this.L), this.E2, this.L, rDot2, step, this.direction);
+				DISPLAY.directionChange(this);
 			}
-			this.phi += L / (r * r) * step;
-			this.t += E / (1.0 - Rs / r) * step;
+			this.phi += this.L / (this.r * this.r) * step;
+			this.t += this.E / (1.0 - Rs / this.r) * step;
 		} else {
 			console.info(this.name + " - collided\n");
 		}
 	},
-	vMin: function (L, Rs) {
+	vMin: function () {
+		var L = this.L;
+		var Rs = INIT.Rs;
 		var Vmin;
 		if (this.E2 > this.V((L * L - L * Math.sqrt(L * L - 3.0 * Rs * Rs)) / Rs, L)) {
 			// lower vertical limit is potential at the horizon
