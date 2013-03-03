@@ -22,8 +22,8 @@ var INIT = {
 		model.collided = false;
 		model.r = this.r;
 		model.rOld = this.r;
-		model.phi= this.phi;
-		model.direction= this.direction;
+		model.phi = this.phi;
+		model.direction = this.direction;
 	},
 	setKnifeEdge: function () {
 		this.M = 40.0;
@@ -68,20 +68,26 @@ var NEWTON = {
 		var step = INIT.timeStep;
 		var rDot2;
 		var vNew;
-		if (this.r > INIT.Rs) {
-			vNew = this.V(this.r, this.L);
+		var r = this.r;
+		var rOld = this.rOld;
+		var E = this.E;
+		var L = this.L;
+		var direction = this.direction;
+		if (r > INIT.Rs) {
+			vNew = this.V(r, L);
 			// update positions (Newton)
-			rDot2 = 2.0 * (this.E - vNew);
+			rDot2 = 2.0 * (E - vNew);
 			if (rDot2 >= 0.0) {
-				this.rOld = this.r;
-				this.r += this.direction * Math.sqrt(rDot2) * step;
+				this.rOld = r;
+				this.r += direction * Math.sqrt(rDot2) * step;
 			} else {
-				this.direction = - this.direction;
-				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, this.L), this.E, this.L, rDot2, step, this.direction);
+				this.direction = - direction;
+				this.r = rOld + GLOBALS.rTurnAround(vNew, this.V(rOld, L), E, L, rDot2, step, direction);
 				DISPLAY.directionChange(this);
 			}
-			this.phi += this.L / (this.r * this.r) * step;
+			this.phi += L / (r * r) * step;
 		} else {
+			this.collided = true;
 			console.info(this.name + " - collided\n");
 		}
 	},
@@ -111,21 +117,28 @@ var GR = {
 		var step = INIT.timeStep;
 		var rDot2;
 		var vNew;
-		if (this.r > Rs) {
-			vNew = this.V(this.r, this.L);
+		var r = this.r;
+		var rOld = this.rOld;
+		var E = this.E;
+		var E2 = this.E2;
+		var L = this.L;
+		var direction = this.direction;
+		if (r > Rs) {
+			vNew = this.V(r, L);
 			// update positions (GR)
-			rDot2 = this.E2 - vNew;
+			rDot2 = E2 - vNew;
 			if (rDot2 >= 0.0) {
-				this.rOld = this.r;
-				this.r += this.direction * Math.sqrt(rDot2) * step;
+				this.rOld = r;
+				this.r += direction * Math.sqrt(rDot2) * step;
 			} else {
-				this.direction = - this.direction;
-				this.r = this.rOld + GLOBALS.rTurnAround(vNew, this.V(this.rOld, this.L), this.E2, this.L, rDot2, step, this.direction);
+				this.direction = - direction;
+				this.r = rOld + GLOBALS.rTurnAround(vNew, this.V(rOld, L), E2, L, rDot2, step, direction);
 				DISPLAY.directionChange(this);
 			}
-			this.phi += this.L / (this.r * this.r) * step;
-			this.t += this.E / (1.0 - Rs / this.r) * step;
+			this.phi += L / (r * r) * step;
+			this.t += E / (1.0 - Rs / r) * step;
 		} else {
+			this.collided = true;
 			console.info(this.name + " - collided\n");
 		}
 	},

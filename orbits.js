@@ -31,10 +31,12 @@ var DISPLAY = {
 	},
 	varTable: function () {
 		var properTime = this.n * INIT.timeStep;
-		if ((this.n % 10) === 0) {
+		if (! NEWTON.collided) {
 			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
 			NEWTON.tDisplay.innerHTML = properTime.toFixed(0);
+		}
+		if (! GR.collided) {
 			GR.tDisplay.innerHTML = GR.t.toFixed(0);
 			GR.rDisplay.innerHTML = GR.r.toFixed(1);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
@@ -177,7 +179,9 @@ var drawBackground = function () {
 };
 
 var drawForeground = function () {
-	DISPLAY.varTable();
+	if ((DISPLAY.n % 10) === 0) {
+		DISPLAY.varTable();
+	}
 	if (! NEWTON.collided) {
 		NEWTON.update();
 		DISPLAY.plotOrbit(NEWTON);
