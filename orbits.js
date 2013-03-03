@@ -240,6 +240,7 @@ var getDom = function () {
 
 var scenarioChange = function () {
 	var form = document.getElementById('scenarioForm');
+	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
 	DISPLAY.clearOrbit(NEWTON);
 	DISPLAY.clearPotential(NEWTON, NEWTON.E, NEWTON.vC);
@@ -260,7 +261,7 @@ var scenarioChange = function () {
 	}
 	initModels();
 	drawBackground();
-	setInterval(drawForeground, DISPLAY.msRefresh);
+	DISPLAY.refreshId = setInterval(drawForeground, DISPLAY.msRefresh);
 	return false;
 };
 
