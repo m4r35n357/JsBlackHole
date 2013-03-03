@@ -3,6 +3,7 @@
 "use strict";
 
 var DISPLAY = {
+//	scale: 1.0,
 	msRefresh: 10,
 	// Misc. constants
 	BLACK: "#000000",
@@ -25,7 +26,7 @@ var DISPLAY = {
 	circle: function (canvas, X, Y, radius, colour) {
 		canvas.fillStyle = colour;
 			canvas.beginPath();
-			canvas.arc(X, Y, radius, 0, GLOBALS.TWOPI, true);
+			canvas.arc(X, Y, this.scale * radius, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 	},
@@ -44,10 +45,10 @@ var DISPLAY = {
 		}
 	},
 	pointX: function (r, phi) {
-		return this.originX + r * Math.cos(phi);
+		return this.originX + this.scale * r * Math.cos(phi);
 	},
 	pointY: function (r, phi) {
-		return this.originY + r * Math.sin(phi);
+		return this.originY + this.scale * r * Math.sin(phi);
 	},
 	plotOrbit: function (model) {
 		var canvas = this.fg;
@@ -80,25 +81,25 @@ var DISPLAY = {
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
 		var yValue2 = this.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
-		canvas.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
+		canvas.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
-			canvas.arc(model.r, rAxis, this.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.arc(model.r * this.scale, rAxis, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 		// Potential dropline
 		canvas.strokeStyle = model.colour;
 			canvas.beginPath();
-			canvas.moveTo(model.r, rAxis);
-			canvas.lineTo(model.r, yValue2);
+			canvas.moveTo(model.r * this.scale, rAxis);
+			canvas.lineTo(model.r * this.scale, yValue2);
 		canvas.stroke();
 	},
 	clearPotential: function (model, energy, minPotential) {
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
 		var yValue2 = this.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
-		model.fgPotential.clearRect(model.r - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
+		model.fgPotential.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 	},
 	directionChange: function (model) {
 		var phiDegrees = GLOBALS.phiDegrees(model.phi);
@@ -134,31 +135,31 @@ var drawBackground = function () {
 	NEWTON.bgPotential.fillStyle = grd;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
 	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
-	NEWTON.bgPotential.fillRect(0, 0, INIT.Rs, 200);
-	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
-	NEWTON.bgPotential.fillRect(0, 0, INIT.Rs, 200); 
+	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.Rs, 200);
+//	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
+//	NEWTON.bgPotential.fillRect(0, 0, INIT.Rs, 200); 
 	DISPLAY.energyBar(NEWTON);
 	// GR energy
 	GR.bgPotential.fillStyle = grd;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
 	GR.bgPotential.globalAlpha = 0.2;
 	GR.bgPotential.fillStyle = DISPLAY.YELLOW;
-	GR.bgPotential.fillRect(0, 0, 3.0 * INIT.Rs, 200); 
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * 3.0 * INIT.Rs, 200); 
 	GR.bgPotential.globalAlpha = 0.6;
 	GR.bgPotential.fillStyle = DISPLAY.RED;
-	GR.bgPotential.fillRect(0, 0, 1.5 * INIT.Rs, 200); 
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * 1.5 * INIT.Rs, 200); 
 	GR.bgPotential.globalAlpha = 1.0;
 	GR.bgPotential.fillStyle = DISPLAY.BLACK;
-	GR.bgPotential.fillRect(0, 0, INIT.Rs, 200);
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.Rs, 200);
 	DISPLAY.energyBar(GR);
 	// Effective potentials
-	for (i = DISPLAY.rMin; i < DISPLAY.originX; i += 1) {
+	for (i = DISPLAY.rMin; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
 		// Newton effective potential locus
 		vEn = NEWTON.V(i, NEWTON.L);
 		if (vEn <= NEWTON.E) {
 			NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
 				NEWTON.bgPotential.beginPath();
-				NEWTON.bgPotential.arc(i, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / (NEWTON.E - NEWTON.vC), 1, 0, GLOBALS.TWOPI, true);
+				NEWTON.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / (NEWTON.E - NEWTON.vC), 1, 0, GLOBALS.TWOPI, true);
 				NEWTON.bgPotential.closePath();
 			NEWTON.bgPotential.fill();
 		}
@@ -167,7 +168,7 @@ var drawBackground = function () {
 		if (vE <= GR.E2) {
 			GR.bgPotential.fillStyle = DISPLAY.BLACK;
 				GR.bgPotential.beginPath();
-				GR.bgPotential.arc(i, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin()), 1, 0, GLOBALS.TWOPI, true);
+				GR.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin()), 1, 0, GLOBALS.TWOPI, true);
 				GR.bgPotential.closePath();
 			GR.bgPotential.fill();
 		}
@@ -244,6 +245,7 @@ var getDom = function () {
 
 var scenarioChange = function () {
 	var form = document.getElementById('scenarioForm');
+	var element;
 	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
 	DISPLAY.clearOrbit(NEWTON);
@@ -252,15 +254,18 @@ var scenarioChange = function () {
 	DISPLAY.clearPotential(GR, GR.E2, GR.vMin());
 	DISPLAY.n = 0;
 	for (var i = 0; i < form.length; i++) {
-		if (form.elements[i].type === 'radio' && form.elements[i].checked) {
-			if (form.elements[i].value === 'edge') {
+		element = form.elements[i];
+		if (element.type === 'radio' && element.checked) {
+			if (element.value === 'edge') {
 				INIT.setKnifeEdge();
-			} else if (form.elements[i].value === 'stable') {
+			} else if (element.value === 'stable') {
 				INIT.setJustStable();
-			} else if (form.elements[i].value === 'precess') {
+			} else if (element.value === 'precess') {
 				INIT.setPrecession();
 			}
-			console.info(form.elements[i].value + " selected");
+			console.info(element.value + " selected");
+		} else if (element.type === 'text' && element.name === 'scale') {
+			DISPLAY.scale = parseFloat(element.value);
 		}
 	}
 	initModels();
