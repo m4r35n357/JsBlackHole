@@ -29,21 +29,21 @@ var INIT = {
 		this.M = 40.0;
 		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
 		this.r = 239.0;
-		this.rDot = 0.001;
+		this.rDot = 0.0;
 //		this.timeStep = 1.0;
 	},
 	setJustStable: function () {
 		this.M = 40.0;
 		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
 		this.r = 390.0;
-		this.rDot = 0.172;
+		this.rDot = 0.0;
 //		this.timeStep = 1.0;
 	},
 	setPrecession: function () {
 		this.M = 1.0;
 		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
 		this.r = 100.0;
-		this.rDot = 0.065;
+		this.rDot = 0.0;
 //		this.timeStep = 2.0;
 	},
 };
@@ -53,10 +53,11 @@ var NEWTON = {
 	initialize: function () {
 		this.L = this.circL();
 		console.info("Ln: " + this.L.toFixed(3));
-		this.vC = this.V(this.r, this.L);
-		console.info("vCN: " + this.vC.toFixed(6));
-		this.E = INIT.rDot * INIT.rDot / 2.0 + this.vC;
+//		this.vC = this.V(this.r, this.L);
+//		console.info("vCN: " + this.vC.toFixed(6));
+		this.E = this.V(this.r, this.L);
 		console.info("En: " + this.E.toFixed(6));
+		this.L = this.L * INIT.lFac;
 	},
 	circL: function () {
 		return Math.sqrt(this.r * INIT.Rs / 2.0);
@@ -99,12 +100,13 @@ var GR = {
 		this.t = 0.0;
 		this.L = this.circL();
 		console.info("L: " + this.L.toFixed(3));
-		this.vC = this.V(this.r, this.L);
-		console.info("vC: " + this.vC.toFixed(6));
-		this.E2 = INIT.rDot * INIT.rDot + this.vC;
+//		this.vC = this.V(this.r, this.L);
+//		console.info("vC: " + this.vC.toFixed(6));
+		this.E2 = this.V(this.r, this.L);
 		console.info("E2: " + this.E2.toFixed(6));
 		this.E = Math.sqrt(this.E2);
 		console.info("E: " + this.E.toFixed(6));
+		this.L = this.L * INIT.lFac;
 	},
 	circL: function () {
 		return this.r / Math.sqrt(2.0 * this.r / INIT.Rs - 3.0);
@@ -142,6 +144,7 @@ var GR = {
 			console.info(this.name + " - collided\n");
 		}
 	},
+/*
 	vMin: function () {
 		var L = this.L;
 		var Rs = INIT.Rs;
@@ -155,6 +158,7 @@ var GR = {
 		}
 		return Vmin;
 	},
+*/
 };
 
 

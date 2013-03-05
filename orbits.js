@@ -43,19 +43,19 @@ var drawBackground = function () {
 	for (i = DISPLAY.rMin; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
 		// Newton effective potential locus
 		vEn = NEWTON.V(i, NEWTON.L);
-		if (vEn <= NEWTON.E) {
+		if (vEn < NEWTON.E + DISPLAY.potentialY) {
 			NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
 				NEWTON.bgPotential.beginPath();
-				NEWTON.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (NEWTON.E - vEn) / (NEWTON.E - NEWTON.vC), 1, 0, GLOBALS.TWOPI, true);
+				NEWTON.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (NEWTON.energyBar - vEn), 1, 0, GLOBALS.TWOPI, true);
 				NEWTON.bgPotential.closePath();
 			NEWTON.bgPotential.fill();
 		}
 		// GR effective potential locus
 		vE = GR.V(i, GR.L);
-		if (vE <= GR.E2) {
+		if (vE < GR.E2 + DISPLAY.potentialY) {
 			GR.bgPotential.fillStyle = DISPLAY.BLACK;
 				GR.bgPotential.beginPath();
-				GR.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (GR.E2 - vE) / (GR.E2 - GR.vMin()), 1, 0, GLOBALS.TWOPI, true);
+				GR.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (GR.energyBar - vE), 1, 0, GLOBALS.TWOPI, true);
 				GR.bgPotential.closePath();
 			GR.bgPotential.fill();
 		}
@@ -73,12 +73,12 @@ var drawForeground = function () {
 	if (! NEWTON.collided) {
 		NEWTON.update();
 		DISPLAY.plotOrbit(NEWTON);
-		DISPLAY.plotPotential(NEWTON, NEWTON.E, NEWTON.vC);
+		DISPLAY.plotPotential(NEWTON);
 	}
 	if (! GR.collided) {
 		GR.update();
 		DISPLAY.plotOrbit(GR);
-		DISPLAY.plotPotential(GR, GR.E2, GR.vMin());
+		DISPLAY.plotPotential(GR);
 	}
 	DISPLAY.n = DISPLAY.n + 1;
 };
@@ -118,9 +118,9 @@ var scenarioChange = function () {
 	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
 	DISPLAY.clearOrbit(NEWTON);
-	DISPLAY.clearPotential(NEWTON, NEWTON.E, NEWTON.vC);
+	DISPLAY.clearPotential(NEWTON);
 	DISPLAY.clearOrbit(GR);
-	DISPLAY.clearPotential(GR, GR.E2, GR.vMin());
+	DISPLAY.clearPotential(GR);
 	DISPLAY.n = 0;
 	for (var i = 0; i < form.length; i++) {
 		element = form.elements[i];
@@ -143,6 +143,9 @@ var scenarioChange = function () {
 		} else if (element.type === 'text' && element.name === 'timestep' && element.value) {
 			INIT.timeStep = parseFloat(element.value);
 			console.info(element.name + ": " + element.value);
+		} else if (element.type === 'text' && element.name === 'lfactor' && element.value) {
+			INIT.lFac = parseFloat(element.value) / 100.0;
+			console.info(element.name + ": " + element.value);
 		}
 	}
 	console.info("rDot: " + INIT.rDot + "\n");
@@ -160,6 +163,9 @@ var scenarioChange = function () {
 	GR.X = DISPLAY.pointX(GR.r, GR.phi);
 	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
 	GR.colour = DISPLAY.BLUE;
+	// Start drawing . . .
+	NEWTON.energyBar = NEWTON.E;
+	GR.energyBar = GR.E2;
 	drawBackground();
 	DISPLAY.refreshId = setInterval(drawForeground, DISPLAY.msRefresh);
 	return false;

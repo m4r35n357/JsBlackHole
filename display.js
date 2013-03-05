@@ -75,11 +75,11 @@ var DISPLAY = {
 			canvas.lineTo(this.originX, this.potentialY);
 		canvas.stroke();
 	},
-	plotPotential: function (model, energy, minPotential) {
+	plotPotential: function (model) {
 		var canvas = model.fgPotential;
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
-		var yValue2 = this.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
+		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r, model.L));
 		canvas.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = model.colour;
@@ -94,10 +94,10 @@ var DISPLAY = {
 			canvas.lineTo(model.r * this.scale, yValue2);
 		canvas.stroke();
 	},
-	clearPotential: function (model, energy, minPotential) {
+	clearPotential: function (model) {
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
-		var yValue2 = this.potentialY + 180.0 * (energy - model.V(model.r, model.L)) / (energy - minPotential);
+		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r, model.L));
 		model.fgPotential.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 	},
 	directionChange: function (model) {

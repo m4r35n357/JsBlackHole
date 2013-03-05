@@ -27,7 +27,7 @@
 					<td><input type="radio" name="scenario" value="stable" /></td><td>Just Stable</td>
 				</tr>
 				<tr>
-					<td></td><td></td>
+					<td>L factor</td><td><input type="text" name="lfactor" value="100.0" size="4" /></td>
 					<td><input type="radio" name="scenario" value="precess" /></td><td>Precession</td>
 				</tr>
 				<tr>
@@ -41,12 +41,12 @@
 			<tr><th></th><th class="newton">Newton</th><th class="gr">GR</th></tr>			
 			<tr><td>E</td><td id="eNEWTON" class="newton"></td><td id="eGR" class="gr"></td></tr>
 			<tr><td>L</td><td id="lNEWTON" class="newton"></td><td id="lGR" class="gr"></td></tr>
-			<tr><td>Map Time</td><td> </td><td id="tGR" class="gr"></td></tr>
+			<tr><td>Map Time</td><td id="timeNEWTON" class="newton"></td><td id="tGR" class="gr"></td></tr>
 			<tr><td>Radius</td><td id="rNEWTON" class="newton"></td><td id="rGR" class="gr"></td></tr>
 			<tr><td>Azimuth</td><td id="phiNEWTON" class="newton"></td><td id="phiGR" class="gr"></td></tr>
-			<tr><td>Proper Time</td><td id="timeNEWTON" class="newton"></td><td id="tauGR" class="gr"></td></tr>
-			<tr><td>Periapsis</td><td id="pNEWTON" class="newton"></td><td id="pGR" class="gr"></td></tr>
-			<tr><td>Atapsis</td><td id="aNEWTON" class="newton"></td><td id="aGR" class="gr"></td></tr>
+			<tr><td>Proper Time</td><td class="newton">-</td><td id="tauGR" class="gr"></td></tr>
+			<tr><td>Periapsis</td><td id="pNEWTON" class="newton">-</td><td id="pGR" class="gr">-</td></tr>
+			<tr><td>Atapsis</td><td id="aNEWTON" class="newton">-</td><td id="aGR" class="gr">-</td></tr>
 		</table> 
 	</body>
 </html>
