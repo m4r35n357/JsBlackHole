@@ -133,10 +133,14 @@ var scenarioChange = function () {
 				INIT.setPrecession();
 			}
 			console.info(element.value + " selected");
-		} else if (element.type === 'text' && element.name === 'scale') {
+		}
+	}
+	for (var i = 0; i < form.length; i++) {
+		element = form.elements[i];
+		if (element.type === 'text' && element.name === 'scale') {
 			DISPLAY.scale = parseFloat(element.value);
 			console.info(element.name + ": " + element.value);
-		} else if (element.type === 'text' && element.name === 'timestep') {
+		} else if (element.type === 'text' && element.name === 'timestep' && element.value) {
 			INIT.timeStep = parseFloat(element.value);
 			console.info(element.name + ": " + element.value);
 		}
