@@ -4,6 +4,10 @@ body {
 	background-color: #808080;
 }
 
+input {
+	background-color: #c0c0c0;
+}
+
 #fgorbit, #bgorbit {
 	left: 411px;
 	top: 10px;

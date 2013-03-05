@@ -26,22 +26,19 @@ var INIT = {
 		model.direction = this.direction;
 	},
 	setKnifeEdge: function () {
-		this.M = 40.0;
-		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
-		this.r = 239.0;
-//		this.rDot = 0.0;
+//		this.M = 40.0;
+//		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
+//		this.r = 239.0;
 	},
 	setJustStable: function () {
-		this.M = 40.0;
-		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
-		this.r = 390.0;
-//		this.rDot = 0.0;
+//		this.M = 40.0;
+//		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
+//		this.r = 390.0;
 	},
 	setPrecession: function () {
-		this.M = 1.0;
-		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
-		this.r = 100.0;
-//		this.rDot = 0.0;
+//		this.M = 1.0;
+//		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
+//		this.r = 100.0;
 	},
 };
 

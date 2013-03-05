@@ -122,6 +122,7 @@ var scenarioChange = function () {
 	DISPLAY.clearOrbit(GR);
 	DISPLAY.clearPotential(GR);
 	DISPLAY.n = 0;
+/*
 	for (var i = 0; i < form.length; i++) {
 		element = form.elements[i];
 		if (element.type === 'radio' && element.checked) {
@@ -135,27 +136,18 @@ var scenarioChange = function () {
 			console.info(element.value + " selected");
 		}
 	}
-//	for (var i = 0; i < form.length; i++) {
-//		element = form.elements[i];
-//		if (element.type === 'text' && element.name === 'scale') {
-//			DISPLAY.scale = parseFloat(element.value);
-//			console.info(element.name + ": " + element.value);
-//		} else if (element.type === 'text' && element.name === 'timestep' && element.value) {
-//			INIT.timeStep = parseFloat(element.value);
-//			console.info(element.name + ": " + element.value);
-//		} else if (element.type === 'text' && element.name === 'lfactor' && element.value) {
-//			INIT.lFac = parseFloat(element.value) / 100.0;
-//			console.info(element.name + ": " + element.value);
-//		}
-//	}
+*/
+	INIT.M = parseFloat(document.getElementById('mass').value);
+//	console.info('mass' + ": " + document.getElementById('mass').value);
+	INIT.Rs = 2.0 * GLOBALS.G * INIT.M / (GLOBALS.c * GLOBALS.c);
+	INIT.r = parseFloat(document.getElementById('radius').value);
+//	console.info('radius' + ": " + document.getElementById('radius').value);
 	DISPLAY.scale = parseFloat(document.getElementById('scale').value);
-	console.info('scale' + ": " + document.getElementById('scale').value);
+//	console.info('scale' + ": " + document.getElementById('scale').value);
 	INIT.timeStep = parseFloat(document.getElementById('timestep').value);
-	console.info('timestep' + ": " + document.getElementById('timestep').value);
+//	console.info('timestep' + ": " + document.getElementById('timestep').value);
 	INIT.lFac = parseFloat(document.getElementById('lfactor').value) / 100.0;
-	console.info('lfactor' + ": " + document.getElementById('lfactor').value);
-//	console.info("rDot: " + INIT.rDot + "\n");
-//	console.info("TimeStep: " + INIT.timeStep + "\n");
+//	console.info('lfactor' + ": " + document.getElementById('lfactor').value);
 	DISPLAY.rMin = Math.round(INIT.Rs);
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
