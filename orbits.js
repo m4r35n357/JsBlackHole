@@ -135,21 +135,27 @@ var scenarioChange = function () {
 			console.info(element.value + " selected");
 		}
 	}
-	for (var i = 0; i < form.length; i++) {
-		element = form.elements[i];
-		if (element.type === 'text' && element.name === 'scale') {
-			DISPLAY.scale = parseFloat(element.value);
-			console.info(element.name + ": " + element.value);
-		} else if (element.type === 'text' && element.name === 'timestep' && element.value) {
-			INIT.timeStep = parseFloat(element.value);
-			console.info(element.name + ": " + element.value);
-		} else if (element.type === 'text' && element.name === 'lfactor' && element.value) {
-			INIT.lFac = parseFloat(element.value) / 100.0;
-			console.info(element.name + ": " + element.value);
-		}
-	}
-	console.info("rDot: " + INIT.rDot + "\n");
-	console.info("TimeStep: " + INIT.timeStep + "\n");
+//	for (var i = 0; i < form.length; i++) {
+//		element = form.elements[i];
+//		if (element.type === 'text' && element.name === 'scale') {
+//			DISPLAY.scale = parseFloat(element.value);
+//			console.info(element.name + ": " + element.value);
+//		} else if (element.type === 'text' && element.name === 'timestep' && element.value) {
+//			INIT.timeStep = parseFloat(element.value);
+//			console.info(element.name + ": " + element.value);
+//		} else if (element.type === 'text' && element.name === 'lfactor' && element.value) {
+//			INIT.lFac = parseFloat(element.value) / 100.0;
+//			console.info(element.name + ": " + element.value);
+//		}
+//	}
+	DISPLAY.scale = parseFloat(document.getElementById('scale').value);
+	console.info('scale' + ": " + document.getElementById('scale').value);
+	INIT.timeStep = parseFloat(document.getElementById('timestep').value);
+	console.info('timestep' + ": " + document.getElementById('timestep').value);
+	INIT.lFac = parseFloat(document.getElementById('lfactor').value) / 100.0;
+	console.info('lfactor' + ": " + document.getElementById('lfactor').value);
+//	console.info("rDot: " + INIT.rDot + "\n");
+//	console.info("TimeStep: " + INIT.timeStep + "\n");
 	DISPLAY.rMin = Math.round(INIT.Rs);
 	// Newton initial conditions
 	INIT.initialize(NEWTON);

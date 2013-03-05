@@ -29,34 +29,29 @@ var INIT = {
 		this.M = 40.0;
 		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
 		this.r = 239.0;
-		this.rDot = 0.0;
-//		this.timeStep = 1.0;
+//		this.rDot = 0.0;
 	},
 	setJustStable: function () {
 		this.M = 40.0;
 		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
 		this.r = 390.0;
-		this.rDot = 0.0;
-//		this.timeStep = 1.0;
+//		this.rDot = 0.0;
 	},
 	setPrecession: function () {
 		this.M = 1.0;
 		this.Rs = 2.0 * GLOBALS.G * this.M / (GLOBALS.c * GLOBALS.c)
 		this.r = 100.0;
-		this.rDot = 0.0;
-//		this.timeStep = 2.0;
+//		this.rDot = 0.0;
 	},
 };
 
 var NEWTON = {
-	name: "Newton",
+	name: "NEWTON",
 	initialize: function () {
 		this.L = this.circL();
-		console.info("Ln: " + this.L.toFixed(3));
-//		this.vC = this.V(this.r, this.L);
-//		console.info("vCN: " + this.vC.toFixed(6));
+		console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.E = this.V(this.r, this.L);
-		console.info("En: " + this.E.toFixed(6));
+		console.info(this.name + ".E: " + this.E.toFixed(6));
 		this.L = this.L * INIT.lFac;
 	},
 	circL: function () {
@@ -99,13 +94,11 @@ var GR = {
 	initialize: function () {
 		this.t = 0.0;
 		this.L = this.circL();
-		console.info("L: " + this.L.toFixed(3));
-//		this.vC = this.V(this.r, this.L);
-//		console.info("vC: " + this.vC.toFixed(6));
+		console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.E2 = this.V(this.r, this.L);
-		console.info("E2: " + this.E2.toFixed(6));
+		console.info(this.name + ".E2: " + this.E2.toFixed(6));
 		this.E = Math.sqrt(this.E2);
-		console.info("E: " + this.E.toFixed(6));
+		console.info(this.name + ".E: " + this.E.toFixed(6));
 		this.L = this.L * INIT.lFac;
 	},
 	circL: function () {
@@ -144,21 +137,6 @@ var GR = {
 			console.info(this.name + " - collided\n");
 		}
 	},
-/*
-	vMin: function () {
-		var L = this.L;
-		var Rs = INIT.Rs;
-		var Vmin;
-		if (this.E2 > this.V((L * L - L * Math.sqrt(L * L - 3.0 * Rs * Rs)) / Rs, L)) {
-			// lower vertical limit is potential at the horizon
-			Vmin = this.V(Rs, L);
-		} else {
-			// lower vertical limit is potential of circular orbit
-			Vmin = this.vC;
-		}
-		return Vmin;
-	},
-*/
 };
 
 
