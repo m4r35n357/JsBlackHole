@@ -13,6 +13,21 @@ var GLOBALS = {
 	rTurnAround: function (vNew, vOld, E, L, rDot2, step, direction) {
 		return -2.0 * ((vNew - E) / (vNew - vOld) - 0.5) * direction * Math.sqrt(-rDot2) * step;
 	},
+	directionChange: function (model) {
+		var r = model.r.toFixed(1);
+		var phiDegrees = this.phiDegrees(model.phi);
+		if (model.direction === 1) {
+			model.rMinDisplay.innerHTML = r;
+			console.log(model.name + " - Periapsis: Rmin = " + r);
+			model.pDisplay.innerHTML = phiDegrees;
+			console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
+		} else {
+			model.rMaxDisplay.innerHTML = r;
+			console.log(model.name + " - Periapsis: Rmax = " + r);
+			model.aDisplay.innerHTML = phiDegrees;
+			console.log(model.name + " - Atapsis: PHI = " + phiDegrees);
+		}
+	},
 };
 
 var INIT = {
@@ -72,7 +87,7 @@ var NEWTON = {
 			} else {
 				this.direction = - direction;
 				this.r = rOld + GLOBALS.rTurnAround(vNew, this.V(rOld, L), E, L, rDot2, step, direction);
-				DISPLAY.directionChange(this);
+				GLOBALS.directionChange(this);
 			}
 			this.phi += L / (r * r) * step;
 		} else {
@@ -121,7 +136,7 @@ var GR = {
 			} else {
 				this.direction = - direction;
 				this.r = rOld + GLOBALS.rTurnAround(vNew, this.V(rOld, L), E2, L, rDot2, step, direction);
-				DISPLAY.directionChange(this);
+				GLOBALS.directionChange(this);
 			}
 			this.phi += L / (r * r) * step;
 			this.t += E / (1.0 - Rs / r) * step;

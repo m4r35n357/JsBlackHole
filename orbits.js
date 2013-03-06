@@ -19,8 +19,8 @@ var drawBackground = function () {
 	};
 	DISPLAY.circularGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
 	grd = GR.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
-	grd.addColorStop(0, "white");
-	grd.addColorStop(1, "black");
+	grd.addColorStop(0, DISPLAY.WHITE);
+	grd.addColorStop(1, DISPLAY.BLACK);
 	// Stable orbit limit
 	DISPLAY.bg.globalAlpha = 0.2;
 	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, 3.0 * INIT.Rs, DISPLAY.YELLOW);
@@ -39,21 +39,25 @@ var drawBackground = function () {
 	// GR energy
 	GR.bgPotential.fillStyle = grd;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
+	// Stable orbit limit
 	GR.bgPotential.globalAlpha = 0.2;
 	GR.bgPotential.fillStyle = DISPLAY.YELLOW;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * 3.0 * INIT.Rs, 200); 
+	// Unstable orbit limit
 	GR.bgPotential.globalAlpha = 0.6;
 	GR.bgPotential.fillStyle = DISPLAY.RED;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * 1.5 * INIT.Rs, 200); 
+	// Gravitational radius
 	GR.bgPotential.globalAlpha = 1.0;
 	GR.bgPotential.fillStyle = DISPLAY.BLACK;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.Rs, 200);
-	DISPLAY.energyBar(GR);
 	// Effective potentials
+	DISPLAY.energyBar(GR);
 	for (i = DISPLAY.rMin; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
 		bgPotential(NEWTON, i);
 		bgPotential(GR, i);
 	}
+	// Constants of motion
 	NEWTON.eDisplay.innerHTML = NEWTON.E.toFixed(6);
 	NEWTON.lDisplay.innerHTML = NEWTON.L.toFixed(2);
 	GR.eDisplay.innerHTML = GR.E.toFixed(6);
@@ -94,7 +98,9 @@ var getDom = function () {
 	NEWTON.tDisplay = document.getElementById('timeNEWTON');
 	NEWTON.rDisplay = document.getElementById('rNEWTON');
 	NEWTON.phiDisplay = document.getElementById('phiNEWTON');
+	NEWTON.rMinDisplay = document.getElementById('rminNEWTON');
 	NEWTON.pDisplay = document.getElementById('pNEWTON');
+	NEWTON.rMaxDisplay = document.getElementById('rmaxNEWTON');
 	NEWTON.aDisplay = document.getElementById('aNEWTON');
 	GR.eDisplay = document.getElementById('eGR');
 	GR.lDisplay = document.getElementById('lGR');
@@ -102,7 +108,9 @@ var getDom = function () {
 	GR.rDisplay = document.getElementById('rGR');
 	GR.phiDisplay = document.getElementById('phiGR');
 	GR.tauDisplay = document.getElementById('tauGR');
+	GR.rMinDisplay = document.getElementById('rminGR');
 	GR.pDisplay = document.getElementById('pGR');
+	GR.rMaxDisplay = document.getElementById('rmaxGR');
 	GR.aDisplay = document.getElementById('aGR');
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
@@ -118,11 +126,6 @@ var scenarioChange = function () {
 	DISPLAY.clearOrbit(GR);
 	DISPLAY.clearPotential(GR);
 	DISPLAY.n = 0;
-//	INIT.M = parseFloat(document.getElementById('mass').value);
-//	INIT.Rs = 2.0 * GLOBALS.G * INIT.M / (GLOBALS.c * GLOBALS.c);
-//	INIT.r = parseFloat(document.getElementById('radius').value);
-//	INIT.timeStep = parseFloat(document.getElementById('timestep').value);
-//	INIT.lFac = parseFloat(document.getElementById('lfactor').value) / 100.0;
 	DISPLAY.rMin = Math.round(INIT.Rs);
 	// Newton initial conditions
 	INIT.initialize(NEWTON);

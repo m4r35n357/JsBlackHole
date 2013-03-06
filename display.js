@@ -100,15 +100,5 @@ var DISPLAY = {
 		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r, model.L));
 		model.fgPotential.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 	},
-	directionChange: function (model) {
-		var phiDegrees = GLOBALS.phiDegrees(model.phi);
-		if (model.direction === 1) {
-			model.pDisplay.innerHTML = phiDegrees;
-			console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
-		} else {
-			model.aDisplay.innerHTML = phiDegrees;
-			console.log(model.name + " - Atapsis: PHI = " + phiDegrees);
-		}
-	},
 };
 
