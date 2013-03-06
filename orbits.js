@@ -53,26 +53,6 @@ var drawBackground = function () {
 	for (i = DISPLAY.rMin; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
 		bgPotential(NEWTON, i);
 		bgPotential(GR, i);
-/*
-		// Newton effective potential locus
-		vEn = NEWTON.V(i, NEWTON.L);
-		if (vEn < NEWTON.E + DISPLAY.potentialY) {
-			NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
-				NEWTON.bgPotential.beginPath();
-				NEWTON.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (NEWTON.energyBar - vEn), 1, 0, GLOBALS.TWOPI, true);
-				NEWTON.bgPotential.closePath();
-			NEWTON.bgPotential.fill();
-		}
-		// GR effective potential locus
-		vE = GR.V(i, GR.L);
-		if (vE < GR.E2 + DISPLAY.potentialY) {
-			GR.bgPotential.fillStyle = DISPLAY.BLACK;
-				GR.bgPotential.beginPath();
-				GR.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (GR.energyBar - vE), 1, 0, GLOBALS.TWOPI, true);
-				GR.bgPotential.closePath();
-			GR.bgPotential.fill();
-		}
-*/
 	}
 	NEWTON.eDisplay.innerHTML = NEWTON.E.toFixed(6);
 	NEWTON.lDisplay.innerHTML = NEWTON.L.toFixed(2);
@@ -124,6 +104,8 @@ var getDom = function () {
 	GR.tauDisplay = document.getElementById('tauGR');
 	GR.pDisplay = document.getElementById('pGR');
 	GR.aDisplay = document.getElementById('aGR');
+	INIT.getHtmlValues();
+	DISPLAY.scale = INIT.getFloatById('scale');
 };
 
 var scenarioChange = function () {
@@ -136,12 +118,11 @@ var scenarioChange = function () {
 	DISPLAY.clearOrbit(GR);
 	DISPLAY.clearPotential(GR);
 	DISPLAY.n = 0;
-	INIT.M = parseFloat(document.getElementById('mass').value);
-	INIT.Rs = 2.0 * GLOBALS.G * INIT.M / (GLOBALS.c * GLOBALS.c);
-	INIT.r = parseFloat(document.getElementById('radius').value);
-	DISPLAY.scale = parseFloat(document.getElementById('scale').value);
-	INIT.timeStep = parseFloat(document.getElementById('timestep').value);
-	INIT.lFac = parseFloat(document.getElementById('lfactor').value) / 100.0;
+//	INIT.M = parseFloat(document.getElementById('mass').value);
+//	INIT.Rs = 2.0 * GLOBALS.G * INIT.M / (GLOBALS.c * GLOBALS.c);
+//	INIT.r = parseFloat(document.getElementById('radius').value);
+//	INIT.timeStep = parseFloat(document.getElementById('timestep').value);
+//	INIT.lFac = parseFloat(document.getElementById('lfactor').value) / 100.0;
 	DISPLAY.rMin = Math.round(INIT.Rs);
 	// Newton initial conditions
 	INIT.initialize(NEWTON);

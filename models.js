@@ -18,6 +18,17 @@ var GLOBALS = {
 var INIT = {
 	phi: 0.0,
  	direction: -1.0,
+	getFloatById: function (id) {
+		return parseFloat(document.getElementById(id).value);
+	},
+	getHtmlValues: function () {
+		var M = this.getFloatById('mass');
+		this.M = M;
+		this.Rs = 2.0 * GLOBALS.G * M / (GLOBALS.c * GLOBALS.c);
+		this.r = this.getFloatById('radius');
+		this.timeStep = this.getFloatById('timestep');
+		this.lFac = this.getFloatById('lfactor') / 100.0;
+	},
 	initialize: function (model) {
 		model.collided = false;
 		model.r = this.r;
