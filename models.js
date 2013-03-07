@@ -19,12 +19,12 @@ var GLOBALS = {
 		if (model.direction === 1) {
 			model.rMinDisplay.innerHTML = r;
 			console.log(model.name + " - Periapsis: Rmin = " + r);
-			model.pDisplay.innerHTML = phiDegrees;
+			model.pDisplay.innerHTML = phiDegrees + "&deg;";
 			console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
 		} else {
 			model.rMaxDisplay.innerHTML = r;
-			console.log(model.name + " - Periapsis: Rmax = " + r);
-			model.aDisplay.innerHTML = phiDegrees;
+			console.log(model.name + " - Atapsis: Rmax = " + r);
+			model.aDisplay.innerHTML = phiDegrees + "&deg;";
 			console.log(model.name + " - Atapsis: PHI = " + phiDegrees);
 		}
 	},

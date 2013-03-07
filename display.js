@@ -33,13 +33,13 @@ var DISPLAY = {
 		var properTime = this.n * INIT.timeStep;
 		if (! NEWTON.collided) {
 			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
-			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
+			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi) + "&deg;";
 			NEWTON.tDisplay.innerHTML = properTime.toFixed(0);
 		}
 		if (! GR.collided) {
 			GR.tDisplay.innerHTML = GR.t.toFixed(0);
 			GR.rDisplay.innerHTML = GR.r.toFixed(1);
-			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
+			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
 			GR.tauDisplay.innerHTML = properTime.toFixed(0);
 		}
 	},
