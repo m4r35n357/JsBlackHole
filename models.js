@@ -9,11 +9,11 @@ var GLOBALS = {
 	G: 1.0,
 	getHtmlValues: function () {
 		console.info("Restarting . . . ");
-		if(document.getElementById('pro').checked) {
-			this.prograde = true;
-		}else if(document.getElementById('retro').checked) {
-			this.prograde = false;
-		}
+//		if(document.getElementById('pro').checked) {
+//			this.prograde = true;
+//		}else if(document.getElementById('retro').checked) {
+//			this.prograde = false;
+//		}
 	},
 	phiDegrees: function (phi) {
 		return (phi * 360.0 / this.TWOPI % 360).toFixed(0);
@@ -53,25 +53,10 @@ var GLOBALS = {
 		var z1 = 1.0 + Math.pow(1.0 - a * a, 1.0 / 3.0) * (Math.pow(1.0 + a, 1.0 / 3.0) + Math.pow(1.0 - a, 1.0 / 3.0));
 		var z2 = Math.sqrt(3.0 * a * a + z1 * z1);
 		if (GLOBALS.prograde) {
-			if (a >= 0.0) {
-				return INIT.M * (3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
-			} else {
-				return INIT.M * (3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
-			}
-		} else {
-			if (a >= 0.0) {
-				return INIT.M * (3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
-			} else {
-				return INIT.M * (3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
-			}
-		}
-/*
-		if (GLOBALS.prograde) {
 			return INIT.M * (3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
 		} else {
 			return INIT.M * (3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
 		}
-*/
 	},
 };
 
@@ -92,6 +77,11 @@ var INIT = {
 		this.r = this.getFloatById('radius');
 		this.a = this.getFloatById('spin') * M;
 		console.info(this.name + ".a: " + this.a.toFixed(1));
+		if (this.a >= 0.0) {
+			GLOBALS.prograde = true;
+		} else {
+			GLOBALS.prograde = false;
+		}
 	},
 	initialize: function (model) {
 		model.collided = false;
