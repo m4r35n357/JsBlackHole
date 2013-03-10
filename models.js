@@ -7,10 +7,18 @@ var GLOBALS = {
 	// Physical constants
 	c: 1.0,
 	G: 1.0,
+	getHtmlValues: function () {
+		console.info("Restarting . . . ");
+		if(document.getElementById('pro').checked) {
+			this.prograde = true;
+		}else if(document.getElementById('retro').checked) {
+			this.prograde = false;
+		}
+	},
 	phiDegrees: function (phi) {
 		return (phi * 360.0 / this.TWOPI % 360).toFixed(0);
 	},
-	rTurnAround: function (vNew, vOld, E, L, rDot2, step, direction) {
+	rTurnAround: function (vNew, vOld, E, rDot2, step, direction) {
 		return -2.0 * ((vNew - E) / (vNew - vOld) - 0.5) * direction * Math.sqrt(-rDot2) * step;
 	},
 	directionChange: function (model) {
@@ -28,9 +36,47 @@ var GLOBALS = {
 			console.log(model.name + " - Atapsis: PHI = " + phiDegrees);
 		}
 	},
+	updateR: function (model, r, L, rOld, energyBar, step, direction) {
+		var vNew = model.V(r, L);
+		var rDot2 = 2.0 * (energyBar - vNew);
+		if (rDot2 >= 0.0) {
+			model.rOld = r;
+			model.r += direction * Math.sqrt(rDot2) * step;
+		} else {
+			model.direction = - direction;
+			model.r = rOld + this.rTurnAround(vNew, model.V(rOld, L), energyBar, rDot2, step, direction);
+			this.directionChange(model);
+		}
+	},
+	isco: function () {
+		var a = INIT.a / INIT.M;
+		var z1 = 1.0 + Math.pow(1.0 - a * a, 1.0 / 3.0) * (Math.pow(1.0 + a, 1.0 / 3.0) + Math.pow(1.0 - a, 1.0 / 3.0));
+		var z2 = Math.sqrt(3.0 * a * a + z1 * z1);
+		if (GLOBALS.prograde) {
+			if (a >= 0.0) {
+				return INIT.M * (3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+			} else {
+				return INIT.M * (3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+			}
+		} else {
+			if (a >= 0.0) {
+				return INIT.M * (3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+			} else {
+				return INIT.M * (3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+			}
+		}
+/*
+		if (GLOBALS.prograde) {
+			return INIT.M * (3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+		} else {
+			return INIT.M * (3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+		}
+*/
+	},
 };
 
 var INIT = {
+	name: "INIT",
 	phi: 0.0,
  	direction: -1.0,
 	getFloatById: function (id) {
@@ -38,11 +84,14 @@ var INIT = {
 	},
 	getHtmlValues: function () {
 		var M = this.getFloatById('mass');
-		this.M = M;
-		this.Rs = 2.0 * GLOBALS.G * M / (GLOBALS.c * GLOBALS.c);
-		this.r = this.getFloatById('radius');
 		this.timeStep = this.getFloatById('timestep');
 		this.lFac = this.getFloatById('lfactor') / 100.0;
+		this.M = M;
+		console.info(this.name + ".M: " + this.M.toFixed(1));
+		this.Rs = 2.0 * GLOBALS.G * M / (GLOBALS.c * GLOBALS.c);
+		this.r = this.getFloatById('radius');
+		this.a = this.getFloatById('spin') * M;
+		console.info(this.name + ".a: " + this.a.toFixed(1));
 	},
 	initialize: function (model) {
 		model.collided = false;
@@ -58,15 +107,15 @@ var NEWTON = {
 	initialize: function () {
 		this.L = this.circL();
 		console.info(this.name + ".L: " + this.L.toFixed(3));
-		this.E = this.V(this.r, this.L);
-		console.info(this.name + ".E: " + this.E.toFixed(6));
+		this.energyBar = this.V(this.r, this.L);
+		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
 	},
 	circL: function () {
-		return Math.sqrt(this.r * INIT.Rs / 2.0);
+		return Math.sqrt(this.r * INIT.M);
 	},
 	V: function (r, L) {
-		return (L * L / (r * r) - INIT.Rs / r) / 2.0;
+		return - INIT.M / r + L * L / (2.0 * r * r);
 	},
 	update: function () {
 		var step = INIT.timeStep;
@@ -74,21 +123,11 @@ var NEWTON = {
 		var vNew;
 		var r = this.r;
 		var rOld = this.rOld;
-		var E = this.E;
 		var L = this.L;
+		var energyBar = this.energyBar;
 		var direction = this.direction;
-		if (r > INIT.Rs) {
-			vNew = this.V(r, L);
-			// update positions (Newton)
-			rDot2 = 2.0 * (E - vNew);
-			if (rDot2 >= 0.0) {
-				this.rOld = r;
-				this.r += direction * Math.sqrt(rDot2) * step;
-			} else {
-				this.direction = - direction;
-				this.r = rOld + GLOBALS.rTurnAround(vNew, this.V(rOld, L), E, L, rDot2, step, direction);
-				GLOBALS.directionChange(this);
-			}
+		if (r > GR.horizon) {
+			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
 			this.phi += L / (r * r) * step;
 		} else {
 			this.collided = true;
@@ -96,16 +135,18 @@ var NEWTON = {
 		}
 	},
 };
-
+/*
 var GR = {
 	name: "GR",
 	initialize: function () {
+		this.horizon = INIT.Rs;
+		console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
 		this.t = 0.0;
 		this.L = this.circL();
 		console.info(this.name + ".L: " + this.L.toFixed(3));
-		this.E2 = this.V(this.r, this.L);
-		console.info(this.name + ".E2: " + this.E2.toFixed(6));
-		this.E = Math.sqrt(this.E2);
+		this.energyBar = this.V(this.r, this.L);
+		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
+		this.E = Math.sqrt(2.0 * this.energyBar + 1);
 		console.info(this.name + ".E: " + this.E.toFixed(6));
 		this.L = this.L * INIT.lFac;
 	},
@@ -113,7 +154,9 @@ var GR = {
 		return this.r / Math.sqrt(2.0 * this.r / INIT.Rs - 3.0);
 	},
 	V: function (r, L) {
-		return (L * L / (r * r) + 1.0) * (1.0 - INIT.Rs / r);
+//		var M = INIT.M;
+//		return - M / r + L * L / (2.0 * r * r) - M * L * L / (r * r * r);
+		return NEWTON.V(r, L) - INIT.Rs * L * L / (2.0 * r * r * r);
 	},
 	update: function () {
 		var Rs = INIT.Rs;
@@ -122,24 +165,118 @@ var GR = {
 		var vNew;
 		var r = this.r;
 		var rOld = this.rOld;
-		var E = this.E;
-		var E2 = this.E2;
 		var L = this.L;
+		var E = this.E;
+		var energyBar = this.energyBar;
 		var direction = this.direction;
-		if (r > Rs) {
-			vNew = this.V(r, L);
-			// update positions (GR)
-			rDot2 = E2 - vNew;
-			if (rDot2 >= 0.0) {
-				this.rOld = r;
-				this.r += direction * Math.sqrt(rDot2) * step;
-			} else {
-				this.direction = - direction;
-				this.r = rOld + GLOBALS.rTurnAround(vNew, this.V(rOld, L), E2, L, rDot2, step, direction);
-				GLOBALS.directionChange(this);
-			}
+		if (r > GR.horizon) {
+			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
 			this.phi += L / (r * r) * step;
 			this.t += E / (1.0 - Rs / r) * step;
+		} else {
+			this.collided = true;
+			console.info(this.name + " - collided\n");
+		}
+	},
+};
+*/
+var GR = {
+	name: "GR",
+	initialize: function () {
+		this.horizon = INIT.M + Math.sqrt(INIT.M * INIT.M - INIT.a * INIT.a);
+		console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
+		this.t = 0.0;
+		this.L = this.circL();
+		console.info(this.name + ".L: " + this.L.toFixed(3));
+		this.E = this.circE();
+		console.info(this.name + ".E: " + this.E.toFixed(6));
+		this.energyBar = this.V(this.r, this.L);
+		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
+		this.L = this.L * INIT.lFac;
+	},
+	circL: function () {
+		var M = INIT.M;
+		var a = INIT.a / INIT.M;
+		var r = this.r / M;
+		var sqrtR = Math.sqrt(r);
+		var r2 = r * r;
+//		var lPlus, lMinus;
+//		lPlus =  (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
+//		console.info("lPlus: " + lPlus.toFixed(3));
+//		lMinus = (r2 + 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
+//		console.info("lMinus: " + lMinus.toFixed(3));
+		if (GLOBALS.prograde) {
+			if (a >= 0.0) {
+				return INIT.M * (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
+			} else {
+				return INIT.M * (r2 + 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
+			}
+		} else {
+			if (a >= 0.0) {
+				return INIT.M * (r2 + 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
+			} else {
+				return INIT.M * (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
+			}
+		}
+/*
+		if (GLOBALS.prograde) {
+			return INIT.M * (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
+		} else {
+			return INIT.M * (r2 + 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
+		}
+*/
+	},
+	circE: function () {
+		var a = INIT.a / INIT.M;
+		var r = this.r / INIT.M;
+		var sqrtR = Math.sqrt(r);
+		var r2 = r * r;
+		if (GLOBALS.prograde) {
+			if (a >= 0.0) {
+				return (r2 - 2.0 * r + a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
+			} else {
+				return (r2 - 2.0 * r - a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
+			}
+		} else {
+			if (a >= 0.0) {
+				return (r2 - 2.0 * r - a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
+			} else {
+				return (r2 - 2.0 * r + a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
+			}
+		}
+/*
+		if (GLOBALS.prograde) {
+			return (r2 - 2.0 * r + a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
+		} else {
+			return (r2 - 2.0 * r - a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
+		}
+*/
+	},
+	V: function (r, L) {
+		var M = INIT.M;
+		var a = INIT.a;
+		var E = this.E;
+		return - M / r + (L * L - a * a * (E * E - 1.0)) / (2.0 * r * r) - M * (L - a * E) * (L - a * E) / (r * r * r);
+	},
+	update: function () {
+		var M = INIT.M;
+		var Rs = INIT.Rs;
+		var step = INIT.timeStep;
+		var rDot2;
+		var vNew;
+		var r = this.r;
+		var rOld = this.rOld;
+		var L = this.L;
+		var E = this.E;
+		var energyBar = this.energyBar;
+		var direction = this.direction;
+		var a = INIT.a;
+		var delta;
+		if (r > this.horizon) {
+			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
+			delta = r * r + a * a - Rs * r;
+			this.phi += ((1.0 - Rs / r) * L + Rs * a / r * E) / delta * step;
+			this.t += ((r * r + a * a + Rs * a * a / r) * E - Rs * a / r * L ) / delta * step;
 		} else {
 			this.collided = true;
 			console.info(this.name + " - collided\n");

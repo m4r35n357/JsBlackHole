@@ -24,22 +24,26 @@
 				</tr>
 				<tr>
 					<td>Time Step</td><td><input id="timestep" type="text" value="1.0" size="4" /></td>
-					<td>Radius parameter</td><td><input id="radius" type="text" value="300.0" size="4" /></td>
+					<td>Radius parameter</td><td><input id="radius" type="text" value="320.0" size="4" /></td>
 				</tr>
 				<tr>
 					<td>L factor</td><td><input id="lfactor" type="text" value="100.0" size="4" /></td>
-					<td></td><td></td>
+					<td>Spin parameter</td><td><input id="spin" type="text" value="0.0" size="4" /></td>
 				</tr>
 				<tr>
 					<td></td><td></td>
+					<td>Prograde</td><td><input type="radio" name="prograde" id="pro" checked="checked" /></td>
+				</tr>
+				<tr>
 					<td><input type="submit" value="Change"></td><td></td>
+					<td>Retrograde</td><td><input type="radio" name="prograde" id="retro" /></td>
 				</tr>
 			</table> 
 		</form>
 
 		<table border="0">
 			<tr><th></th><th class="newton">Newton</th><th class="gr">GR</th></tr>			
-			<tr><td>E</td><td id="eNEWTON" class="newton"></td><td id="eGR" class="gr"></td></tr>
+			<tr><td>E</td><td id="eNEWTON" class="newton">-</td><td id="eGR" class="gr"></td></tr>
 			<tr><td>L</td><td id="lNEWTON" class="newton"></td><td id="lGR" class="gr"></td></tr>
 			<tr><td>t</td><td id="timeNEWTON" class="newton"></td><td id="tGR" class="gr"></td></tr>
 			<tr><td>r</td><td id="rNEWTON" class="newton"></td><td id="rGR" class="gr"></td></tr>

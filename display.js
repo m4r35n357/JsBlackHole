@@ -11,7 +11,7 @@ var DISPLAY = {
 	BLUE: "#0000ff",
 	YELLOW: "#ffff00",
 	WHITE: "#ffffff",
-	rMin: Math.round(INIT.Rs),
+	rMin: GR.horizon,
 	ballSize: 3,
 	blankSize: 5,
 	potentialY: 10,

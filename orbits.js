@@ -23,18 +23,18 @@ var drawBackground = function () {
 	grd.addColorStop(1, DISPLAY.BLACK);
 	// Stable orbit limit
 	DISPLAY.bg.globalAlpha = 0.2;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, 3.0 * INIT.Rs, DISPLAY.YELLOW);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, GLOBALS.isco(), DISPLAY.YELLOW);
 	// Unstable orbit limit
-	DISPLAY.bg.globalAlpha = 0.6;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.RED);
+//	DISPLAY.bg.globalAlpha = 0.6;
+//	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.RED);
 	// Gravitational radius
 	DISPLAY.bg.globalAlpha = 1.0;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.BLACK);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, GR.horizon, DISPLAY.BLACK);
 	// Newton energy
 	NEWTON.bgPotential.fillStyle = grd;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
 	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
-	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.Rs, 200);
+	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * GR.horizon, 200);
 	DISPLAY.energyBar(NEWTON);
 	// GR energy
 	GR.bgPotential.fillStyle = grd;
@@ -42,23 +42,22 @@ var drawBackground = function () {
 	// Stable orbit limit
 	GR.bgPotential.globalAlpha = 0.2;
 	GR.bgPotential.fillStyle = DISPLAY.YELLOW;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * 3.0 * INIT.Rs, 200); 
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * GLOBALS.isco(), 200); 
 	// Unstable orbit limit
-	GR.bgPotential.globalAlpha = 0.6;
-	GR.bgPotential.fillStyle = DISPLAY.RED;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * 1.5 * INIT.Rs, 200); 
+//	GR.bgPotential.globalAlpha = 0.6;
+//	GR.bgPotential.fillStyle = DISPLAY.RED;
+//	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * 1.5 * INIT.Rs, 200); 
 	// Gravitational radius
 	GR.bgPotential.globalAlpha = 1.0;
 	GR.bgPotential.fillStyle = DISPLAY.BLACK;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.Rs, 200);
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * GR.horizon, 200);
 	// Effective potentials
 	DISPLAY.energyBar(GR);
-	for (i = DISPLAY.rMin; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
+	for (i = GR.horizon; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
 		bgPotential(NEWTON, i);
 		bgPotential(GR, i);
 	}
 	// Constants of motion
-	NEWTON.eDisplay.innerHTML = NEWTON.E.toFixed(6);
 	NEWTON.lDisplay.innerHTML = NEWTON.L.toFixed(2);
 	GR.eDisplay.innerHTML = GR.E.toFixed(6);
 	GR.lDisplay.innerHTML = GR.L.toFixed(2);
@@ -112,6 +111,7 @@ var getDom = function () {
 	GR.pDisplay = document.getElementById('pGR');
 	GR.rMaxDisplay = document.getElementById('rmaxGR');
 	GR.aDisplay = document.getElementById('aGR');
+	GLOBALS.getHtmlValues();
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
 };
@@ -140,8 +140,6 @@ var scenarioChange = function () {
 	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
 	GR.colour = DISPLAY.BLUE;
 	// Start drawing . . .
-	NEWTON.energyBar = NEWTON.E;
-	GR.energyBar = GR.E2;
 	drawBackground();
 	DISPLAY.refreshId = setInterval(drawForeground, DISPLAY.msRefresh);
 	return false;
