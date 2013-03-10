@@ -79,7 +79,7 @@ var DISPLAY = {
 		var canvas = model.fgPotential;
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
-		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r, model.L));
+		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
 		canvas.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = model.colour;
@@ -97,7 +97,7 @@ var DISPLAY = {
 	clearPotential: function (model) {
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
-		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r, model.L));
+		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
 		model.fgPotential.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 	},
 };

@@ -8,7 +8,7 @@ var drawBackground = function () {
 	var vE;
 	var i;
 	var bgPotential = function (model, i) {
-		var v = model.V(i, model.L);
+		var v = model.V(i);
 		if (v < model.energyBar + DISPLAY.potentialY) {
 			model.bgPotential.fillStyle = DISPLAY.BLACK;
 				model.bgPotential.beginPath();
