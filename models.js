@@ -7,14 +7,6 @@ var GLOBALS = {
 	// Physical constants
 	c: 1.0,
 	G: 1.0,
-	getHtmlValues: function () {
-		console.info("Restarting . . . ");
-//		if(document.getElementById('pro').checked) {
-//			this.prograde = true;
-//		}else if(document.getElementById('retro').checked) {
-//			this.prograde = false;
-//		}
-	},
 	phiDegrees: function (phi) {
 		return (phi * 360.0 / this.TWOPI % 360).toFixed(0);
 	},
@@ -46,16 +38,6 @@ var GLOBALS = {
 			model.direction = - direction;
 			model.r = rOld + this.rTurnAround(vNew, model.V(rOld), energyBar, rDot2, step, direction);
 			this.directionChange(model);
-		}
-	},
-	isco: function () {
-		var a = INIT.a / INIT.M;
-		var z1 = 1.0 + Math.pow(1.0 - a * a, 1.0 / 3.0) * (Math.pow(1.0 + a, 1.0 / 3.0) + Math.pow(1.0 - a, 1.0 / 3.0));
-		var z2 = Math.sqrt(3.0 * a * a + z1 * z1);
-		if (this.prograde) {
-			return INIT.M * (3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
-		} else {
-			return INIT.M * (3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
 		}
 	},
 };
@@ -148,42 +130,15 @@ var GR = {
 		var r = this.r / M;
 		var sqrtR = Math.sqrt(r);
 		var r2 = r * r;
-//		if (GLOBALS.prograde) {
-//			if (a >= 0.0) {
-				return INIT.M * (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
-//			} else {
-//				throw "should not happen 1";
-//				return INIT.M * (r2 + 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
-//			}
-//		} else {
-//			if (a >= 0.0) {
-//				throw "should not happen 2";
-//				return - INIT.M * (r2 + 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
-//			} else {
-//				return INIT.M * (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
-//			}
-//		}
+		return INIT.M * (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
 	},
 	circE: function () {
-		var a = INIT.a / INIT.M;
-		var r = this.r / INIT.M;
+		var M = INIT.M;
+		var a = INIT.a / M;
+		var r = this.r / M;
 		var sqrtR = Math.sqrt(r);
 		var r2 = r * r;
-//		if (GLOBALS.prograde) {
-//			if (a >= 0.0) {
-				return (r2 - 2.0 * r + a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
-//			} else {
-//				throw "should not happen 3";
-//				return (r2 - 2.0 * r - a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
-//			}
-//		} else {
-//			if (a >= 0.0) {
-//				throw "should not happen 4";
-//				return (r2 - 2.0 * r - a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r - 2.0 * a * sqrtR));
-//			} else {
-//				return (r2 - 2.0 * r + a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
-//			}
-//		}
+		return (r2 - 2.0 * r + a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
 	},
 	V: function (r) {
 		var M = INIT.M;
@@ -237,10 +192,9 @@ var GR = {
 		return this.r / Math.sqrt(2.0 * this.r / INIT.Rs - 3.0);
 	},
 	V: function (r) {
-//		var M = INIT.M;
-//		return - M / r + L * L / (2.0 * r * r) - M * L * L / (r * r * r);
+		var M = INIT.M;
 		var L = this.L;
-		return NEWTON.V(r, L) - INIT.Rs * L * L / (2.0 * r * r * r);
+		return - M / r + L * L / (2.0 * r * r) - M * L * L / (r * r * r);
 	},
 	update: function () {
 		var Rs = INIT.Rs;
