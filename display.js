@@ -69,9 +69,9 @@ var DISPLAY = {
 	},
 	energyBar: function (model) {
 		var canvas = model.bgPotential;
-		canvas.strokeStyle = this.BLACK;
+		canvas.strokeStyle = this.RED;
 			canvas.beginPath();
-			canvas.moveTo(0, this.potentialY);
+			canvas.moveTo(GR.horizon * this.scale, this.potentialY);
 			canvas.lineTo(this.originX, this.potentialY);
 		canvas.stroke();
 	},
@@ -99,6 +99,26 @@ var DISPLAY = {
 		var rAxis = this.potentialY;
 		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
 		model.fgPotential.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
+	},
+	bgPotential: function (model, i) {
+		var v = model.V(i);
+		if (v < model.energyBar + DISPLAY.potentialY) {
+			model.bgPotential.fillStyle = DISPLAY.BLACK;
+				model.bgPotential.beginPath();
+				model.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (model.energyBar - v), 1, 0, GLOBALS.TWOPI, true);
+				model.bgPotential.closePath();
+			model.bgPotential.fill();
+		}
+	},
+	isco: function () {
+		var a = INIT.a / INIT.M;
+		var z1 = 1.0 + Math.pow(1.0 - a * a, 1.0 / 3.0) * (Math.pow(1.0 + a, 1.0 / 3.0) + Math.pow(1.0 - a, 1.0 / 3.0));
+		var z2 = Math.sqrt(3.0 * a * a + z1 * z1);
+		if (GLOBALS.prograde) {
+			return INIT.M * (3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+		} else {
+			return INIT.M * (3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+		}
 	},
 };
 
