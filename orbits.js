@@ -4,26 +4,16 @@
 
 var drawBackground = function () {
 	var grd;
-	var vEn;
-	var vE;
 	var i;
-	var bgPotential = function (model, i) {
-		var v = model.V(i);
-		if (v < model.energyBar + DISPLAY.potentialY) {
-			model.bgPotential.fillStyle = DISPLAY.BLACK;
-				model.bgPotential.beginPath();
-				model.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (model.energyBar - v), 1, 0, GLOBALS.TWOPI, true);
-				model.bgPotential.closePath();
-			model.bgPotential.fill();
-		}
-	};
+	var isco = DISPLAY.isco();
 	DISPLAY.circularGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
 	grd = GR.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
 	grd.addColorStop(0, DISPLAY.WHITE);
 	grd.addColorStop(1, DISPLAY.BLACK);
 	// Stable orbit limit
+	console.info("ISCO: " + isco.toFixed(1));
 	DISPLAY.bg.globalAlpha = 0.2;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, GLOBALS.isco(), DISPLAY.YELLOW);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, isco, DISPLAY.YELLOW);
 	// Unstable orbit limit
 //	DISPLAY.bg.globalAlpha = 0.6;
 //	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.RED);
@@ -42,7 +32,7 @@ var drawBackground = function () {
 	// Stable orbit limit
 	GR.bgPotential.globalAlpha = 0.2;
 	GR.bgPotential.fillStyle = DISPLAY.YELLOW;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * GLOBALS.isco(), 200); 
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * isco, 200); 
 	// Unstable orbit limit
 //	GR.bgPotential.globalAlpha = 0.6;
 //	GR.bgPotential.fillStyle = DISPLAY.RED;
@@ -54,8 +44,8 @@ var drawBackground = function () {
 	// Effective potentials
 	DISPLAY.energyBar(GR);
 	for (i = GR.horizon; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
-		bgPotential(NEWTON, i);
-		bgPotential(GR, i);
+		DISPLAY.bgPotential(NEWTON, i);
+		DISPLAY.bgPotential(GR, i);
 	}
 	// Constants of motion
 	NEWTON.lDisplay.innerHTML = NEWTON.L.toFixed(2);
@@ -111,7 +101,6 @@ var getDom = function () {
 	GR.pDisplay = document.getElementById('pGR');
 	GR.rMaxDisplay = document.getElementById('rmaxGR');
 	GR.aDisplay = document.getElementById('aGR');
-	GLOBALS.getHtmlValues();
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
 };
