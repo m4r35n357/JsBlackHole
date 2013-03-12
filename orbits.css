@@ -8,7 +8,7 @@ input {
 	background-color: #c0c0c0;
 }
 
-#fgorbit, #bgorbit {
+#fgorbitn, #fgorbitgr, #bgorbit {
 	left: 411px;
 	top: 10px;
 }
@@ -27,8 +27,12 @@ input {
 	z-index: 0;
 }
 
-.fg {
+.fgn {
 	z-index: 1;
+}
+
+.fggr {
+	z-index: 2;
 }
 
 .canvas {

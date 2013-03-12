@@ -2,13 +2,11 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="orbits.css">
-		<script type="text/javascript" src="models.js"></script>
-		<script type="text/javascript" src="display.js"></script>
-		<script type="text/javascript" src="orbits.js"></script>
 	</head>
 	<body>
 		<p><canvas id="bgorbit" class="canvas bg" width="800" height="800" /></p>
-		<p><canvas id="fgorbit" class="canvas fg" width="800" height="800" /></p>
+		<p><canvas id="fgorbitn" class="canvas fgn" width="800" height="800" /></p>
+		<p><canvas id="fgorbitgr" class="canvas fggr" width="800" height="800" /></p>
 
 		<p><canvas id="bgpotn" class="canvas bg" width="400" height="200" /></p>
 		<p><canvas id="fgpotn" class="canvas fg" width="400" height="200" /></p>
@@ -48,6 +46,10 @@
 			<tr><td>&phi;<sub>min</sub></td><td id="pNEWTON" class="newton">-</td><td id="pGR" class="gr">-</td></tr>
 			<tr><td>r<sub>max</sub></td><td id="rmaxNEWTON" class="newton">-</td><td id="rmaxGR" class="gr">-</td></tr>
 			<tr><td>&phi;<sub>max</sub></td><td id="aNEWTON" class="newton">-</td><td id="aGR" class="gr">-</td></tr>
-		</table> 
+		</table>
+
+		<script type="text/javascript" src="models.js"></script>
+		<script type="text/javascript" src="display.js"></script>
+		<script type="text/javascript" src="orbits.js"></script>
 	</body>
 </html>

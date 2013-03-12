@@ -13,13 +13,13 @@ var drawBackground = function () {
 	// Stable orbit limit
 	console.info("ISCO: " + isco.toFixed(1));
 	DISPLAY.bg.globalAlpha = 0.2;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, isco, DISPLAY.YELLOW);
-	// Unstable orbit limit
-//	DISPLAY.bg.globalAlpha = 0.6;
-//	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, 1.5 * INIT.Rs, DISPLAY.RED);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.scale * isco, DISPLAY.YELLOW);
+	// Ergoregion
+	DISPLAY.bg.globalAlpha = 0.6;
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.scale * INIT.Rs, DISPLAY.RED);
 	// Gravitational radius
 	DISPLAY.bg.globalAlpha = 1.0;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, GR.horizon, DISPLAY.BLACK);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.scale * GR.horizon, DISPLAY.BLACK);
 	// Newton energy
 	NEWTON.bgPotential.fillStyle = grd;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
@@ -33,10 +33,10 @@ var drawBackground = function () {
 	GR.bgPotential.globalAlpha = 0.2;
 	GR.bgPotential.fillStyle = DISPLAY.YELLOW;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * isco, 200); 
-	// Unstable orbit limit
-//	GR.bgPotential.globalAlpha = 0.6;
-//	GR.bgPotential.fillStyle = DISPLAY.RED;
-//	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * 1.5 * INIT.Rs, 200); 
+	// Ergoregion
+	GR.bgPotential.globalAlpha = 0.6;
+	GR.bgPotential.fillStyle = DISPLAY.RED;
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.Rs, 200); 
 	// Gravitational radius
 	GR.bgPotential.globalAlpha = 1.0;
 	GR.bgPotential.fillStyle = DISPLAY.BLACK;
@@ -59,24 +59,25 @@ var drawForeground = function () {
 	}
 	if (! NEWTON.collided) {
 		NEWTON.update();
-		DISPLAY.plotOrbit(NEWTON);
+		DISPLAY.plotOrbit(NEWTON.fg, NEWTON);
 		DISPLAY.plotPotential(NEWTON);
 	}
 	if (! GR.collided) {
 		GR.update();
-		DISPLAY.plotOrbit(GR);
+		DISPLAY.plotOrbit(GR.fg, GR);
 		DISPLAY.plotPotential(GR);
 	}
 	DISPLAY.n = DISPLAY.n + 1;
 };
 
 var getDom = function () {
-	var polar = document.getElementById('fgorbit');
+	var polar = document.getElementById('fgorbitn');
 	var potential = document.getElementById('fgpotn');
 	DISPLAY.originX = polar.width / 2;
 	DISPLAY.originY = polar.height / 2;
 	DISPLAY.width = potential.width;
-	DISPLAY.fg = polar.getContext('2d');
+	NEWTON.fg = polar.getContext('2d');
+	GR.fg = document.getElementById('fgorbitgr').getContext('2d');
 	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
 	NEWTON.fgPotential = document.getElementById('fgpotn').getContext('2d');
 	NEWTON.bgPotential = document.getElementById('bgpotn').getContext('2d');
@@ -110,9 +111,9 @@ var scenarioChange = function () {
 	var element;
 	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
-	DISPLAY.clearOrbit(NEWTON);
+	DISPLAY.clearOrbit(NEWTON.fg, NEWTON);
 	DISPLAY.clearPotential(NEWTON);
-	DISPLAY.clearOrbit(GR);
+	DISPLAY.clearOrbit(GR.fg, GR);
 	DISPLAY.clearPotential(GR);
 	DISPLAY.n = 0;
 	DISPLAY.rMin = Math.round(INIT.Rs);

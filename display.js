@@ -13,7 +13,7 @@ var DISPLAY = {
 	WHITE: "#ffffff",
 	rMin: GR.horizon,
 	ballSize: 3,
-	blankSize: 5,
+	blankSize: 50,
 	potentialY: 10,
 	circularGradient: function (canvas, x, y, inner, outer) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
@@ -49,8 +49,7 @@ var DISPLAY = {
 	pointY: function (r, phi) {
 		return this.originY + this.scale * r * Math.sin(phi);
 	},
-	plotOrbit: function (model) {
-		var canvas = this.fg;
+	plotOrbit: function (canvas, model) {
 		var blank = this.blankSize;
 		model.X = this.pointX(model.r, model.phi);
 		model.Y = this.pointY(model.r, model.phi);
@@ -61,11 +60,11 @@ var DISPLAY = {
 			canvas.closePath();
 		canvas.fill();
 	},
-	clearOrbit: function (model) {
+	clearOrbit: function (canvas, model) {
 		var blank = this.blankSize;
 		model.X = this.pointX(model.r, model.phi);
 		model.Y = this.pointY(model.r, model.phi);
-		this.fg.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
+		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
 	},
 	energyBar: function (model) {
 		var canvas = model.bgPotential;
