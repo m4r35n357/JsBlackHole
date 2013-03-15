@@ -66,6 +66,7 @@ var drawForeground = function () {
 		GR.update();
 		DISPLAY.plotOrbit(GR.fg, GR);
 		DISPLAY.plotPotential(GR);
+		DISPLAY.plotTauDot(GR);
 	}
 	DISPLAY.n = DISPLAY.n + 1;
 };
@@ -102,14 +103,13 @@ var getDom = function () {
 	GR.pDisplay = document.getElementById('pGR');
 	GR.rMaxDisplay = document.getElementById('rmaxGR');
 	GR.aDisplay = document.getElementById('aGR');
+	GR.tDotDisplay = document.getElementById('tdotGR');
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
-//	document.getElementById('scenarioForm').addEventListener('onclick', scenarioChange);
 	document.getElementById('scenarioForm').onclick = scenarioChange;
 };
 
 var scenarioChange = function () {
-//	var form = document.getElementById('scenarioForm');
 	var element;
 	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();

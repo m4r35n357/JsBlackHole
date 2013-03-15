@@ -176,7 +176,6 @@ var GR = {
 		}
 	},
 };
-
 /*
 var GR = {
 	name: "GR",
@@ -211,10 +210,13 @@ var GR = {
 		var E = this.E;
 		var energyBar = this.energyBar;
 		var direction = this.direction;
+		var tDot;
 		if (r > GR.horizon) {
 			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
 			this.phi += L / (r * r) * step;
-			this.t += E / (1.0 - Rs / r) * step;
+			tDot = E / (1.0 - Rs / r);
+			this.tDot = tDot;
+			this.t += tDot * step;
 		} else {
 			this.collided = true;
 			console.info(this.name + " - collided\n");

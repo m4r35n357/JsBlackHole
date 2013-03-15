@@ -9,7 +9,6 @@ var DISPLAY = {
 	RED: "#ff0000",
 	GREEN: "#00ff00",
 	BLUE: "#0000ff",
-//	YELLOW: "#ffff00",
 	YELLOW: "#808000",
 	CYAN: "#008080",
 	MAGENTA: "#800080",
@@ -44,7 +43,7 @@ var DISPLAY = {
 			GR.rDisplay.innerHTML = GR.r.toFixed(1);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
 			GR.tauDisplay.innerHTML = properTime.toFixed(0);
-			document.getElementById("test").innerHTML = (1.0 / GR.tDot).toFixed(3);
+			GR.tDotDisplay.innerHTML = (1.0 / GR.tDot).toFixed(3);
 		}
 	},
 	pointX: function (r, phi) {
@@ -96,16 +95,22 @@ var DISPLAY = {
 			canvas.moveTo(model.r * this.scale, yValue2);
 			canvas.lineTo(model.r * this.scale, rAxis);
 		canvas.stroke();
+	},
+	plotTauDot: function (model) {
+		var canvas = model.fgPotential;
+		var tDotValue;
+		// dTau/dt plot for GR
+		tDotValue = 200 - 200.0 / model.tDot;
 		canvas.clearRect(0, 0, 6, 200);
 		canvas.fillStyle = this.RED;
 			canvas.beginPath();
-			canvas.arc(3, 200 - 200.0 / model.tDot, this.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.arc(3, tDotValue, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 		canvas.strokeStyle = this.RED;
 			canvas.beginPath();
 			canvas.moveTo(3, 200);
-			canvas.lineTo(3, 200 - 200.0 / model.tDot);
+			canvas.lineTo(3, tDotValue);
 		canvas.stroke();
 	},
 	clearPotential: function (model) {
