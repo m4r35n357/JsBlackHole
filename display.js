@@ -71,7 +71,7 @@ var DISPLAY = {
 	},
 	energyBar: function (model) {
 		var canvas = model.bgPotential;
-		canvas.strokeStyle = this.CYAN;
+		canvas.strokeStyle = this.MAGENTA;
 			canvas.beginPath();
 			canvas.moveTo(GR.horizon * this.scale, this.potentialY);
 			canvas.lineTo(this.originX, this.potentialY);

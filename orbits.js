@@ -16,7 +16,7 @@ var drawBackground = function () {
 	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, isco, DISPLAY.YELLOW);
 	// Ergoregion
 	DISPLAY.bg.globalAlpha = 0.6;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.MAGENTA);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.CYAN);
 	// Gravitational radius
 	DISPLAY.bg.globalAlpha = 1.0;
 	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, GR.horizon, DISPLAY.BLACK);
@@ -35,7 +35,7 @@ var drawBackground = function () {
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * isco, 200); 
 	// Ergoregion
 	GR.bgPotential.globalAlpha = 0.6;
-	GR.bgPotential.fillStyle = DISPLAY.MAGENTA;
+	GR.bgPotential.fillStyle = DISPLAY.CYAN;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.Rs, 200); 
 	// Gravitational radius
 	GR.bgPotential.globalAlpha = 1.0;
