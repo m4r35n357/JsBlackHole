@@ -123,6 +123,7 @@ var GR = {
 		this.energyBar = this.V(this.r, this.L);
 		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
+		this.tDot = 1.0;
 	},
 	circL: function () {
 		var M = INIT.M;
@@ -161,11 +162,14 @@ var GR = {
 		var direction = this.direction;
 		var a = INIT.a;
 		var delta;
+		var tDot;
 		if (r > this.horizon) {
 			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
 			delta = r * r + a * a - Rs * r;
 			this.phi += ((1.0 - Rs / r) * L + Rs * a / r * E) / delta * step;
-			this.t += ((r * r + a * a + Rs * a * a / r) * E - Rs * a / r * L ) / delta * step;
+			tDot = ((r * r + a * a + Rs * a * a / r) * E - Rs * a / r * L ) / delta;
+			this.tDot = tDot;
+			this.t += tDot * step;
 		} else {
 			this.collided = true;
 			console.info(this.name + " - collided\n");

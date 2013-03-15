@@ -13,13 +13,13 @@ var drawBackground = function () {
 	// Stable orbit limit
 	console.info("ISCO: " + isco.toFixed(1));
 	DISPLAY.bg.globalAlpha = 0.2;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.scale * isco, DISPLAY.YELLOW);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, isco, DISPLAY.YELLOW);
 	// Ergoregion
 	DISPLAY.bg.globalAlpha = 0.6;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.scale * INIT.Rs, DISPLAY.RED);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.MAGENTA);
 	// Gravitational radius
 	DISPLAY.bg.globalAlpha = 1.0;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.scale * GR.horizon, DISPLAY.BLACK);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, GR.horizon, DISPLAY.BLACK);
 	// Newton energy
 	NEWTON.bgPotential.fillStyle = grd;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
@@ -35,7 +35,7 @@ var drawBackground = function () {
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * isco, 200); 
 	// Ergoregion
 	GR.bgPotential.globalAlpha = 0.6;
-	GR.bgPotential.fillStyle = DISPLAY.RED;
+	GR.bgPotential.fillStyle = DISPLAY.MAGENTA;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.Rs, 200); 
 	// Gravitational radius
 	GR.bgPotential.globalAlpha = 1.0;
@@ -104,10 +104,12 @@ var getDom = function () {
 	GR.aDisplay = document.getElementById('aGR');
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
+//	document.getElementById('scenarioForm').addEventListener('onclick', scenarioChange);
+	document.getElementById('scenarioForm').onclick = scenarioChange;
 };
 
 var scenarioChange = function () {
-	var form = document.getElementById('scenarioForm');
+//	var form = document.getElementById('scenarioForm');
 	var element;
 	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
