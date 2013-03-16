@@ -29,7 +29,7 @@ var GLOBALS = {
 		}
 	},
 	updateR: function (model, r, L, rOld, energyBar, step, direction) {
-		var vNew = model.V(r, L);
+		var vNew = model.V(r);
 		var rDot2 = 2.0 * (energyBar - vNew);
 		var rDot;
 		if (rDot2 >= 0.0) {
@@ -83,7 +83,7 @@ var NEWTON = {
 	initialize: function () {
 		this.L = this.circL();
 		console.info(this.name + ".L: " + this.L.toFixed(3));
-		this.energyBar = this.V(this.r, this.L);
+		this.energyBar = this.V(this.r);
 		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
 	},
@@ -123,7 +123,7 @@ var GR = {
 		console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.E = this.circE();
 		console.info(this.name + ".E: " + this.E.toFixed(6));
-		this.energyBar = this.V(this.r, this.L);
+		this.energyBar = this.V(this.r);
 		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
 		this.tDot = 1.0;
@@ -189,7 +189,7 @@ var GR = {
 		this.t = 0.0;
 		this.L = this.circL();
 		console.info(this.name + ".L: " + this.L.toFixed(3));
-		this.energyBar = this.V(this.r, this.L);
+		this.energyBar = this.V(this.r);
 		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.E = Math.sqrt(2.0 * this.energyBar + 1);
 		console.info(this.name + ".E: " + this.E.toFixed(6));
