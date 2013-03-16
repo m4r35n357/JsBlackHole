@@ -180,4 +180,54 @@ var GR = {
 		}
 	},
 };
+/*
+var GR = {
+	name: "GR",
+	initialize: function () {
+		this.horizon = INIT.Rs;
+		console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
+		this.t = 0.0;
+		this.L = this.circL();
+		console.info(this.name + ".L: " + this.L.toFixed(3));
+		this.energyBar = this.V(this.r, this.L);
+		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
+		this.E = Math.sqrt(2.0 * this.energyBar + 1);
+		console.info(this.name + ".E: " + this.E.toFixed(6));
+		this.L = this.L * INIT.lFac;
+		this.tDot = 1.0;
+		this.rDot = 0.0;
+		this.phiDot = 0.0;
+	},
+	circL: function () {
+		return this.r / Math.sqrt(2.0 * this.r / INIT.Rs - 3.0);
+	},
+	V: function (r) {
+		var M = INIT.M;
+		var L = this.L;
+		return - M / r + L * L / (2.0 * r * r) - M * L * L / (r * r * r);
+	},
+	update: function () {
+		var Rs = INIT.Rs;
+		var step = INIT.timeStep;
+		var rDot2;
+		var vNew;
+		var r = this.r;
+		var rOld = this.rOld;
+		var L = this.L;
+		var E = this.E;
+		var energyBar = this.energyBar;
+		var direction = this.direction;
+		if (r > this.horizon) {
+			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
+			this.phiDot = L / (r * r);
+			this.phi += this.phiDot * step;
+			this.tDot = E / (1.0 - Rs / r);
+			this.t += this.tDot * step;
+		} else {
+			this.collided = true;
+			console.info(this.name + " - collided\n");
+		}
+	},
+};
+*/
 
