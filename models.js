@@ -23,9 +23,9 @@ var GLOBALS = {
 			console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
 		} else {
 			model.rMaxDisplay.innerHTML = r;
-			console.log(model.name + " - Atapsis: Rmax = " + r);
+			console.log(model.name + " - Apapsis: Rmax = " + r);
 			model.aDisplay.innerHTML = phiDegrees + "&deg;";
-			console.log(model.name + " - Atapsis: PHI = " + phiDegrees);
+			console.log(model.name + " - Apapsis: PHI = " + phiDegrees);
 		}
 	},
 	updateR: function (model, r, L, rOld, energyBar, step, direction) {
