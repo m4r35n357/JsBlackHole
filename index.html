@@ -3,6 +3,7 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="orbits.css">
 	</head>
+
 	<body>
 		<p><canvas id="bgorbit" class="canvas bg" width="800" height="800" /></p>
 		<p><canvas id="fgorbitn" class="canvas fgn" width="800" height="800" /></p>
@@ -29,20 +30,18 @@
 					<td>Spin parameter</td><td><input id="spin" type="text" value="0.0" size="4" /></td>
 				</tr>
 				<tr>
-					<td><input type="submit" value="Change"></td><td></td>
+					<td><input type="submit" value="Change"></td>
 				</tr>
 			</table> 
 		</form>
 
 		<table border="0">
-			<tr><th></th><th class="newton">Newton</th><th class="gr">GR</th></tr>			
+			<tr><th></th><th class="newton">Newton</th><th class="gr">GR</th><th class="gr">GR</th></tr>			
 			<tr><td>E</td><td id="eNEWTON" class="newton">-</td><td id="eGR" class="gr"></td></tr>
-			<tr><td>L</td><td id="lNEWTON" class="newton"></td><td id="lGR" class="gr"></td></tr>
-			<tr><td>t</td><td id="timeNEWTON" class="newton"></td><td id="tGR" class="gr"></td></tr>
-			<tr><td>r</td><td id="rNEWTON" class="newton"></td><td id="rGR" class="gr"></td></tr>
-			<tr><td>&phi;</td><td id="phiNEWTON" class="newton"></td><td id="phiGR" class="gr"></td></tr>
-			<tr><td>&tau;</td><td class="newton">-</td><td id="tauGR" class="gr"></td></tr>
-			<tr><td>d&tau;/dt</td><td class="newton">-</td><td id="tdotGR" class="gr">-</td></tr>
+			<tr><td>L</td><td id="lNEWTON" class="newton"></td><td id="lGR" class="gr"></td><td id="tauGR" class="gr"><td>&tau;</td></tr>
+			<tr><td>t</td><td id="timeNEWTON" class="newton"></td><td id="tGR" class="gr"></td><td id="tdotGR" class="gr"></td><td>dt/d&tau;</td></tr>
+			<tr><td>r</td><td id="rNEWTON" class="newton"></td><td id="rGR" class="gr"></td><td id="rdotGR" class="gr"></td><td>dr/d&tau;</td></tr>
+			<tr><td>&phi;</td><td id="phiNEWTON" class="newton"></td><td id="phiGR" class="gr"></td><td id="phidotGR" class="gr"></td><td>d&phi;/d&tau;</td></tr>
 			<tr><td>r<sub>min</sub></td><td id="rminNEWTON" class="newton">-</td><td id="rminGR" class="gr">-</td></tr>
 			<tr><td>&phi;<sub>min</sub></td><td id="pNEWTON" class="newton">-</td><td id="pGR" class="gr">-</td></tr>
 			<tr><td>r<sub>max</sub></td><td id="rmaxNEWTON" class="newton">-</td><td id="rmaxGR" class="gr">-</td></tr>

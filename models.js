@@ -7,11 +7,11 @@ var GLOBALS = {
 	// Physical constants
 	c: 1.0,
 	G: 1.0,
-	phiDegrees: function (phi) {
-		return (phi * 360.0 / this.TWOPI % 360).toFixed(0);
+	phiDegrees: function (phiRadians) {
+		return (phiRadians * 360.0 / this.TWOPI % 360).toFixed(0);
 	},
-	rTurnAround: function (vNew, vOld, E, rDot2, step, direction) {
-		return - 2.0 * ((vNew - E) / (vNew - vOld) - 0.5) * direction * Math.sqrt(- rDot2) * step;
+	rTurnAround: function (vNew, vOld, E, rDot, step) {
+		return - 2.0 * ((vNew - E) / (vNew - vOld) - 0.5) * rDot * step;
 	},
 	directionChange: function (model) {
 		var r = model.r.toFixed(1);
@@ -31,12 +31,15 @@ var GLOBALS = {
 	updateR: function (model, r, L, rOld, energyBar, step, direction) {
 		var vNew = model.V(r, L);
 		var rDot2 = 2.0 * (energyBar - vNew);
+		var rDot;
 		if (rDot2 >= 0.0) {
 			model.rOld = r;
-			model.r += direction * Math.sqrt(rDot2) * step;
+			model.rDot = direction * Math.sqrt(rDot2);
+			model.r += model.rDot * step;
 		} else {
 			model.direction = - direction;
-			model.r = rOld + this.rTurnAround(vNew, model.V(rOld), energyBar, rDot2, step, direction);
+			model.rDot = direction * Math.sqrt(- rDot2);
+			model.r = rOld + this.rTurnAround(vNew, model.V(rOld), energyBar, model.rDot, step);
 			this.directionChange(model);
 		}
 	},
@@ -124,6 +127,8 @@ var GR = {
 		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
 		this.tDot = 1.0;
+		this.rDot = 0.0;
+		this.phiDot = 0.0;
 	},
 	circL: function () {
 		var M = INIT.M;
@@ -162,14 +167,13 @@ var GR = {
 		var direction = this.direction;
 		var a = INIT.a;
 		var delta;
-		var tDot;
 		if (r > this.horizon) {
 			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
 			delta = r * r + a * a - Rs * r;
-			this.phi += ((1.0 - Rs / r) * L + Rs * a / r * E) / delta * step;
-			tDot = ((r * r + a * a + Rs * a * a / r) * E - Rs * a / r * L ) / delta;
-			this.tDot = tDot;
-			this.t += tDot * step;
+			this.phiDot = ((1.0 - Rs / r) * L + Rs * a / r * E) / delta;
+			this.phi += this.phiDot * step;
+			this.tDot = ((r * r + a * a + Rs * a * a / r) * E - Rs * a / r * L ) / delta;
+			this.t += this.tDot * step;
 		} else {
 			this.collided = true;
 			console.info(this.name + " - collided\n");

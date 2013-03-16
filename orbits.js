@@ -104,6 +104,9 @@ var getDom = function () {
 	GR.rMaxDisplay = document.getElementById('rmaxGR');
 	GR.aDisplay = document.getElementById('aGR');
 	GR.tDotDisplay = document.getElementById('tdotGR');
+	GR.rDotDisplay = document.getElementById('rdotGR');
+	GR.phiDotDisplay = document.getElementById('phidotGR');
+	GR.tauDotDisplay = document.getElementById('taudotGR');
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
 	document.getElementById('scenarioForm').onclick = scenarioChange;
