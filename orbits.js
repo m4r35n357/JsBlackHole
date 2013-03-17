@@ -11,7 +11,7 @@ var drawBackground = function () {
 	grd.addColorStop(0, DISPLAY.WHITE);
 	grd.addColorStop(1, DISPLAY.BLACK);
 	// Stable orbit limit
-	console.info("ISCO: " + isco.toFixed(1));
+	GLOBALS.debug && console.info("ISCO: " + isco.toFixed(1));
 	DISPLAY.bg.globalAlpha = 0.2;
 	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, isco, DISPLAY.YELLOW);
 	// Ergoregion

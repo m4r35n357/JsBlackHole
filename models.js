@@ -3,6 +3,7 @@
 "use strict";
 
 var GLOBALS = {
+	debug: false,
 	TWOPI: 2.0 * Math.PI,
 	// Physical constants
 	c: 1.0,
@@ -18,14 +19,14 @@ var GLOBALS = {
 		var phiDegrees = this.phiDegrees(model.phi);
 		if (model.direction === 1) {
 			model.rMinDisplay.innerHTML = r;
-			console.log(model.name + " - Periapsis: Rmin = " + r);
+			this.debug && console.log(model.name + " - Periapsis: Rmin = " + r);
 			model.pDisplay.innerHTML = phiDegrees + "&deg;";
-			console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
+			this.debug && console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
 		} else {
 			model.rMaxDisplay.innerHTML = r;
-			console.log(model.name + " - Apapsis: Rmax = " + r);
+			this.debug && console.log(model.name + " - Apapsis: Rmax = " + r);
 			model.aDisplay.innerHTML = phiDegrees + "&deg;";
-			console.log(model.name + " - Apapsis: PHI = " + phiDegrees);
+			this.debug && console.log(model.name + " - Apapsis: PHI = " + phiDegrees);
 		}
 	},
 	updateR: function (model) {
@@ -54,22 +55,22 @@ var INIT = {
 	},
 	getHtmlValues: function () {
 		var M = this.getFloatById('mass');
-		console.info("Restarting . . . ");
+		GLOBALS.debug && console.info("Restarting . . . ");
 		this.timeStep = this.getFloatById('timestep');
 		this.lFac = this.getFloatById('lfactor') / 100.0;
 		this.M = M;
-		console.info(this.name + ".M: " + this.M.toFixed(1));
+		GLOBALS.debug && console.info(this.name + ".M: " + this.M.toFixed(1));
 		this.Rs = 2.0 * GLOBALS.G * M / (GLOBALS.c * GLOBALS.c);
 		this.r = this.getFloatById('radius');
 		this.a = this.getFloatById('spin') * M;
-		console.info(this.name + ".a: " + this.a.toFixed(1));
+		GLOBALS.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
 		if (this.a >= 0.0) {
 			GLOBALS.prograde = true;
 		} else {
 			GLOBALS.prograde = false;
 		}
 		this.horizon = M + Math.sqrt(M * M - this.a * this.a);
-		console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
+		GLOBALS.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
 	},
 	initialize: function (model) {
 		model.collided = false;
@@ -84,9 +85,9 @@ var NEWTON = {
 	name: "NEWTON",
 	initialize: function () {
 		this.L = this.circL();
-		console.info(this.name + ".L: " + this.L.toFixed(3));
+		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.energyBar = this.V(this.r);
-		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
+		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
 	},
 	circL: function () {
@@ -105,7 +106,7 @@ var NEWTON = {
 			this.phi += L / (r * r) * step;
 		} else {
 			this.collided = true;
-			console.info(this.name + " - collided\n");
+			GLOBALS.debug && console.info(this.name + " - collided\n");
 		}
 	},
 };
@@ -115,11 +116,11 @@ var GR = {
 	initialize: function () {
 		this.t = 0.0;
 		this.L = this.circL();
-		console.info(this.name + ".L: " + this.L.toFixed(3));
+		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.E = this.circE();
-		console.info(this.name + ".E: " + this.E.toFixed(6));
+		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(6));
 		this.energyBar = this.V(this.r);
-		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
+		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
 		this.tDot = 1.0;
 		this.rDot = 0.0;
@@ -166,7 +167,7 @@ var GR = {
 			this.t += this.tDot * step;
 		} else {
 			this.collided = true;
-			console.info(this.name + " - collided\n");
+			GLOBALS.debug && console.info(this.name + " - collided\n");
 		}
 	},
 };
@@ -176,11 +177,11 @@ var GR = {
 	initialize: function () {
 		this.t = 0.0;
 		this.L = this.circL();
-		console.info(this.name + ".L: " + this.L.toFixed(3));
+		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.energyBar = this.V(this.r);
-		console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
+		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.E = Math.sqrt(2.0 * this.energyBar + 1);
-		console.info(this.name + ".E: " + this.E.toFixed(6));
+		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(6));
 		this.L = this.L * INIT.lFac;
 		this.tDot = 1.0;
 		this.rDot = 0.0;
@@ -208,7 +209,7 @@ var GR = {
 			this.t += this.tDot * step;
 		} else {
 			this.collided = true;
-			console.info(this.name + " - collided\n");
+			GLOBALS.debug && console.info(this.name + " - collided\n");
 		}
 	},
 };
