@@ -120,8 +120,8 @@ var scenarioChange = function () {
 	DISPLAY.clearPotential(NEWTON);
 	DISPLAY.clearOrbit(GR.fg, GR);
 	DISPLAY.clearPotential(GR);
-	DISPLAY.n = 0;
-	DISPLAY.rMin = Math.round(INIT.Rs);
+//	DISPLAY.n = 0;
+//	DISPLAY.rMin = Math.round(INIT.Rs);
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
 	NEWTON.initialize();

@@ -10,8 +10,8 @@ var GLOBALS = {
 	phiDegrees: function (phiRadians) {
 		return (phiRadians * 360.0 / this.TWOPI % 360).toFixed(0);
 	},
-	rTurnAround: function (vNew, vOld, E, rDot, step) {
-		return - 2.0 * ((vNew - E) / (vNew - vOld) - 0.5) * rDot * step;
+	rTurnAround: function (vNew, model) {
+		return - 2.0 * ((vNew - model.energyBar) / (vNew - model.V(model.rOld)) - 0.5) * model.rDot * INIT.timeStep;
 	},
 	directionChange: function (model) {
 		var r = model.r.toFixed(1);
@@ -28,18 +28,18 @@ var GLOBALS = {
 			console.log(model.name + " - Apapsis: PHI = " + phiDegrees);
 		}
 	},
-	updateR: function (model, r, L, rOld, energyBar, step, direction) {
-		var vNew = model.V(r);
-		var rDot2 = 2.0 * (energyBar - vNew);
+	updateR: function (model) {
+		var vNew = model.V(model.r);
+		var rDot2 = 2.0 * (model.energyBar - vNew);
 		var rDot;
 		if (rDot2 >= 0.0) {
-			model.rOld = r;
-			model.rDot = direction * Math.sqrt(rDot2);
-			model.r += model.rDot * step;
+			model.rOld = model.r;
+			model.rDot = model.direction * Math.sqrt(rDot2);
+			model.r += model.rDot * INIT.timeStep;
 		} else {
-			model.direction = - direction;
-			model.rDot = direction * Math.sqrt(- rDot2);
-			model.r = rOld + this.rTurnAround(vNew, model.V(rOld), energyBar, model.rDot, step);
+			model.rDot = model.direction * Math.sqrt(- rDot2);
+			model.direction = - model.direction;
+			model.r = model.rOld + this.rTurnAround(vNew, model);
 			this.directionChange(model);
 		}
 	},
@@ -96,15 +96,10 @@ var NEWTON = {
 	},
 	update: function () {
 		var step = INIT.timeStep;
-		var rDot2;
-		var vNew;
 		var r = this.r;
-		var rOld = this.rOld;
 		var L = this.L;
-		var energyBar = this.energyBar;
-		var direction = this.direction;
 		if (r > GR.horizon) {
-			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
+			GLOBALS.updateR (this);
 			this.phi += L / (r * r) * step;
 		} else {
 			this.collided = true;
@@ -157,18 +152,13 @@ var GR = {
 		var M = INIT.M;
 		var Rs = INIT.Rs;
 		var step = INIT.timeStep;
-		var rDot2;
-		var vNew;
 		var r = this.r;
-		var rOld = this.rOld;
 		var L = this.L;
 		var E = this.E;
-		var energyBar = this.energyBar;
-		var direction = this.direction;
 		var a = INIT.a;
 		var delta;
 		if (r > this.horizon) {
-			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
+			GLOBALS.updateR (this);
 			delta = r * r + a * a - Rs * r;
 			this.phiDot = ((1.0 - Rs / r) * L + Rs * a / r * E) / delta;
 			this.phi += this.phiDot * step;
@@ -209,16 +199,11 @@ var GR = {
 	update: function () {
 		var Rs = INIT.Rs;
 		var step = INIT.timeStep;
-		var rDot2;
-		var vNew;
 		var r = this.r;
-		var rOld = this.rOld;
 		var L = this.L;
 		var E = this.E;
-		var energyBar = this.energyBar;
-		var direction = this.direction;
 		if (r > this.horizon) {
-			GLOBALS.updateR (this, r, L, rOld, energyBar, step, direction);
+			GLOBALS.updateR (this);
 			this.phiDot = L / (r * r);
 			this.phi += this.phiDot * step;
 			this.tDot = E / (1.0 - Rs / r);

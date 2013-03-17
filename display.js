@@ -14,6 +14,7 @@ var DISPLAY = {
 	MAGENTA: "#800080",
 	WHITE: "#ffffff",
 	rMin: GR.horizon,
+	n: 0,
 	ballSize: 3,
 	blankSize: 50,
 	potentialY: 10,
@@ -46,7 +47,6 @@ var DISPLAY = {
 			GR.tDotDisplay.innerHTML = GR.tDot.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
-//			GR.tauDotDisplay.innerHTML = (1.0 / GR.tDot).toFixed(3);
 		}
 	},
 	pointX: function (r, phi) {
