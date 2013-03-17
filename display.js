@@ -13,7 +13,6 @@ var DISPLAY = {
 	CYAN: "#008080",
 	MAGENTA: "#800080",
 	WHITE: "#ffffff",
-	rMin: GR.horizon,
 	n: 0,
 	ballSize: 3,
 	blankSize: 50,
@@ -56,27 +55,29 @@ var DISPLAY = {
 		return this.originY + this.scale * r * Math.sin(phi);
 	},
 	plotOrbit: function (canvas, model) {
+		var X, Y;
 		var blank = this.blankSize;
-		model.X = this.pointX(model.r, model.phi);
-		model.Y = this.pointY(model.r, model.phi);
-		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
+		X = this.pointX(model.r, model.phi);
+		Y = this.pointY(model.r, model.phi);
+		canvas.clearRect(X - blank, Y - blank, 2 * blank, 2 * blank);
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
-			canvas.arc(model.X, model.Y, this.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.arc(X, Y, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 	},
 	clearOrbit: function (canvas, model) {
+		var X, Y;
 		var blank = this.blankSize;
-		model.X = this.pointX(model.r, model.phi);
-		model.Y = this.pointY(model.r, model.phi);
-		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
+		X = this.pointX(model.r, model.phi);
+		Y = this.pointY(model.r, model.phi);
+		canvas.clearRect(X - blank, Y - blank, 2 * blank, 2 * blank);
 	},
 	energyBar: function (model) {
 		var canvas = model.bgPotential;
 		canvas.strokeStyle = this.RED;
 			canvas.beginPath();
-			canvas.moveTo(GR.horizon * this.scale, this.potentialY);
+			canvas.moveTo(INIT.horizon * this.scale, this.potentialY);
 			canvas.lineTo(this.originX, this.potentialY);
 		canvas.stroke();
 	},

@@ -19,12 +19,12 @@ var drawBackground = function () {
 	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.Rs, DISPLAY.CYAN);
 	// Gravitational radius
 	DISPLAY.bg.globalAlpha = 1.0;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, GR.horizon, DISPLAY.BLACK);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.horizon, DISPLAY.BLACK);
 	// Newton energy
 	NEWTON.bgPotential.fillStyle = grd;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
 	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
-	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * GR.horizon, 200);
+	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.horizon, 200);
 	DISPLAY.energyBar(NEWTON);
 	// GR energy
 	GR.bgPotential.fillStyle = grd;
@@ -40,10 +40,10 @@ var drawBackground = function () {
 	// Gravitational radius
 	GR.bgPotential.globalAlpha = 1.0;
 	GR.bgPotential.fillStyle = DISPLAY.BLACK;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * GR.horizon, 200);
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.horizon, 200);
 	// Effective potentials
 	DISPLAY.energyBar(GR);
-	for (i = GR.horizon; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
+	for (i = INIT.horizon; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
 		DISPLAY.bgPotential(NEWTON, i);
 		DISPLAY.bgPotential(GR, i);
 	}
@@ -113,15 +113,12 @@ var getDom = function () {
 };
 
 var scenarioChange = function () {
-	var element;
 	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
 	DISPLAY.clearOrbit(NEWTON.fg, NEWTON);
 	DISPLAY.clearPotential(NEWTON);
 	DISPLAY.clearOrbit(GR.fg, GR);
 	DISPLAY.clearPotential(GR);
-//	DISPLAY.n = 0;
-//	DISPLAY.rMin = Math.round(INIT.Rs);
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
 	NEWTON.initialize();

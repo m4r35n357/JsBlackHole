@@ -10,10 +10,10 @@ var GLOBALS = {
 	phiDegrees: function (phiRadians) {
 		return (phiRadians * 360.0 / this.TWOPI % 360).toFixed(0);
 	},
-	rTurnAround: function (vNew, model) {
-		return - 2.0 * ((vNew - model.energyBar) / (vNew - model.V(model.rOld)) - 0.5) * model.rDot * INIT.timeStep;
+	rTurnAround: function (model) {
+		return - 2.0 * ((model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld)) - 0.5) * model.rDot * INIT.timeStep;
 	},
-	directionChange: function (model) {
+	reportDirectionChange: function (model) {
 		var r = model.r.toFixed(1);
 		var phiDegrees = this.phiDegrees(model.phi);
 		if (model.direction === 1) {
@@ -29,9 +29,9 @@ var GLOBALS = {
 		}
 	},
 	updateR: function (model) {
-		var vNew = model.V(model.r);
-		var rDot2 = 2.0 * (model.energyBar - vNew);
-		var rDot;
+		var rDot2;
+		model.vNew = model.V(model.r);
+		rDot2 = 2.0 * (model.energyBar - model.vNew);
 		if (rDot2 >= 0.0) {
 			model.rOld = model.r;
 			model.rDot = model.direction * Math.sqrt(rDot2);
@@ -39,8 +39,8 @@ var GLOBALS = {
 		} else {
 			model.rDot = model.direction * Math.sqrt(- rDot2);
 			model.direction = - model.direction;
-			model.r = model.rOld + this.rTurnAround(vNew, model);
-			this.directionChange(model);
+			model.r = model.rOld + this.rTurnAround(model);
+			this.reportDirectionChange(model);
 		}
 	},
 };
@@ -68,6 +68,8 @@ var INIT = {
 		} else {
 			GLOBALS.prograde = false;
 		}
+		this.horizon = M + Math.sqrt(M * M - this.a * this.a);
+		console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
 	},
 	initialize: function (model) {
 		model.collided = false;
@@ -98,8 +100,8 @@ var NEWTON = {
 		var step = INIT.timeStep;
 		var r = this.r;
 		var L = this.L;
-		if (r > GR.horizon) {
-			GLOBALS.updateR (this);
+		if (r > INIT.horizon) {
+			GLOBALS.updateR(this);
 			this.phi += L / (r * r) * step;
 		} else {
 			this.collided = true;
@@ -111,8 +113,6 @@ var NEWTON = {
 var GR = {
 	name: "GR",
 	initialize: function () {
-		this.horizon = INIT.M + Math.sqrt(INIT.M * INIT.M - INIT.a * INIT.a);
-		console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
 		this.t = 0.0;
 		this.L = this.circL();
 		console.info(this.name + ".L: " + this.L.toFixed(3));
@@ -157,8 +157,8 @@ var GR = {
 		var E = this.E;
 		var a = INIT.a;
 		var delta;
-		if (r > this.horizon) {
-			GLOBALS.updateR (this);
+		if (r > INIT.horizon) {
+			GLOBALS.updateR(this);
 			delta = r * r + a * a - Rs * r;
 			this.phiDot = ((1.0 - Rs / r) * L + Rs * a / r * E) / delta;
 			this.phi += this.phiDot * step;
@@ -174,8 +174,6 @@ var GR = {
 var GR = {
 	name: "GR",
 	initialize: function () {
-		this.horizon = INIT.Rs;
-		console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
 		this.t = 0.0;
 		this.L = this.circL();
 		console.info(this.name + ".L: " + this.L.toFixed(3));
@@ -202,8 +200,8 @@ var GR = {
 		var r = this.r;
 		var L = this.L;
 		var E = this.E;
-		if (r > this.horizon) {
-			GLOBALS.updateR (this);
+		if (r > INIT.horizon) {
+			GLOBALS.updateR(this);
 			this.phiDot = L / (r * r);
 			this.phi += this.phiDot * step;
 			this.tDot = E / (1.0 - Rs / r);
