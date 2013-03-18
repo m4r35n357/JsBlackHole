@@ -50,7 +50,7 @@ var drawBackground = function () {
 	// Constants of motion
 	NEWTON.lDisplay.innerHTML = NEWTON.L.toFixed(2);
 	GR.eDisplay.innerHTML = GR.E.toFixed(6);
-	GR.lDisplay.innerHTML = GR.L.toFixed(2);
+	GR.lDisplay.innerHTML = GR.L.toFixed(4);
 };
 
 var drawForeground = function () {
@@ -72,12 +72,14 @@ var drawForeground = function () {
 };
 
 var getDom = function () {
-	var polar = document.getElementById('fgorbitn');
+	var orbitPlot = document.getElementById('tracks');
 	var potential = document.getElementById('fgpotn');
-	DISPLAY.originX = polar.width / 2;
-	DISPLAY.originY = polar.height / 2;
+	DISPLAY.originX = orbitPlot.width / 2;
+	DISPLAY.originY = orbitPlot.height / 2;
 	DISPLAY.width = potential.width;
-	NEWTON.fg = polar.getContext('2d');
+	DISPLAY.tracks = orbitPlot.getContext('2d');
+
+	NEWTON.fg = document.getElementById('fgorbitn').getContext('2d');
 	GR.fg = document.getElementById('fgorbitgr').getContext('2d');
 	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
 	NEWTON.fgPotential = document.getElementById('fgpotn').getContext('2d');
@@ -109,7 +111,12 @@ var getDom = function () {
 	GR.tauDotDisplay = document.getElementById('taudotGR');
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
-	document.getElementById('scenarioForm').onclick = scenarioChange;
+	if (document.getElementById('showTracks').checked) {
+		DISPLAY.showTracks = true;
+	} else {
+		DISPLAY.showTracks = false;
+	}
+	document.getElementById('scenarioForm').onsubmit = scenarioChange;
 };
 
 var scenarioChange = function () {

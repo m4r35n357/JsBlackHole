@@ -65,6 +65,15 @@ var DISPLAY = {
 			canvas.arc(X, Y, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
+		if (this.showTracks) {
+			this.tracks.strokeStyle = model.colour;
+				this.tracks.beginPath();
+				this.tracks.moveTo(model.X, model.Y);
+				this.tracks.lineTo(X, Y);
+			this.tracks.stroke();
+			model.X = X;
+			model.Y = Y;
+		}
 	},
 	clearOrbit: function (canvas, model) {
 		var X, Y;

@@ -8,7 +8,7 @@ input {
 	background-color: #c0c0c0;
 }
 
-#fgorbitn, #fgorbitgr, #bgorbit {
+#fgorbitn, #fgorbitgr, #tracks, #bgorbit {
 	left: 411px;
 	top: 10px;
 }
@@ -24,6 +24,10 @@ input {
 }
 
 .bg {
+	z-index: -1;
+}
+
+.tracks {
 	z-index: 0;
 }
 
