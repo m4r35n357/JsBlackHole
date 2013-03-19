@@ -25,6 +25,7 @@ var drawBackground = function () {
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
 	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.horizon, 200);
+	// Effective potentials
 	DISPLAY.energyBar(NEWTON);
 	DISPLAY.potential(NEWTON);
 	// GR energy
@@ -98,6 +99,7 @@ var getDom = function () {
 	GR.tDisplay = document.getElementById('tGR');
 	GR.rDisplay = document.getElementById('rGR');
 	GR.phiDisplay = document.getElementById('phiGR');
+	GR.betaDisplay = document.getElementById('betaGR');
 	GR.tauDisplay = document.getElementById('tauGR');
 	GR.rMinDisplay = document.getElementById('rminGR');
 	GR.pDisplay = document.getElementById('pGR');
@@ -120,8 +122,6 @@ var getDom = function () {
 var scenarioChange = function () {
 	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
-//	DISPLAY.clearOrbit(NEWTON.fg, NEWTON);
-//	DISPLAY.clearOrbit(GR.fg, GR);
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
 	NEWTON.initialize();

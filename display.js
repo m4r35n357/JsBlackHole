@@ -33,17 +33,21 @@ var DISPLAY = {
 	},
 	varTable: function () {
 		var properTime = this.n * INIT.timeStep;
+		var gamma, gamma2;
 		if (! NEWTON.collided) {
 			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi) + "&deg;";
 			NEWTON.tDisplay.innerHTML = properTime.toFixed(0);
 		}
 		if (! GR.collided) {
+			gamma = GR.tDot;
+			gamma2 = gamma * gamma;
 			GR.tDisplay.innerHTML = GR.t.toFixed(0);
 			GR.rDisplay.innerHTML = GR.r.toFixed(1);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
+			GR.betaDisplay.innerHTML = (1.0 - 1.0 / gamma2).toFixed(3);
 			GR.tauDisplay.innerHTML = properTime.toFixed(0);
-			GR.tDotDisplay.innerHTML = GR.tDot.toFixed(3);
+			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
 		}
@@ -75,15 +79,6 @@ var DISPLAY = {
 		model.X = X;
 		model.Y = Y;
 	},
-/*
-	clearOrbit: function (canvas, model) {
-		var X, Y;
-		var blank = this.blankSize;
-		X = this.pointX(model.r, model.phi);
-		Y = this.pointY(model.r, model.phi);
-		canvas.clearRect(X - blank, Y - blank, 2 * blank, 2 * blank);
-	},
-*/
 	energyBar: function (model) {
 		var canvas = model.bgPotential;
 		canvas.strokeStyle = this.RED;
