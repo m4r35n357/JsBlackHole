@@ -15,7 +15,7 @@ var DISPLAY = {
 	WHITE: "#ffffff",
 	n: 0,
 	ballSize: 3,
-	blankSize: 50,
+	blankSize: 4,
 	potentialY: 10,
 	circularGradient: function (canvas, x, y, inner, outer) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
@@ -59,7 +59,7 @@ var DISPLAY = {
 		var blank = this.blankSize;
 		X = this.pointX(model.r, model.phi);
 		Y = this.pointY(model.r, model.phi);
-		canvas.clearRect(X - blank, Y - blank, 2 * blank, 2 * blank);
+		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
 			canvas.arc(X, Y, this.ballSize, 0, GLOBALS.TWOPI, true);
@@ -71,9 +71,9 @@ var DISPLAY = {
 				this.tracks.moveTo(model.X, model.Y);
 				this.tracks.lineTo(X, Y);
 			this.tracks.stroke();
-			model.X = X;
-			model.Y = Y;
 		}
+		model.X = X;
+		model.Y = Y;
 	},
 	clearOrbit: function (canvas, model) {
 		var X, Y;
@@ -95,7 +95,7 @@ var DISPLAY = {
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
 		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
-		canvas.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
+		canvas.clearRect(model.rOld * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
@@ -126,12 +126,14 @@ var DISPLAY = {
 			canvas.lineTo(5, tDotValue);
 		canvas.stroke();
 	},
+/*
 	clearPotential: function (model) {
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
 		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
 		model.fgPotential.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 	},
+*/
 	potential: function (model) {
 		var i, v, vOld;
 		vOld = model.V(INIT.horizon);
