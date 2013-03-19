@@ -26,6 +26,7 @@ var drawBackground = function () {
 	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.horizon, 200);
 	DISPLAY.energyBar(NEWTON);
+	DISPLAY.potential(NEWTON);
 	// GR energy
 	GR.bgPotential.fillStyle = grd;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
@@ -43,10 +44,7 @@ var drawBackground = function () {
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.horizon, 200);
 	// Effective potentials
 	DISPLAY.energyBar(GR);
-	for (i = INIT.horizon; i < DISPLAY.originX / DISPLAY.scale; i += 1) {
-		DISPLAY.bgPotential(NEWTON, i);
-		DISPLAY.bgPotential(GR, i);
-	}
+	DISPLAY.potential(GR);
 	// Constants of motion
 	NEWTON.lDisplay.innerHTML = NEWTON.L.toFixed(2);
 	GR.eDisplay.innerHTML = GR.E.toFixed(6);

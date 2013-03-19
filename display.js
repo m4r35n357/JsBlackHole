@@ -132,14 +132,17 @@ var DISPLAY = {
 		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
 		model.fgPotential.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 	},
-	bgPotential: function (model, i) {
-		var v = model.V(i);
-		if (v < model.energyBar + DISPLAY.potentialY) {
-			model.bgPotential.fillStyle = DISPLAY.BLACK;
+	potential: function (model) {
+		var i, v, vOld;
+		vOld = model.V(INIT.horizon);
+		model.bgPotential.strokeStyle = this.BLACK;
+		for (i = INIT.horizon + 1; i < this.originX / this.scale; i += 1) {
+			v = model.V(i);
 				model.bgPotential.beginPath();
-				model.bgPotential.arc(i * DISPLAY.scale, DISPLAY.potentialY + 180.0 * (model.energyBar - v), 1, 0, GLOBALS.TWOPI, true);
-				model.bgPotential.closePath();
-			model.bgPotential.fill();
+				model.bgPotential.moveTo((i - 1) * this.scale, this.potentialY + 180.0 * (model.energyBar - vOld));
+				model.bgPotential.lineTo(i * this.scale, this.potentialY + 180.0 * (model.energyBar - v));
+			model.bgPotential.stroke();
+			vOld = v;
 		}
 	},
 	isco: function () {
