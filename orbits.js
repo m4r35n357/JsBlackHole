@@ -120,10 +120,8 @@ var getDom = function () {
 var scenarioChange = function () {
 	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
-	DISPLAY.clearOrbit(NEWTON.fg, NEWTON);
-//	DISPLAY.clearPotential(NEWTON);
-	DISPLAY.clearOrbit(GR.fg, GR);
-//	DISPLAY.clearPotential(GR);
+//	DISPLAY.clearOrbit(NEWTON.fg, NEWTON);
+//	DISPLAY.clearOrbit(GR.fg, GR);
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
 	NEWTON.initialize();

@@ -75,6 +75,7 @@ var DISPLAY = {
 		model.X = X;
 		model.Y = Y;
 	},
+/*
 	clearOrbit: function (canvas, model) {
 		var X, Y;
 		var blank = this.blankSize;
@@ -82,6 +83,7 @@ var DISPLAY = {
 		Y = this.pointY(model.r, model.phi);
 		canvas.clearRect(X - blank, Y - blank, 2 * blank, 2 * blank);
 	},
+*/
 	energyBar: function (model) {
 		var canvas = model.bgPotential;
 		canvas.strokeStyle = this.RED;
@@ -126,14 +128,6 @@ var DISPLAY = {
 			canvas.lineTo(5, tDotValue);
 		canvas.stroke();
 	},
-/*
-	clearPotential: function (model) {
-		var blank = this.blankSize;
-		var rAxis = this.potentialY;
-		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
-		model.fgPotential.clearRect(model.r * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
-	},
-*/
 	potential: function (model) {
 		var i, v, vOld;
 		vOld = model.V(INIT.horizon);
