@@ -164,7 +164,7 @@ var GR = {
 			this.phiDot = ((1.0 - Rs / r) * L + Rs * a / r * E) / delta;
 			this.phi += this.phiDot * step;
 			this.tDot = ((r * r + a * a + Rs * a * a / r) * E - Rs * a / r * L ) / delta;
-			this.t += this.tDot * step;
+			this.t += this.tDot * M * step;
 		} else {
 			this.collided = true;
 			GLOBALS.debug && console.info(this.name + " - collided\n");

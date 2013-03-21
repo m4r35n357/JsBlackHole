@@ -32,7 +32,7 @@ var DISPLAY = {
 		canvas.fill();
 	},
 	varTable: function () {
-		var properTime = this.n * INIT.timeStep;
+		var properTime = this.n * INIT.timeStep * INIT.M;
 		var gamma, gamma2;
 		if (! NEWTON.collided) {
 			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
@@ -124,14 +124,16 @@ var DISPLAY = {
 		canvas.stroke();
 	},
 	potential: function (model) {
-		var i, v, vOld;
-		vOld = model.V(INIT.horizon);
+		var i, j, v, vOld;
+		var horizon = Math.floor(INIT.horizon * this.scale);
+		vOld = model.V(horizon / this.scale);
 		model.bgPotential.strokeStyle = this.BLACK;
-		for (i = INIT.horizon + 1; i < this.originX / this.scale; i += 1) {
-			v = model.V(i);
+		for (i = horizon; i < this.originX; i += 1) {
+			j = i / this.scale;
+			v = model.V(j);
 				model.bgPotential.beginPath();
-				model.bgPotential.moveTo((i - 1) * this.scale, this.potentialY + 180.0 * (model.energyBar - vOld));
-				model.bgPotential.lineTo(i * this.scale, this.potentialY + 180.0 * (model.energyBar - v));
+				model.bgPotential.moveTo(j * this.scale - 1, this.potentialY + 180.0 * (model.energyBar - vOld));
+				model.bgPotential.lineTo(j * this.scale, this.potentialY + 180.0 * (model.energyBar - v));
 			model.bgPotential.stroke();
 			vOld = v;
 		}
