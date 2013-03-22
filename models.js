@@ -104,7 +104,8 @@ var NEWTON = {
 		var L = this.L;
 		if (r > INIT.horizon) {
 			GLOBALS.updateR(this);
-			this.phi += L / (r * r) * step;
+			this.phiDot = L / (r * r);
+			this.phi += this.phiDot * step;
 		} else {
 			this.collided = true;
 			GLOBALS.debug && console.info(this.name + " - collided\n");

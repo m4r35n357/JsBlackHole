@@ -95,6 +95,7 @@ var getDom = function () {
 	NEWTON.pDisplay = document.getElementById('pNEWTON');
 	NEWTON.rMaxDisplay = document.getElementById('rmaxNEWTON');
 	NEWTON.aDisplay = document.getElementById('aNEWTON');
+	NEWTON.vDisplay = document.getElementById('vNEWTON');
 	GR.eDisplay = document.getElementById('eGR');
 	GR.lDisplay = document.getElementById('lGR');
 	GR.tDisplay = document.getElementById('tGR');
@@ -110,6 +111,7 @@ var getDom = function () {
 	GR.rDotDisplay = document.getElementById('rdotGR');
 	GR.phiDotDisplay = document.getElementById('phidotGR');
 	GR.tauDotDisplay = document.getElementById('taudotGR');
+//	GR.vDisplay = document.getElementById('vGR');
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
 	if (document.getElementById('showTracks').checked) {

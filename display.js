@@ -39,6 +39,7 @@ var DISPLAY = {
 			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi) + "&deg;";
 			NEWTON.tDisplay.innerHTML = properTime.toFixed(0);
+			NEWTON.vDisplay.innerHTML = Math.sqrt(NEWTON.rDot * NEWTON.rDot + NEWTON.r * NEWTON.r * NEWTON.phiDot * NEWTON.phiDot).toFixed(3);
 		}
 		if (! GR.collided) {
 			gamma = GR.tDot;
@@ -51,6 +52,7 @@ var DISPLAY = {
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
+//			GR.vDisplay.innerHTML = Math.sqrt(GR.rDot * GR.rDot + GR.r * GR.r * GR.phiDot * GR.phiDot).toFixed(3);
 		}
 	},
 	pointX: function (r, phi) {
