@@ -54,13 +54,13 @@ var INIT = {
 		return parseFloat(document.getElementById(id).value);
 	},
 	getHtmlValues: function () {
-		var M = this.getFloatById('mass');
+		var M = this.getFloatById('mass') * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
 		GLOBALS.debug && console.info("Restarting . . . ");
 		this.timeStep = this.getFloatById('timestep');
 		this.lFac = this.getFloatById('lfactor') / 100.0;
 		this.M = M;
 		GLOBALS.debug && console.info(this.name + ".M: " + this.M.toFixed(1));
-		this.Rs = 2.0 * GLOBALS.G * M / (GLOBALS.c * GLOBALS.c);
+//		this.Rs = 2.0 * GLOBALS.G * M / (GLOBALS.c * GLOBALS.c);
 		this.r = this.getFloatById('radius');
 		this.a = this.getFloatById('spin') * M;
 		GLOBALS.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
@@ -153,7 +153,7 @@ var GR = {
 	},
 	update: function () {
 		var M = INIT.M;
-		var Rs = INIT.Rs;
+//		var Rs = INIT.Rs;
 		var step = INIT.timeStep;
 		var r = this.r;
 		var L = this.L;
@@ -162,10 +162,10 @@ var GR = {
 		var delta;
 		if (r > INIT.horizon) {
 			GLOBALS.updateR(this);
-			delta = r * r + a * a - Rs * r;
-			this.phiDot = ((1.0 - Rs / r) * L + Rs * a / r * E) / delta;
+			delta = r * r + a * a - 2.0 * M * r;
+			this.phiDot = ((1.0 - 2.0 * M / r) * L + 2.0 * M * a / r * E) / delta;
 			this.phi += this.phiDot * step;
-			this.tDot = ((r * r + a * a + Rs * a * a / r) * E - Rs * a / r * L ) / delta;
+			this.tDot = ((r * r + a * a + 2.0 * M * a * a / r) * E - 2.0 * M * a / r * L ) / delta;
 			this.t += this.tDot * M * step;
 		} else {
 			this.collided = true;
@@ -190,7 +190,7 @@ var GR = {
 		this.phiDot = 0.0;
 	},
 	circL: function () {
-		return this.r / Math.sqrt(2.0 * this.r / INIT.Rs - 3.0);
+		return this.r / Math.sqrt(2.0 * this.r / 2.0 * INIT.M - 3.0);
 	},
 	V: function (r) {
 		var M = INIT.M;
@@ -198,7 +198,7 @@ var GR = {
 		return - M / r + L * L / (2.0 * r * r) - M * L * L / (r * r * r);
 	},
 	update: function () {
-		var Rs = INIT.Rs;
+//		var Rs = INIT.Rs;
 		var step = INIT.timeStep;
 		var r = this.r;
 		var L = this.L;
@@ -207,7 +207,7 @@ var GR = {
 			GLOBALS.updateR(this);
 			this.phiDot = L / (r * r);
 			this.phi += this.phiDot * step;
-			this.tDot = E / (1.0 - Rs / r);
+			this.tDot = E / (1.0 - 2.0 * INIT.M / r);
 			this.t += this.tDot * step;
 		} else {
 			this.collided = true;
