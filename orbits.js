@@ -111,7 +111,6 @@ var getDom = function () {
 	GR.rDotDisplay = document.getElementById('rdotGR');
 	GR.phiDotDisplay = document.getElementById('phidotGR');
 	GR.tauDotDisplay = document.getElementById('taudotGR');
-//	GR.vDisplay = document.getElementById('vGR');
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
 	if (document.getElementById('showTracks').checked) {

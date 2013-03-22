@@ -54,13 +54,13 @@ var INIT = {
 		return parseFloat(document.getElementById(id).value);
 	},
 	getHtmlValues: function () {
-		var M = this.getFloatById('mass') * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
+//		var M = this.getFloatById('mass') * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
+		var M = this.getFloatById('mass') * 2.95 / 2.0;
 		GLOBALS.debug && console.info("Restarting . . . ");
 		this.timeStep = this.getFloatById('timestep');
 		this.lFac = this.getFloatById('lfactor') / 100.0;
 		this.M = M;
 		GLOBALS.debug && console.info(this.name + ".M: " + this.M.toFixed(1));
-//		this.Rs = 2.0 * GLOBALS.G * M / (GLOBALS.c * GLOBALS.c);
 		this.r = this.getFloatById('radius');
 		this.a = this.getFloatById('spin') * M;
 		GLOBALS.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
@@ -71,7 +71,7 @@ var INIT = {
 		}
 		this.horizon = M + Math.sqrt(M * M - this.a * this.a);
 		GLOBALS.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
-		this.omega = this.a / (this.horizon * this.horizon + this.a * this.a);
+		this.deltaPhi = this.a / (this.horizon * this.horizon + this.a * this.a) * this.timeStep;
 	},
 	initialize: function (model) {
 		model.collided = false;
@@ -149,23 +149,27 @@ var GR = {
 		var a = INIT.a;
 		var L = this.L;
 		var E = this.E;
-		return - M / r + (L * L - a * a * (E * E - 1.0)) / (2.0 * r * r) - M * (L - a * E) * (L - a * E) / (r * r * r);
+		var r2 = r * r;
+		var a2 = a * a;
+		var E2 = E * E;
+		var L2 = L * L;
+		return - M / r + (L2 - a2 * (E2 - 1.0)) / (2.0 * r2) - M * (L2 - 2.0 * a * E * L + a2 * E2) / (r2 * r);
 	},
 	update: function () {
 		var M = INIT.M;
-//		var Rs = INIT.Rs;
 		var step = INIT.timeStep;
 		var r = this.r;
 		var L = this.L;
 		var E = this.E;
 		var a = INIT.a;
-		var delta;
+		var delta, tmp;
 		if (r > INIT.horizon) {
 			GLOBALS.updateR(this);
 			delta = r * r + a * a - 2.0 * M * r;
-			this.phiDot = ((1.0 - 2.0 * M / r) * L + 2.0 * M * a / r * E) / delta;
+			tmp = 2.0 * M / r;
+			this.phiDot = ((1.0 - tmp) * L + a * tmp * E) / delta;
 			this.phi += this.phiDot * step;
-			this.tDot = ((r * r + a * a + 2.0 * M * a * a / r) * E - 2.0 * M * a / r * L ) / delta;
+			this.tDot = ((r * r + a * a * (1.0 + tmp)) * E - a * tmp * L ) / delta;
 			this.t += this.tDot * M * step;
 		} else {
 			this.collided = true;
@@ -198,7 +202,6 @@ var GR = {
 		return - M / r + L * L / (2.0 * r * r) - M * L * L / (r * r * r);
 	},
 	update: function () {
-//		var Rs = INIT.Rs;
 		var step = INIT.timeStep;
 		var r = this.r;
 		var L = this.L;

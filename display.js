@@ -52,7 +52,6 @@ var DISPLAY = {
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
-//			GR.vDisplay.innerHTML = Math.sqrt(GR.rDot * GR.rDot + GR.r * GR.r * GR.phiDot * GR.phiDot).toFixed(3);
 		}
 	},
 	pointX: function (r, phi) {
@@ -62,17 +61,20 @@ var DISPLAY = {
 		return this.originY + this.scale * r * Math.sin(phi);
 	},
 	plotRotation: function () {
-		var X, Y;
+		var canvas = this.tracks;
 		var blank = this.blankSize;
-		this.phiBH += INIT.omega * INIT.timeStep;
-		X = this.pointX(INIT.horizon * 0.7, this.phiBH);
-		Y = this.pointY(INIT.horizon * 0.7, this.phiBH);
-		this.tracks.clearRect(this.X - blank, this.Y - blank, 2 * blank, 2 * blank);
-		this.tracks.fillStyle = this.RED;
-			this.tracks.beginPath();
-			this.tracks.arc(X, Y, 2, 0, GLOBALS.TWOPI, true);
-			this.tracks.closePath();
-		this.tracks.fill();
+		var phiBH, X, Y;
+		var radius = 0.7 * INIT.horizon;
+		this.phiBH += INIT.deltaPhi;
+		phiBH = this.phiBH;
+		X = this.pointX(radius, phiBH);
+		Y = this.pointY(radius, phiBH);
+		canvas.clearRect(this.X - blank, this.Y - blank, 2 * blank, 2 * blank);
+		canvas.fillStyle = this.RED;
+			canvas.beginPath();
+			canvas.arc(X, Y, 2, 0, GLOBALS.TWOPI, true);
+			canvas.closePath();
+		canvas.fill();
 		this.X = X;
 		this.Y = Y;
 	},
