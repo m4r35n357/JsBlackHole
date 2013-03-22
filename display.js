@@ -17,6 +17,7 @@ var DISPLAY = {
 	ballSize: 3,
 	blankSize: 4,
 	potentialY: 10,
+	phiBH: 0.0,
 	circularGradient: function (canvas, x, y, inner, outer) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
 		grd.addColorStop(0, inner);
@@ -57,6 +58,21 @@ var DISPLAY = {
 	},
 	pointY: function (r, phi) {
 		return this.originY + this.scale * r * Math.sin(phi);
+	},
+	plotRotation: function () {
+		var X, Y;
+		var blank = this.blankSize;
+		this.phiBH += INIT.omega * INIT.timeStep;
+		X = this.pointX(INIT.horizon, this.phiBH);
+		Y = this.pointY(INIT.horizon, this.phiBH);
+		this.tracks.clearRect(this.X - blank, this.Y - blank, 2 * blank, 2 * blank);
+		this.tracks.fillStyle = this.RED;
+			this.tracks.beginPath();
+			this.tracks.arc(X, Y, 2, 0, GLOBALS.TWOPI, true);
+			this.tracks.closePath();
+		this.tracks.fill();
+		this.X = X;
+		this.Y = Y;
 	},
 	plotOrbit: function (canvas, model) {
 		var X, Y;

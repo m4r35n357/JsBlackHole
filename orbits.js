@@ -56,6 +56,7 @@ var drawForeground = function () {
 	if ((DISPLAY.n % 10) === 0) {
 		DISPLAY.varTable();
 	}
+	DISPLAY.plotRotation();
 	if (! NEWTON.collided) {
 		NEWTON.update();
 		DISPLAY.plotOrbit(NEWTON.fg, NEWTON);

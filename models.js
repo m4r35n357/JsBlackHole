@@ -71,6 +71,7 @@ var INIT = {
 		}
 		this.horizon = M + Math.sqrt(M * M - this.a * this.a);
 		GLOBALS.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
+		this.omega = this.a / (this.horizon * this.horizon + this.a * this.a);
 	},
 	initialize: function (model) {
 		model.collided = false;
