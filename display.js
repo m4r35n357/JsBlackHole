@@ -63,8 +63,8 @@ var DISPLAY = {
 		var X, Y;
 		var blank = this.blankSize;
 		this.phiBH += INIT.omega * INIT.timeStep;
-		X = this.pointX(INIT.horizon, this.phiBH);
-		Y = this.pointY(INIT.horizon, this.phiBH);
+		X = this.pointX(INIT.horizon * 0.7, this.phiBH);
+		Y = this.pointY(INIT.horizon * 0.7, this.phiBH);
 		this.tracks.clearRect(this.X - blank, this.Y - blank, 2 * blank, 2 * blank);
 		this.tracks.fillStyle = this.RED;
 			this.tracks.beginPath();
