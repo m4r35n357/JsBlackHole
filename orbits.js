@@ -96,6 +96,7 @@ var getDom = function () {
 	NEWTON.rMaxDisplay = document.getElementById('rmaxNEWTON');
 	NEWTON.aDisplay = document.getElementById('aNEWTON');
 	NEWTON.vDisplay = document.getElementById('vNEWTON');
+	GR.rsDisplay = document.getElementById('rs');
 	GR.eDisplay = document.getElementById('eGR');
 	GR.lDisplay = document.getElementById('lGR');
 	GR.tDisplay = document.getElementById('tGR');

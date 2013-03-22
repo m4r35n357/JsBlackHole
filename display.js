@@ -44,6 +44,7 @@ var DISPLAY = {
 		if (! GR.collided) {
 			gamma = GR.tDot;
 			gamma2 = gamma * gamma;
+			GR.rsDisplay.innerHTML = 2.0 * INIT.M.toFixed(3);
 			GR.tDisplay.innerHTML = GR.t.toFixed(0);
 			GR.rDisplay.innerHTML = GR.r.toFixed(1);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
