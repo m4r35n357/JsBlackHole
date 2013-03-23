@@ -84,13 +84,13 @@ var INIT = {
 var NEWTON = {
 	name: "NEWTON",
 	initialize: function () {
-		this.L = this.circL();
+		this.L = this.circular();
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
 	},
-	circL: function () {
+	circular: function () {
 		return Math.sqrt(this.r * INIT.M);
 	},
 	V: function (r) {
@@ -116,9 +116,8 @@ var GR = {
 	name: "GR",
 	initialize: function () {
 		this.t = 0.0;
-		this.L = this.circL();
+		this.circular();
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
-		this.E = this.circE();
 		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(6));
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
@@ -127,21 +126,15 @@ var GR = {
 		this.rDot = 0.0;
 		this.phiDot = 0.0;
 	},
-	circL: function () {
+	circular: function () {
 		var M = INIT.M;
 		var a = INIT.a / M;
 		var r = this.r / M;
 		var sqrtR = Math.sqrt(r);
 		var r2 = r * r;
-		return INIT.M * (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
-	},
-	circE: function () {
-		var M = INIT.M;
-		var a = INIT.a / M;
-		var r = this.r / M;
-		var sqrtR = Math.sqrt(r);
-		var r2 = r * r;
-		return (r2 - 2.0 * r + a * sqrtR) / (r * Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR));
+		var tmp = Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR);
+		this.L = INIT.M * (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * tmp);
+		this.E = (r2 - 2.0 * r + a * sqrtR) / (r * tmp);
 	},
 	V: function (r) {
 		var M = INIT.M;
@@ -181,7 +174,7 @@ var GR = {
 	name: "GR",
 	initialize: function () {
 		this.t = 0.0;
-		this.L = this.circL();
+		this.L = this.circular();
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
@@ -192,8 +185,8 @@ var GR = {
 		this.rDot = 0.0;
 		this.phiDot = 0.0;
 	},
-	circL: function () {
-		return this.r / Math.sqrt(2.0 * this.r / 2.0 * INIT.M - 3.0);
+	circular: function () {
+		return this.r / Math.sqrt(this.r / INIT.M - 3.0);
 	},
 	V: function (r) {
 		var M = INIT.M;
@@ -201,6 +194,7 @@ var GR = {
 		return - M / r + L * L / (2.0 * r * r) - M * L * L / (r * r * r);
 	},
 	update: function () {
+		var M = INIT.M;
 		var step = INIT.timeStep;
 		var r = this.r;
 		var L = this.L;
@@ -209,8 +203,8 @@ var GR = {
 			GLOBALS.updateR(this);
 			this.phiDot = L / (r * r);
 			this.phi += this.phiDot * step;
-			this.tDot = E / (1.0 - 2.0 * INIT.M / r);
-			this.t += this.tDot * step;
+			this.tDot = E / (1.0 - 2.0 * M / r);
+			this.t += this.tDot * M * step;
 		} else {
 			this.collided = true;
 			GLOBALS.debug && console.info(this.name + " - collided\n");

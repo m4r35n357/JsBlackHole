@@ -46,10 +46,11 @@ var drawBackground = function () {
 	// Effective potentials
 	DISPLAY.energyBar(GR);
 	DISPLAY.potential(GR);
-	// Constants of motion
+	// Constants of motion for table
 	NEWTON.lDisplay.innerHTML = NEWTON.L.toFixed(2);
 	GR.eDisplay.innerHTML = GR.E.toFixed(6);
 	GR.lDisplay.innerHTML = GR.L.toFixed(4);
+	GR.rsDisplay.innerHTML = 2.0 * INIT.M.toFixed(3);
 };
 
 var drawForeground = function () {

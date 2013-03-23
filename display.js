@@ -44,7 +44,6 @@ var DISPLAY = {
 		if (! GR.collided) {
 			gamma = GR.tDot;
 			gamma2 = gamma * gamma;
-			GR.rsDisplay.innerHTML = 2.0 * INIT.M.toFixed(3);
 			GR.tDisplay.innerHTML = GR.t.toFixed(0);
 			GR.rDisplay.innerHTML = GR.r.toFixed(1);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
@@ -145,16 +144,16 @@ var DISPLAY = {
 		canvas.stroke();
 	},
 	potential: function (model) {
-		var i, j, v, vOld;
+		var i, r, v, vOld;
 		var horizon = Math.floor(INIT.horizon * this.scale);
 		vOld = model.V(horizon / this.scale);
 		model.bgPotential.strokeStyle = this.BLACK;
 		for (i = horizon; i < this.originX; i += 1) {
-			j = i / this.scale;
-			v = model.V(j);
+			r = i / this.scale;
+			v = model.V(r);
 				model.bgPotential.beginPath();
-				model.bgPotential.moveTo(j * this.scale - 1, this.potentialY + 180.0 * (model.energyBar - vOld));
-				model.bgPotential.lineTo(j * this.scale, this.potentialY + 180.0 * (model.energyBar - v));
+				model.bgPotential.moveTo(r * this.scale - 1, this.potentialY + 180.0 * (model.energyBar - vOld));
+				model.bgPotential.lineTo(r * this.scale, this.potentialY + 180.0 * (model.energyBar - v));
 			model.bgPotential.stroke();
 			vOld = v;
 		}
