@@ -54,8 +54,7 @@ var INIT = {
 		return parseFloat(document.getElementById(id).value);
 	},
 	getHtmlValues: function () {
-//		var M = this.getFloatById('mass') * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
-		var M = this.getFloatById('mass') * 2.95 / 2.0;
+		var M = this.getFloatById('mass') * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
 		GLOBALS.debug && console.info("Restarting . . . ");
 		this.timeStep = this.getFloatById('timestep');
 		this.lFac = this.getFloatById('lfactor') / 100.0;
