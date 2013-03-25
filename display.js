@@ -18,6 +18,9 @@ var DISPLAY = {
 	blankSize: 4,
 	potentialY: 10,
 	phiBH: 0.0,
+//	initialize: function () {
+//		INIT.M = INIT.M;
+//	},
 	circularGradient: function (canvas, x, y, inner, outer) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
 		grd.addColorStop(0, inner);
@@ -32,33 +35,48 @@ var DISPLAY = {
 			canvas.closePath();
 		canvas.fill();
 	},
+	timeUnits: function (time) {
+		var hour = 60 * 60;
+		var day = hour * 24;
+		var year = day * 365;
+		if (time < hour) {
+			return time;
+		} else if (time < day) {
+			return time / hour;
+		} else if (time < year) {
+			return time / day;
+		} else {
+			return time / year;
+		}
+	},
 	varTable: function () {
-		var properTime = this.n * INIT.timeStep * INIT.M;
+		var properTime = this.n * INIT.timeStep * INIT.M / GLOBALS.c;
 		var gamma, gamma2;
 		if (! NEWTON.collided) {
-			NEWTON.rDisplay.innerHTML = NEWTON.r.toFixed(1);
+			NEWTON.rDisplay.innerHTML = (INIT.M * NEWTON.r).toExponential(2);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi) + "&deg;";
-			NEWTON.tDisplay.innerHTML = properTime.toFixed(0);
-			NEWTON.vDisplay.innerHTML = Math.sqrt(NEWTON.rDot * NEWTON.rDot + NEWTON.r * NEWTON.r * NEWTON.phiDot * NEWTON.phiDot).toFixed(3);
+			NEWTON.tDisplay.innerHTML = properTime.toExponential(2);
+			NEWTON.vDisplay.innerHTML = (GLOBALS.c * Math.sqrt(NEWTON.rDot * NEWTON.rDot + NEWTON.r * NEWTON.r * NEWTON.phiDot * NEWTON.phiDot)).toExponential(2);
 		}
 		if (! GR.collided) {
 			gamma = GR.tDot;
 			gamma2 = gamma * gamma;
-			GR.tDisplay.innerHTML = GR.t.toFixed(0);
-			GR.rDisplay.innerHTML = GR.r.toFixed(1);
+			GR.tDisplay.innerHTML = (GR.t * INIT.M / GLOBALS.c).toExponential(2);
+			GR.rDisplay.innerHTML = (INIT.M * GR.r).toExponential(2);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
-			GR.betaDisplay.innerHTML = (1.0 - 1.0 / gamma2).toFixed(3);
-			GR.tauDisplay.innerHTML = properTime.toFixed(0);
+			GR.betaDisplay.innerHTML = (1.0 - 1.0 / gamma2).toFixed(4);
+			GR.tauDisplay.innerHTML = properTime.toExponential(2);
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
-			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
+			GR.rDotDisplay.innerHTML = (INIT.M * GR.rDot).toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
+			GR.vDisplay.innerHTML = (GLOBALS.c * Math.sqrt(GR.rDot * GR.rDot + GR.r * GR.r * GR.phiDot * GR.phiDot)).toExponential(2);
 		}
 	},
 	pointX: function (r, phi) {
-		return this.originX + this.scale * r * Math.cos(phi);
+		return this.originX + r * Math.cos(phi);
 	},
 	pointY: function (r, phi) {
-		return this.originY + this.scale * r * Math.sin(phi);
+		return this.originY + r * Math.sin(phi);
 	},
 	plotRotation: function () {
 		var canvas = this.tracks;
@@ -67,8 +85,8 @@ var DISPLAY = {
 		var radius = 0.7 * INIT.horizon;
 		this.phiBH += INIT.deltaPhi;
 		phiBH = this.phiBH;
-		X = this.pointX(radius, phiBH);
-		Y = this.pointY(radius, phiBH);
+		X = this.pointX(INIT.M * this.scale * radius, phiBH);
+		Y = this.pointY(INIT.M * this.scale * radius, phiBH);
 		canvas.clearRect(this.X - blank, this.Y - blank, 2 * blank, 2 * blank);
 		canvas.fillStyle = this.RED;
 			canvas.beginPath();
@@ -81,8 +99,8 @@ var DISPLAY = {
 	plotOrbit: function (canvas, model) {
 		var X, Y;
 		var blank = this.blankSize;
-		X = this.pointX(model.r, model.phi);
-		Y = this.pointY(model.r, model.phi);
+		X = this.pointX(model.r * INIT.M * this.scale, model.phi);
+		Y = this.pointY(model.r * INIT.M * this.scale, model.phi);
 		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
@@ -103,7 +121,7 @@ var DISPLAY = {
 		var canvas = model.bgPotential;
 		canvas.strokeStyle = this.RED;
 			canvas.beginPath();
-			canvas.moveTo(INIT.horizon * this.scale, this.potentialY);
+			canvas.moveTo(INIT.horizon * INIT.M * this.scale, this.potentialY);
 			canvas.lineTo(this.originX, this.potentialY);
 		canvas.stroke();
 	},
@@ -112,35 +130,36 @@ var DISPLAY = {
 		var blank = this.blankSize;
 		var rAxis = this.potentialY;
 		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
-		canvas.clearRect(model.rOld * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
+		canvas.clearRect(model.rOld * INIT.M * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
-			canvas.arc(model.r * this.scale, yValue2, this.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.arc(model.r * INIT.M * this.scale, yValue2, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 		// Potential dropline
 		canvas.strokeStyle = model.colour;
 			canvas.beginPath();
-			canvas.moveTo(model.r * this.scale, yValue2);
-			canvas.lineTo(model.r * this.scale, rAxis);
+			canvas.moveTo(model.r * INIT.M * this.scale, yValue2);
+			canvas.lineTo(model.r * INIT.M * this.scale, rAxis);
 		canvas.stroke();
 	},
 	plotTauDot: function (model) {
 		var canvas = model.fgPotential;
 		var tDotValue;
+		var xValue = 395;
 		// dTau/dt plot for GR
 		tDotValue = 200 - 200.0 / model.tDot;
-		canvas.clearRect(2, 0, 8, 200);
+		canvas.clearRect(xValue - 3, 0, xValue + 3, 200);
 		canvas.fillStyle = this.WHITE;
 			canvas.beginPath();
-			canvas.arc(5, tDotValue, this.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.arc(xValue, tDotValue, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 		canvas.strokeStyle = this.WHITE;
 			canvas.beginPath();
-			canvas.moveTo(5, 200);
-			canvas.lineTo(5, tDotValue);
+			canvas.moveTo(xValue, 200);
+			canvas.lineTo(xValue, tDotValue);
 		canvas.stroke();
 	},
 	potential: function (model) {
@@ -149,23 +168,23 @@ var DISPLAY = {
 		vOld = model.V(horizon / this.scale);
 		model.bgPotential.strokeStyle = this.BLACK;
 		for (i = horizon; i < this.originX; i += 1) {
-			r = i / this.scale;
+			r = i / (INIT.M * this.scale);
 			v = model.V(r);
 				model.bgPotential.beginPath();
-				model.bgPotential.moveTo(r * this.scale - 1, this.potentialY + 180.0 * (model.energyBar - vOld));
-				model.bgPotential.lineTo(r * this.scale, this.potentialY + 180.0 * (model.energyBar - v));
+				model.bgPotential.moveTo(r * INIT.M * this.scale - 1, this.potentialY + 180.0 * (model.energyBar - vOld));
+				model.bgPotential.lineTo(r * INIT.M * this.scale, this.potentialY + 180.0 * (model.energyBar - v));
 			model.bgPotential.stroke();
 			vOld = v;
 		}
 	},
 	isco: function () {
-		var a = INIT.a / INIT.M;
+		var a = INIT.a;
 		var z1 = 1.0 + Math.pow(1.0 - a * a, 1.0 / 3.0) * (Math.pow(1.0 + a, 1.0 / 3.0) + Math.pow(1.0 - a, 1.0 / 3.0));
 		var z2 = Math.sqrt(3.0 * a * a + z1 * z1);
 		if (GLOBALS.prograde) {
-			return INIT.M * (3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+			return 3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
 		} else {
-			return INIT.M * (3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2)));
+			return 3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
 		}
 	},
 };

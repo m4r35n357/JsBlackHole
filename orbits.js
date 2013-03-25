@@ -13,18 +13,18 @@ var drawBackground = function () {
 	// Stable orbit limit
 	GLOBALS.debug && console.info("ISCO: " + isco.toFixed(1));
 	DISPLAY.bg.globalAlpha = 0.2;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, isco, DISPLAY.YELLOW);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.M * isco, DISPLAY.YELLOW);
 	// Ergoregion
 	DISPLAY.bg.globalAlpha = 0.6;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, 2.0 * INIT.M, DISPLAY.CYAN);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.M * GLOBALS.ergosphere, DISPLAY.CYAN);
 	// Gravitational radius
 	DISPLAY.bg.globalAlpha = 1.0;
-	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.horizon, DISPLAY.BLACK);
+	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.M * INIT.horizon, DISPLAY.BLACK);
 	// Newton energy
 	NEWTON.bgPotential.fillStyle = grd;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
 	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
-	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.horizon, 200);
+	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * INIT.horizon, 200);
 	// Effective potentials
 	DISPLAY.energyBar(NEWTON);
 	DISPLAY.potential(NEWTON);
@@ -34,23 +34,23 @@ var drawBackground = function () {
 	// Stable orbit limit
 	GR.bgPotential.globalAlpha = 0.2;
 	GR.bgPotential.fillStyle = DISPLAY.YELLOW;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * isco, 200); 
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * isco, 200); 
 	// Ergoregion
 	GR.bgPotential.globalAlpha = 0.6;
 	GR.bgPotential.fillStyle = DISPLAY.CYAN;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * 2.0 * INIT.M, 200); 
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * GLOBALS.ergosphere, 200); 
 	// Gravitational radius
 	GR.bgPotential.globalAlpha = 1.0;
 	GR.bgPotential.fillStyle = DISPLAY.BLACK;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.horizon, 200);
+	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * INIT.horizon, 200);
 	// Effective potentials
 	DISPLAY.energyBar(GR);
 	DISPLAY.potential(GR);
 	// Constants of motion for table
-	NEWTON.lDisplay.innerHTML = NEWTON.L.toFixed(2);
-	GR.eDisplay.innerHTML = GR.E.toFixed(6);
-	GR.lDisplay.innerHTML = GR.L.toFixed(4);
-	GR.rsDisplay.innerHTML = 2.0 * INIT.M.toFixed(3);
+	NEWTON.lDisplay.innerHTML = (INIT.M * NEWTON.L).toFixed(4);
+	GR.eDisplay.innerHTML = (INIT.M * GR.E).toFixed(6);
+	GR.lDisplay.innerHTML = (INIT.M * GR.L).toFixed(4);
+	GR.rsDisplay.innerHTML = (2.0 * INIT.M).toFixed(3);
 };
 
 var drawForeground = function () {
@@ -69,7 +69,7 @@ var drawForeground = function () {
 		DISPLAY.plotPotential(GR);
 		DISPLAY.plotTauDot(GR);
 	}
-	DISPLAY.n = DISPLAY.n + 1;
+	DISPLAY.n += 1;
 };
 
 var getDom = function () {
@@ -113,8 +113,9 @@ var getDom = function () {
 	GR.rDotDisplay = document.getElementById('rdotGR');
 	GR.phiDotDisplay = document.getElementById('phidotGR');
 	GR.tauDotDisplay = document.getElementById('taudotGR');
+	GR.vDisplay = document.getElementById('vGR');
 	INIT.getHtmlValues();
-	DISPLAY.scale = INIT.getFloatById('scale');
+	DISPLAY.scale = INIT.getFloatById('scale') * 0.000005;
 	if (document.getElementById('showTracks').checked) {
 		DISPLAY.showTracks = true;
 	} else {
@@ -129,16 +130,17 @@ var scenarioChange = function () {
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
 	NEWTON.initialize();
-	NEWTON.X = DISPLAY.pointX(NEWTON.r, NEWTON.phi);
-	NEWTON.Y = DISPLAY.pointY(NEWTON.r, NEWTON.phi);
+	NEWTON.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * NEWTON.r, NEWTON.phi);
+	NEWTON.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * NEWTON.r, NEWTON.phi);
 	NEWTON.colour = DISPLAY.GREEN;
 	// GR initial conditions
 	INIT.initialize(GR);
 	GR.initialize();
-	GR.X = DISPLAY.pointX(GR.r, GR.phi);
-	GR.Y = DISPLAY.pointY(GR.r, GR.phi);
+	GR.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * GR.r, GR.phi);
+	GR.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * GR.r, GR.phi);
 	GR.colour = DISPLAY.BLUE;
 	// Start drawing . . .
+//	DISPLAY.initialize();
 	drawBackground();
 	DISPLAY.refreshId = setInterval(drawForeground, DISPLAY.msRefresh);
 	return false;
