@@ -52,24 +52,24 @@ var DISPLAY = {
 		var properTime = this.n * INIT.timeStep * M / c;
 		var beta, gamma, gamma2;
 		if (! NEWTON.collided) {
-			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toExponential(2);
+			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(1);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi) + "&deg;";
 			NEWTON.tDisplay.innerHTML = properTime.toExponential(2);
-			NEWTON.vDisplay.innerHTML = GLOBALS.speed(NEWTON).toExponential(2);
+			NEWTON.vDisplay.innerHTML = GLOBALS.speed(NEWTON).toFixed(1);
 		}
 		if (! GR.collided) {
 			gamma = GR.tDot;
-			beta = 1.0 - 1.0 / (gamma * gamma);
+//			beta = 1.0 - 1.0 / (gamma * gamma);
 			GR.tDisplay.innerHTML = (M * GR.t / c).toExponential(2);
-			GR.rDisplay.innerHTML = (M * GR.r).toExponential(2);
+			GR.rDisplay.innerHTML = (M * GR.r).toFixed(1);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
-			GR.betaDisplay.innerHTML = beta.toFixed(4);
+//			GR.betaDisplay.innerHTML = beta.toFixed(4);
 			GR.tauDisplay.innerHTML = properTime.toExponential(2);
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = (M * GR.rDot).toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
 //			GR.vDisplay.innerHTML = (beta * c).toExponential(2);
-			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / gamma).toExponential(2);
+			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / gamma).toFixed(1);
 		}
 	},
 	pointX: function (r, phi) {

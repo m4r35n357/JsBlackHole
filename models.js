@@ -22,12 +22,12 @@ var GLOBALS = {
 		var r = model.r.toFixed(1);
 		var phiDegrees = this.phiDegrees(model.phi);
 		if (model.direction === 1) {
-			model.rMinDisplay.innerHTML = (INIT.M * r).toExponential(2);
+			model.rMinDisplay.innerHTML = (INIT.M * r).toFixed(1);
 			this.debug && console.log(model.name + " - Periapsis: Rmin = " + (INIT.M * r).toExponential(2));
 			model.pDisplay.innerHTML = phiDegrees + "&deg;";
 			this.debug && console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
 		} else {
-			model.rMaxDisplay.innerHTML = (INIT.M * r).toExponential(2);
+			model.rMaxDisplay.innerHTML = (INIT.M * r).toFixed(1);
 			this.debug && console.log(model.name + " - Apapsis: Rmax = " + (INIT.M * r).toExponential(2));
 			model.aDisplay.innerHTML = phiDegrees + "&deg;";
 			this.debug && console.log(model.name + " - Apapsis: PHI = " + phiDegrees);
