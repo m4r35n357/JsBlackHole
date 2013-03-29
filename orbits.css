@@ -53,3 +53,7 @@ input {
 	color: #0000ff;
 }
 
+.newton, .gr {
+	font-family: sans-serif;
+	font-size: small
+} 
