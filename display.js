@@ -59,8 +59,7 @@ var DISPLAY = {
 		}
 		if (! GR.collided) {
 			gamma = GR.tDot;
-			gamma2 = gamma * gamma;
-			beta = 1.0 - 1.0 / gamma2;
+			beta = 1.0 - 1.0 / (gamma * gamma);
 			GR.tDisplay.innerHTML = (M * GR.t / c).toExponential(2);
 			GR.rDisplay.innerHTML = (M * GR.r).toExponential(2);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
