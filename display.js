@@ -70,7 +70,7 @@ var DISPLAY = {
 			GR.rDotDisplay.innerHTML = (M * GR.rDot).toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
 //			GR.vDisplay.innerHTML = (beta * c).toExponential(2);
-			GR.vDisplay.innerHTML = (c * Math.sqrt(GR.rDot * GR.rDot + c * GR.r * GR.r * GR.phiDot * GR.phiDot)).toExponential(2);
+			GR.vDisplay.innerHTML = (c * Math.sqrt(GR.rDot * GR.rDot + GR.r * GR.r * GR.phiDot * GR.phiDot) / gamma).toExponential(2);
 		}
 	},
 	pointX: function (r, phi) {

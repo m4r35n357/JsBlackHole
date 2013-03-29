@@ -3,7 +3,7 @@
 "use strict";
 
 var GLOBALS = {
-	debug: false,
+	debug: true,
 	TWOPI: 2.0 * Math.PI,
 	// Physical constants
 	c: 299792.458,
@@ -74,7 +74,7 @@ var INIT = {
 			GLOBALS.prograde = false;
 		}
 		this.horizon = 1.0 + Math.sqrt(1.0 - this.a * this.a);
-		GLOBALS.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(1));
+		GLOBALS.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(3));
 		this.deltaPhi = this.a / (this.horizon * this.horizon + this.a * this.a) * this.timeStep;
 	},
 	initialize: function (model) {
@@ -116,7 +116,7 @@ var NEWTON = {
 		}
 	},
 };
-/*
+
 var GR = {
 	name: "GR",
 	initialize: function () {
@@ -171,7 +171,7 @@ var GR = {
 		}
 	},
 };
-*/
+/*
 var GR = {
 	name: "GR",
 	initialize: function () {
@@ -211,5 +211,5 @@ var GR = {
 		}
 	},
 };
-
+*/
 
