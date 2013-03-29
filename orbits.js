@@ -145,7 +145,6 @@ var getDom = function () {
 };
 
 var scenarioChange = function () {
-//	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
@@ -162,7 +161,6 @@ var scenarioChange = function () {
 	// Start drawing . . .
 	drawForeground();
 	drawBackground();
-//	DISPLAY.refreshId = setInterval(drawForeground, DISPLAY.msRefresh);
 	return false;
 };
 
