@@ -3,7 +3,7 @@
 "use strict";
 
 var GLOBALS = {
-	debug: true,
+	debug: false,
 	TWOPI: 2.0 * Math.PI,
 	// Physical constants
 	c: 299792.458,
@@ -14,9 +14,6 @@ var GLOBALS = {
 	ergosphere: 2.0,
 	phiDegrees: function (phiRadians) {
 		return (phiRadians * 360.0 / this.TWOPI % 360).toFixed(0);
-	},
-	rTurnAround: function (model) {
-		return - 2.0 * ((model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld)) - 0.5) * model.rDot * INIT.timeStep;
 	},
 	reportDirectionChange: function (model) {
 		var r = model.r.toFixed(1);
@@ -32,6 +29,9 @@ var GLOBALS = {
 			model.aDisplay.innerHTML = phiDegrees + "&deg;";
 			this.debug && console.log(model.name + " - Apapsis: PHI = " + phiDegrees);
 		}
+	},
+	rTurnAround: function (model) {
+		return - 2.0 * ((model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld)) - 0.5) * model.rDot * INIT.timeStep;
 	},
 	updateR: function (model) {
 		var rDot2;
@@ -59,7 +59,7 @@ var INIT = {
 	},
 	getHtmlValues: function () {
 		GLOBALS.debug && console.info("Restarting . . . ");
-		this.timeStep = this.getFloatById('timestep') * 1000000000.0;
+		this.timeStep = this.getFloatById('timestep') * 500000000.0;
 		this.lFac = this.getFloatById('lfactor') / 100.0;
 		this.M = this.getFloatById('mass') * 1.4771;
 //		this.M = this.getFloatById('mass') * GLOBALS.mSolar * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
@@ -116,7 +116,7 @@ var NEWTON = {
 		}
 	},
 };
-
+/*
 var GR = {
 	name: "GR",
 	initialize: function () {
@@ -171,7 +171,7 @@ var GR = {
 		}
 	},
 };
-/*
+*/
 var GR = {
 	name: "GR",
 	initialize: function () {
@@ -211,5 +211,5 @@ var GR = {
 		}
 	},
 };
-*/
+
 

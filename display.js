@@ -18,9 +18,6 @@ var DISPLAY = {
 	blankSize: 4,
 	potentialY: 10,
 	phiBH: 0.0,
-//	initialize: function () {
-//		INIT.M = INIT.M;
-//	},
 	circularGradient: function (canvas, x, y, inner, outer) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
 		grd.addColorStop(0, inner);
@@ -50,26 +47,30 @@ var DISPLAY = {
 		}
 	},
 	varTable: function () {
-		var properTime = this.n * INIT.timeStep * INIT.M / GLOBALS.c;
-		var gamma, gamma2;
+		var M = INIT.M;
+		var c = GLOBALS.c;
+		var properTime = this.n * INIT.timeStep * M / c;
+		var beta, gamma, gamma2;
 		if (! NEWTON.collided) {
-			NEWTON.rDisplay.innerHTML = (INIT.M * NEWTON.r).toExponential(2);
+			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toExponential(2);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi) + "&deg;";
 			NEWTON.tDisplay.innerHTML = properTime.toExponential(2);
-			NEWTON.vDisplay.innerHTML = (GLOBALS.c * Math.sqrt(NEWTON.rDot * NEWTON.rDot + NEWTON.r * NEWTON.r * NEWTON.phiDot * NEWTON.phiDot)).toExponential(2);
+			NEWTON.vDisplay.innerHTML = (c * Math.sqrt(NEWTON.rDot * NEWTON.rDot + NEWTON.r * NEWTON.r * NEWTON.phiDot * NEWTON.phiDot)).toExponential(2);
 		}
 		if (! GR.collided) {
 			gamma = GR.tDot;
 			gamma2 = gamma * gamma;
-			GR.tDisplay.innerHTML = (GR.t * INIT.M / GLOBALS.c).toExponential(2);
-			GR.rDisplay.innerHTML = (INIT.M * GR.r).toExponential(2);
+			beta = 1.0 - 1.0 / gamma2;
+			GR.tDisplay.innerHTML = (GR.t * M / c).toExponential(2);
+			GR.rDisplay.innerHTML = (M * GR.r).toExponential(2);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
-			GR.betaDisplay.innerHTML = (1.0 - 1.0 / gamma2).toFixed(4);
+			GR.betaDisplay.innerHTML = beta.toFixed(4);
 			GR.tauDisplay.innerHTML = properTime.toExponential(2);
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
-			GR.rDotDisplay.innerHTML = (INIT.M * GR.rDot).toFixed(3);
+			GR.rDotDisplay.innerHTML = (M * GR.rDot).toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
-			GR.vDisplay.innerHTML = (GLOBALS.c * Math.sqrt(GR.rDot * GR.rDot + GR.r * GR.r * GR.phiDot * GR.phiDot)).toExponential(2);
+//			GR.vDisplay.innerHTML = (beta * c).toExponential(2);
+			GR.vDisplay.innerHTML = (c * Math.sqrt(GR.rDot * GR.rDot + c * GR.r * GR.r * GR.phiDot * GR.phiDot)).toExponential(2);
 		}
 	},
 	pointX: function (r, phi) {

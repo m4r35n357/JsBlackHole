@@ -10,6 +10,12 @@ var drawBackground = function () {
 	grd = GR.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
 	grd.addColorStop(0, DISPLAY.WHITE);
 	grd.addColorStop(1, DISPLAY.BLACK);
+	// Solar perimeter
+	DISPLAY.bg.strokeStyle = DISPLAY.YELLOW;
+		DISPLAY.bg.beginPath();
+		DISPLAY.bg.arc(DISPLAY.originX, DISPLAY.originY, DISPLAY.scale * GLOBALS.rSolar, 0, GLOBALS.TWOPI, true);
+		DISPLAY.bg.closePath();
+	DISPLAY.bg.stroke();
 	// Stable orbit limit
 	GLOBALS.debug && console.info("ISCO: " + isco.toFixed(1));
 	DISPLAY.bg.globalAlpha = 0.2;
@@ -25,6 +31,12 @@ var drawBackground = function () {
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
 	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * INIT.horizon, 200);
+	// Solar perimeter
+	NEWTON.bgPotential.strokeStyle = DISPLAY.YELLOW;
+		NEWTON.bgPotential.beginPath();
+		NEWTON.bgPotential.moveTo(GLOBALS.rSolar * DISPLAY.scale, 0);
+		NEWTON.bgPotential.lineTo(GLOBALS.rSolar * DISPLAY.scale, 200);
+	NEWTON.bgPotential.stroke();
 	// Effective potentials
 	DISPLAY.energyBar(NEWTON);
 	DISPLAY.potential(NEWTON);
@@ -43,6 +55,12 @@ var drawBackground = function () {
 	GR.bgPotential.globalAlpha = 1.0;
 	GR.bgPotential.fillStyle = DISPLAY.BLACK;
 	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * INIT.horizon, 200);
+	// Solar perimeter
+	GR.bgPotential.strokeStyle = DISPLAY.YELLOW;
+		GR.bgPotential.beginPath();
+		GR.bgPotential.moveTo(GLOBALS.rSolar * DISPLAY.scale, 0);
+		GR.bgPotential.lineTo(GLOBALS.rSolar * DISPLAY.scale, 200);
+	GR.bgPotential.stroke();
 	// Effective potentials
 	DISPLAY.energyBar(GR);
 	DISPLAY.potential(GR);
@@ -54,6 +72,7 @@ var drawBackground = function () {
 };
 
 var drawForeground = function () {
+	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	if ((DISPLAY.n % 10) === 0) {
 		DISPLAY.varTable();
 	}
@@ -70,6 +89,7 @@ var drawForeground = function () {
 		DISPLAY.plotTauDot(GR);
 	}
 	DISPLAY.n += 1;
+	DISPLAY.refreshId = setTimeout(drawForeground, DISPLAY.msRefresh);
 };
 
 var getDom = function () {
@@ -125,7 +145,7 @@ var getDom = function () {
 };
 
 var scenarioChange = function () {
-	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
+//	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
 	getDom();
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
@@ -140,9 +160,9 @@ var scenarioChange = function () {
 	GR.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * GR.r, GR.phi);
 	GR.colour = DISPLAY.BLUE;
 	// Start drawing . . .
-//	DISPLAY.initialize();
+	drawForeground();
 	drawBackground();
-	DISPLAY.refreshId = setInterval(drawForeground, DISPLAY.msRefresh);
+//	DISPLAY.refreshId = setInterval(drawForeground, DISPLAY.msRefresh);
 	return false;
 };
 
