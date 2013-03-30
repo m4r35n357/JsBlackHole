@@ -3,7 +3,7 @@
 "use strict";
 
 var DISPLAY = {
-//	msRefresh: 10,
+	msRefresh: 10,
 	// Misc. constants
 	BLACK: "#000000",
 	RED: "#ff0000",
@@ -36,7 +36,7 @@ var DISPLAY = {
 		var M = INIT.M;
 		var c = GLOBALS.c;
 		var properTime = this.n * INIT.timeStep * M / c;
-		var beta, gamma, gamma2;
+		var gamma;
 		if (! NEWTON.collided) {
 			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(1);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi) + "&deg;";
@@ -50,8 +50,8 @@ var DISPLAY = {
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
 			GR.tauDisplay.innerHTML = properTime.toExponential(2);
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
-			GR.rDotDisplay.innerHTML = (M * GR.rDot).toFixed(3);
-			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
+			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
+			GR.phiDotDisplay.innerHTML = (GR.phiDot / M * 360.0 / GLOBALS.TWOPI).toFixed(3);
 			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / gamma).toFixed(1);
 		}
 	},
