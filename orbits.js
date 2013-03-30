@@ -6,6 +6,11 @@ var drawBackground = function () {
 	var grd;
 	var i;
 	var isco = DISPLAY.isco();
+	// Initialize orbit canvases
+	DISPLAY.bg.clearRect(0, 0, 800, 800);
+	DISPLAY.tracks.clearRect(0, 0, 800, 800);
+	NEWTON.fg.clearRect(0, 0, 800, 800);
+	GR.fg.clearRect(0, 0, 800, 800);
 	DISPLAY.circularGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
 	grd = GR.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
 	grd.addColorStop(0, DISPLAY.WHITE);
@@ -26,6 +31,11 @@ var drawBackground = function () {
 	// Gravitational radius
 	DISPLAY.bg.globalAlpha = 1.0;
 	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.M * INIT.horizon, DISPLAY.BLACK);
+	// Initialize potential canvases
+	NEWTON.bgPotential.clearRect(0, 0, 400, 200);
+	NEWTON.fgPotential.clearRect(0, 0, 400, 200);
+	GR.bgPotential.clearRect(0, 0, 400, 200);
+	GR.fgPotential.clearRect(0, 0, 400, 200);
 	// Newton energy
 	NEWTON.bgPotential.fillStyle = grd;
 	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
@@ -160,8 +170,8 @@ var scenarioChange = function () {
 	GR.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * GR.r, GR.phi);
 	GR.colour = DISPLAY.BLUE;
 	// Start drawing . . .
-	drawForeground();
 	drawBackground();
+	drawForeground();
 	return false;
 };
 
