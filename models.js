@@ -3,7 +3,7 @@
 "use strict";
 
 var GLOBALS = {
-	debug: true,
+	debug: false,
 	TWOPI: 2.0 * Math.PI,
 	// Physical constants
 	c: 299792.458,
@@ -19,7 +19,7 @@ var GLOBALS = {
 		return this.c * Math.sqrt(model.rDot * model.rDot + model.r * model.r * model.phiDot * model.phiDot);
 	},
 	reportDirectionChange: function (model) {
-		var r = model.r.toFixed(1);
+		var r = model.r;
 		var phiDegrees = this.phiDegrees(model.phi);
 		if (model.direction === 1) {
 			model.rMinDisplay.innerHTML = (INIT.M * r).toFixed(1);
@@ -64,7 +64,6 @@ var INIT = {
 		GLOBALS.debug && console.info("Restarting . . . ");
 		this.timeStep = this.getFloatById('timestep') * 500000000.0;
 		this.lFac = this.getFloatById('lfactor') / 100.0;
-//		this.M = this.getFloatById('mass') * 1.4771;
 		this.M = this.getFloatById('mass') * 0.000000001 * GLOBALS.mSolar * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
 		GLOBALS.debug && console.info(this.name + ".M: " + this.M.toFixed(3));
 		this.r = this.getFloatById('radius') / this.M;

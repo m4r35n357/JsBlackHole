@@ -68,11 +68,11 @@ var drawBackground = function () {
 	NEWTON.lDisplay.innerHTML = (INIT.M * NEWTON.L).toFixed(4);
 	GR.eDisplay.innerHTML = (INIT.M * GR.E).toFixed(6);
 	GR.lDisplay.innerHTML = (INIT.M * GR.L).toFixed(4);
-	GR.rsDisplay.innerHTML = (2.0 * INIT.M).toFixed(3);
+	GR.rsDisplay.innerHTML = (INIT.M * INIT.horizon).toFixed(3);
 };
 
 var drawForeground = function () {
-	DISPLAY.refreshId && clearInterval(DISPLAY.refreshId);
+	DISPLAY.refreshId && window.clearTimeout(DISPLAY.refreshId);
 	if ((DISPLAY.n % 10) === 0) {
 		DISPLAY.varTable();
 	}
@@ -89,7 +89,7 @@ var drawForeground = function () {
 		DISPLAY.plotTauDot(GR);
 	}
 	DISPLAY.n += 1;
-	DISPLAY.refreshId = setTimeout(drawForeground, DISPLAY.msRefresh);
+	DISPLAY.refreshId = window.setTimeout(drawForeground, DISPLAY.msRefresh);
 };
 
 var getDom = function () {
@@ -123,7 +123,6 @@ var getDom = function () {
 	GR.tDisplay = document.getElementById('tGR');
 	GR.rDisplay = document.getElementById('rGR');
 	GR.phiDisplay = document.getElementById('phiGR');
-//	GR.betaDisplay = document.getElementById('betaGR');
 	GR.tauDisplay = document.getElementById('tauGR');
 	GR.rMinDisplay = document.getElementById('rminGR');
 	GR.pDisplay = document.getElementById('pGR');

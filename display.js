@@ -32,6 +32,7 @@ var DISPLAY = {
 			canvas.closePath();
 		canvas.fill();
 	},
+/*
 	timeUnits: function (time) {
 		var hour = 60 * 60;
 		var day = hour * 24;
@@ -46,6 +47,7 @@ var DISPLAY = {
 			return time / year;
 		}
 	},
+*/
 	varTable: function () {
 		var M = INIT.M;
 		var c = GLOBALS.c;
@@ -59,16 +61,13 @@ var DISPLAY = {
 		}
 		if (! GR.collided) {
 			gamma = GR.tDot;
-//			beta = 1.0 - 1.0 / (gamma * gamma);
 			GR.tDisplay.innerHTML = (M * GR.t / c).toExponential(2);
 			GR.rDisplay.innerHTML = (M * GR.r).toFixed(1);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
-//			GR.betaDisplay.innerHTML = beta.toFixed(4);
 			GR.tauDisplay.innerHTML = properTime.toExponential(2);
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = (M * GR.rDot).toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot * 360.0 / GLOBALS.TWOPI).toFixed(3);
-//			GR.vDisplay.innerHTML = (beta * c).toExponential(2);
 			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / gamma).toFixed(1);
 		}
 	},
@@ -99,8 +98,9 @@ var DISPLAY = {
 	plotOrbit: function (canvas, model) {
 		var X, Y;
 		var blank = this.blankSize;
-		X = this.pointX(model.r * INIT.M * this.scale, model.phi);
-		Y = this.pointY(model.r * INIT.M * this.scale, model.phi);
+		var r = model.r * INIT.M * this.scale;
+		X = this.pointX(r, model.phi);
+		Y = this.pointY(r, model.phi);
 		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
@@ -128,20 +128,21 @@ var DISPLAY = {
 	plotPotential: function (model) {
 		var canvas = model.fgPotential;
 		var blank = this.blankSize;
-		var rAxis = this.potentialY;
-		var yValue2 = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
-		canvas.clearRect(model.rOld * INIT.M * this.scale - blank, rAxis - blank, 2 * blank, yValue2 + 2 * blank);
+		var energy = this.potentialY;
+		var v = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
+		var r = model.r * INIT.M * this.scale;
+		canvas.clearRect(model.rOld * INIT.M * this.scale - blank, energy - blank, 2 * blank, v + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
-			canvas.arc(model.r * INIT.M * this.scale, yValue2, this.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.arc(r, v, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 		// Potential dropline
 		canvas.strokeStyle = model.colour;
 			canvas.beginPath();
-			canvas.moveTo(model.r * INIT.M * this.scale, yValue2);
-			canvas.lineTo(model.r * INIT.M * this.scale, rAxis);
+			canvas.moveTo(r, v);
+			canvas.lineTo(r, energy);
 		canvas.stroke();
 	},
 	plotTauDot: function (model) {
