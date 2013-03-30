@@ -3,7 +3,7 @@
 "use strict";
 
 var DISPLAY = {
-	msRefresh: 10,
+//	msRefresh: 10,
 	// Misc. constants
 	BLACK: "#000000",
 	RED: "#ff0000",
@@ -18,10 +18,10 @@ var DISPLAY = {
 	blankSize: 4,
 	potentialY: 10,
 	phiBH: 0.0,
-	circularGradient: function (canvas, x, y, inner, outer) {
+	circularGradient: function (canvas, x, y, innerColour, outerColour) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
-		grd.addColorStop(0, inner);
-		grd.addColorStop(1, outer);
+		grd.addColorStop(0, innerColour);
+		grd.addColorStop(1, outerColour);
 		canvas.fillStyle = grd;
 		canvas.fillRect(0, 0, 2 * x, 2 * y);
 	},
@@ -32,22 +32,6 @@ var DISPLAY = {
 			canvas.closePath();
 		canvas.fill();
 	},
-/*
-	timeUnits: function (time) {
-		var hour = 60 * 60;
-		var day = hour * 24;
-		var year = day * 365;
-		if (time < hour) {
-			return time;
-		} else if (time < day) {
-			return time / hour;
-		} else if (time < year) {
-			return time / day;
-		} else {
-			return time / year;
-		}
-	},
-*/
 	varTable: function () {
 		var M = INIT.M;
 		var c = GLOBALS.c;
@@ -96,23 +80,27 @@ var DISPLAY = {
 		this.Y = Y;
 	},
 	plotOrbit: function (canvas, model) {
-		var X, Y;
+		var X, Y, tracksCanvas;
 		var blank = this.blankSize;
 		var r = model.r * INIT.M * this.scale;
-		X = this.pointX(r, model.phi);
-		Y = this.pointY(r, model.phi);
-		canvas.clearRect(model.X - blank, model.Y - blank, 2 * blank, 2 * blank);
+		var phi = model.phi;
+		var xOld = model.X;
+		var yOld = model.Y;
+		X = this.pointX(r, phi);
+		Y = this.pointY(r, phi);
+		canvas.clearRect(xOld - blank, yOld - blank, 2 * blank, 2 * blank);
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
 			canvas.arc(X, Y, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 		if (this.showTracks) {
-			this.tracks.strokeStyle = model.colour;
-				this.tracks.beginPath();
-				this.tracks.moveTo(model.X, model.Y);
-				this.tracks.lineTo(X, Y);
-			this.tracks.stroke();
+			tracksCanvas = this.tracks;
+			tracksCanvas.strokeStyle = model.colour;
+				tracksCanvas.beginPath();
+				tracksCanvas.moveTo(xOld, yOld);
+				tracksCanvas.lineTo(X, Y);
+			tracksCanvas.stroke();
 		}
 		model.X = X;
 		model.Y = Y;
@@ -121,7 +109,7 @@ var DISPLAY = {
 		var canvas = model.bgPotential;
 		canvas.strokeStyle = this.RED;
 			canvas.beginPath();
-			canvas.moveTo(INIT.horizon * INIT.M * this.scale, this.potentialY);
+			canvas.moveTo(Math.floor(INIT.horizon * INIT.M * this.scale), this.potentialY);
 			canvas.lineTo(this.originX, this.potentialY);
 		canvas.stroke();
 	},
@@ -130,8 +118,9 @@ var DISPLAY = {
 		var blank = this.blankSize;
 		var energy = this.potentialY;
 		var v = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
-		var r = model.r * INIT.M * this.scale;
-		canvas.clearRect(model.rOld * INIT.M * this.scale - blank, energy - blank, 2 * blank, v + 2 * blank);
+		var scaledMass = INIT.M * this.scale;
+		var r = model.r * scaledMass;
+		canvas.clearRect(model.rOld * scaledMass - blank, energy - blank, 2 * blank, v + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = model.colour;
 			canvas.beginPath();
