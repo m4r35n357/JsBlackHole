@@ -79,6 +79,8 @@ var drawBackground = function () {
 	GR.eDisplay.innerHTML = (INIT.M * GR.E).toFixed(6);
 	GR.lDisplay.innerHTML = (INIT.M * GR.L).toFixed(4);
 	GR.rsDisplay.innerHTML = (INIT.M * INIT.horizon).toFixed(3);
+	// time step counter
+	DISPLAY.n = 0;
 };
 
 var drawForeground = function () {
