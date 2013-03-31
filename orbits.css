@@ -10,8 +10,8 @@ input {
 }
 
 #fgorbitn, #fgorbitgr, #tracks, #bgorbit {
-	left: 411px;
-	top: 10px;
+	left: 421px;
+	top: 20px;
 }
 
 #fgpotn, #bgpotn {
@@ -21,7 +21,7 @@ input {
 
 #fgpotgr, #bgpotgr {
 	left: 10px;
-	top: 611px;
+	top: 621px;
 }
 
 .bg {
