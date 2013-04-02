@@ -23,18 +23,19 @@ var GLOBALS = {
 		var phiDegrees = this.phiDegrees(model.phi);
 		if (model.direction === 1) {
 			model.rMinDisplay.innerHTML = (INIT.M * r).toFixed(1);
-			this.debug && console.log(model.name + " - Periapsis: Rmin = " + (INIT.M * r).toExponential(2));
+			this.debug && console.log(model.name + " - Perihelion: Rmin = " + (INIT.M * r).toExponential(2));
 			model.pDisplay.innerHTML = phiDegrees + "&deg;";
-			this.debug && console.log(model.name + " - Periapsis: PHI = " + phiDegrees);
+			this.debug && console.log(model.name + " - Perihelion: PHI = " + phiDegrees);
 		} else {
 			model.rMaxDisplay.innerHTML = (INIT.M * r).toFixed(1);
-			this.debug && console.log(model.name + " - Apapsis: Rmax = " + (INIT.M * r).toExponential(2));
+			this.debug && console.log(model.name + " - Aphelion: Rmax = " + (INIT.M * r).toExponential(2));
 			model.aDisplay.innerHTML = phiDegrees + "&deg;";
-			this.debug && console.log(model.name + " - Apapsis: PHI = " + phiDegrees);
+			this.debug && console.log(model.name + " - Aphelion: PHI = " + phiDegrees);
 		}
 	},
 	rTurnAround: function (model) {
-		return - 2.0 * ((model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld)) - 0.5) * model.rDot * INIT.timeStep;
+//		return - 2.0 * ((model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld)) - 0.5) * model.rDot * INIT.timeStep;
+		return - 2.0 * (model.r - model.rOld) * (model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld));
 	},
 	updateR: function (model) {
 		var rDot2;
@@ -47,7 +48,8 @@ var GLOBALS = {
 		} else {
 			model.rDot = model.direction * Math.sqrt(- rDot2);
 			model.direction = - model.direction;
-			model.r = model.rOld + this.rTurnAround(model);
+//			model.r = model.rOld + this.rTurnAround(model);
+			model.r += this.rTurnAround(model);
 			this.reportDirectionChange(model);
 		}
 	},
