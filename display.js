@@ -1,3 +1,21 @@
+/*
+    Copyright (C) 2013  Ian Smith <m4r35n357@gmail.com>
+
+    The JavaScript code in this page is free software: you can
+    redistribute it and/or modify it under the terms of the GNU
+    General Public License (GNU GPL) as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option)
+    any later version.  The code is distributed WITHOUT ANY WARRANTY;
+    without even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+    As additional permission under GNU GPL version 3 section 7, you
+    may distribute non-source (e.g., minimized or compacted) forms of
+    that code without the copy of the GNU GPL normally required by
+    section 4, provided you include this license notice and a URL
+    through which recipients can access the Corresponding Source.
+*/
+
 /*jslint white: true, browser: true, safe: true */
 
 "use strict";
@@ -65,11 +83,11 @@ var DISPLAY = {
 		var canvas = this.tracks;
 		var blank = this.blankSize;
 		var phiBH, X, Y;
-		var radius = 0.7 * INIT.horizon;
+		var radius = 0.7 * INIT.M * this.scale * INIT.horizon;
 		this.phiBH += INIT.deltaPhi;
 		phiBH = this.phiBH;
-		X = this.pointX(INIT.M * this.scale * radius, phiBH);
-		Y = this.pointY(INIT.M * this.scale * radius, phiBH);
+		X = this.pointX(radius, phiBH);
+		Y = this.pointY(radius, phiBH);
 		canvas.clearRect(this.X - blank, this.Y - blank, 2 * blank, 2 * blank);
 		canvas.fillStyle = this.RED;
 			canvas.beginPath();
