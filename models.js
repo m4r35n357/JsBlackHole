@@ -21,7 +21,7 @@
 "use strict";
 
 var GLOBALS = {
-	debug: true,
+	debug: false,
 	TWOPI: 2.0 * Math.PI,
 	// Physical constants
 	c: 299792.458,
@@ -60,14 +60,13 @@ var GLOBALS = {
 		model.updateP(coefficient);
 		model.updateQ(coefficient * 0.5);
 	},
-	updateR: function (model) {  // Stormer-Verlet integrator, 2nd-order
+	updateR: function (model) {  // Stormer-Verlet integrator, 4th-order
 		var rOld = model.rOld = model.r;
 		var qr2 = Math.pow(2.0, 1.0 / 3.0);
 		var gamma1 = 1.0 / (2.0 - qr2);
 		this.symplecticBase(model, gamma1);
 		this.symplecticBase(model, -qr2 * gamma1);
 		this.symplecticBase(model, gamma1);
-//		this.symplecticBase(model, 1.0);
 		if (((model.r >= rOld) && (model.direction < 0)) || ((model.r <= rOld) && (model.direction > 0))) {
 			model.direction = - model.direction;
 			this.reportDirectionChange(model);
@@ -120,7 +119,7 @@ var NEWTON = {
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
-		V0 = this.V(this.r); // using adjusted L from above
+		V0 = this.V(this.r); // using (possibly) adjusted L from above
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
@@ -167,7 +166,7 @@ var GR = { // can be spinning
 		this.tDot = 1.0;
 		this.rDot = 0.0;
 		this.phiDot = 0.0;
-		V0 = this.V(this.r); // using adjusted L from above
+		V0 = this.V(this.r); // using (possibly) adjusted L from above
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
