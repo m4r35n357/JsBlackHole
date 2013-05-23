@@ -55,11 +55,19 @@ var GLOBALS = {
 		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + ((h - h0) / h0).toExponential(1));
 		return h;
 	},
+	symplecticBase: function (model, coefficient) {
+		model.updateQ(coefficient * 0.5);
+		model.updateP(coefficient);
+		model.updateQ(coefficient * 0.5);
+	},
 	updateR: function (model) {  // Stormer-Verlet integrator, 2nd-order
 		var rOld = model.rOld = model.r;
-		model.updateQ(0.5);
-		model.updateP(1.0);
-		model.updateQ(0.5);
+		var qr2 = Math.pow(2.0, 1.0 / 3.0);
+		var gamma1 = 1.0 / (2.0 - qr2);
+		this.symplecticBase(model, gamma1);
+		this.symplecticBase(model, -qr2 * gamma1);
+		this.symplecticBase(model, gamma1);
+//		this.symplecticBase(model, 1.0);
 		if (((model.r >= rOld) && (model.direction < 0)) || ((model.r <= rOld) && (model.direction > 0))) {
 			model.direction = - model.direction;
 			this.reportDirectionChange(model);
