@@ -73,11 +73,11 @@ var GLOBALS = {
 	},
 	updateR: function (model) {
 		var rOld = model.rOld = model.r;
-		model.updateQ(1.0);
-		model.updateP(1.0);
-//		model.updateQ(0.5);
+//		model.updateQ(1.0);
 //		model.updateP(1.0);
-//		model.updateQ(0.5);
+		model.updateQ(0.5);
+		model.updateP(1.0);
+		model.updateQ(0.5);
 		if (((model.r >= rOld) && (model.direction < 0)) || ((model.r <= rOld) && (model.direction > 0))) {
 			model.direction = - model.direction;
 			this.reportDirectionChange(model);
@@ -138,7 +138,6 @@ var NEWTON = {
 		return - 1.0 / r + L * L / (2.0 * r * r);
 	},
 	updateQ: function (c) {
-//		this.rOld = this.r;
 		this.r += c * this.rDot * INIT.timeStep;
 	},
 	updateP: function (c) {
@@ -195,7 +194,6 @@ var GR = { // can be spinning
 		return - 1.0 / r + (L2 - a2 * (E2 - 1.0)) / (2.0 * r * r) - (L2 - 2.0 * a * E * L + a2 * E2) / (r * r * r);
 	},
 	updateQ: function (c) {
-//		this.rOld = this.r;
 		this.r += c * this.rDot * INIT.timeStep;
 	},
 	updateP: function (c) {
