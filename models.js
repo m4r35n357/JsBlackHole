@@ -23,6 +23,7 @@
 var GLOBALS = {
 	debug: false,
 	TWOPI: 2.0 * Math.PI,
+	CUBEROOT2: Math.pow(2.0, 1.0 / 3.0),
 	// Physical constants
 	c: 299792.458,
 	G: 6.67398e-11,
@@ -55,18 +56,17 @@ var GLOBALS = {
 		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + ((h - h0) / h0).toExponential(1));
 		return h;
 	},
-	symplecticBase: function (model, coefficient) {
+	symplecticBase: function (model, coefficient) { // 2nd-order building block
 		model.updateQ(coefficient * 0.5);
 		model.updateP(coefficient);
 		model.updateQ(coefficient * 0.5);
 	},
 	updateR: function (model) {  // Stormer-Verlet integrator, 4th-order
 		var rOld = model.rOld = model.r;
-		var qr2 = Math.pow(2.0, 1.0 / 3.0);
-		var gamma1 = 1.0 / (2.0 - qr2);
-		this.symplecticBase(model, gamma1);
-		this.symplecticBase(model, -qr2 * gamma1);
-		this.symplecticBase(model, gamma1);
+		var gamma = 1.0 / (2.0 - this.CUBEROOT2);
+		this.symplecticBase(model, gamma);
+		this.symplecticBase(model, - this.CUBEROOT2 * gamma);
+		this.symplecticBase(model, gamma);
 		if (((model.r >= rOld) && (model.direction < 0)) || ((model.r <= rOld) && (model.direction > 0))) {
 			model.direction = - model.direction;
 			this.reportDirectionChange(model);
