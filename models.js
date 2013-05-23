@@ -21,7 +21,7 @@
 "use strict";
 
 var GLOBALS = {
-	debug: false,
+	debug: true,
 	TWOPI: 2.0 * Math.PI,
 	// Physical constants
 	c: 299792.458,
@@ -41,35 +41,20 @@ var GLOBALS = {
 		var phiDegrees = this.phiDegrees(model.phi);
 		if (model.direction === 1) {
 			model.rMinDisplay.innerHTML = (INIT.M * r).toFixed(1);
-			this.debug && console.log(model.name + " - Perihelion: Rmin = " + (INIT.M * r).toExponential(2));
+			this.debug && console.log(model.name + " - Perihelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
 			model.pDisplay.innerHTML = phiDegrees + "&deg;";
-			this.debug && console.log(model.name + " - Perihelion: PHI = " + phiDegrees);
+//			this.debug && console.log(model.name + " - Perihelion: PHI = " + phiDegrees);
 		} else {
 			model.rMaxDisplay.innerHTML = (INIT.M * r).toFixed(1);
-			this.debug && console.log(model.name + " - Aphelion: Rmax = " + (INIT.M * r).toExponential(2));
+			this.debug && console.log(model.name + " - Aphelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
 			model.aDisplay.innerHTML = phiDegrees + "&deg;";
-			this.debug && console.log(model.name + " - Aphelion: PHI = " + phiDegrees);
+//			this.debug && console.log(model.name + " - Aphelion: PHI = " + phiDegrees);
 		}
 	},
-	rTurnAround: function (model) {
-//		return - 2.0 * ((model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld)) - 0.5) * model.rDot * INIT.timeStep;
-		return - 2.0 * (model.r - model.rOld) * (model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld));
-	},
-	update: function (model) {
-		var rDot2;
-		model.vNew = model.V(model.r);
-		rDot2 = 2.0 * (model.energyBar - model.vNew);
-		if (rDot2 >= 0.0) {
-			model.rOld = model.r;
-			model.rDot = model.direction * Math.sqrt(rDot2);
-			model.r += model.rDot * INIT.timeStep;
-		} else {
-			model.rDot = model.direction * Math.sqrt(- rDot2);
-			model.direction = - model.direction;
-//			model.r = model.rOld + this.rTurnAround(model);
-			model.r += this.rTurnAround(model);
-			this.reportDirectionChange(model);
-		}
+	h: function (model) {
+		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
+		this.debug && console.log(model.name + " - H0: " + model.h0.toFixed(6) + ", H: " + h.toFixed(6) + ", Error: " + ((h - model.h0) / model.h0).toExponential(1));
+		return h;
 	},
 	updateR: function (model) {
 		var rOld = model.rOld = model.r;
@@ -81,6 +66,7 @@ var GLOBALS = {
 		if (((model.r >= rOld) && (model.direction < 0)) || ((model.r <= rOld) && (model.direction > 0))) {
 			model.direction = - model.direction;
 			this.reportDirectionChange(model);
+			this.h(model);
 		}
 	},
 };
@@ -129,6 +115,7 @@ var NEWTON = {
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - this.V(this.r)));
+		this.h0 =  0.5 * this.rDot * this.rDot + this.V(this.r);
 	},
 	circular: function () {
 		return Math.sqrt(this.r);
@@ -173,6 +160,7 @@ var GR = { // can be spinning
 		this.rDot = 0.0;
 		this.phiDot = 0.0;
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - this.V(this.r)));
+		this.h0 =  0.5 * this.rDot * this.rDot + this.V(this.r);
 	},
 	circular: function () {
 		var a = INIT.a;
