@@ -55,7 +55,7 @@ var GLOBALS = {
 //		return - 2.0 * ((model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld)) - 0.5) * model.rDot * INIT.timeStep;
 		return - 2.0 * (model.r - model.rOld) * (model.vNew - model.energyBar) / (model.vNew - model.V(model.rOld));
 	},
-	updateR: function (model) {
+	update: function (model) {
 		var rDot2;
 		model.vNew = model.V(model.r);
 		rDot2 = 2.0 * (model.energyBar - model.vNew);
@@ -70,6 +70,13 @@ var GLOBALS = {
 			model.r += this.rTurnAround(model);
 			this.reportDirectionChange(model);
 		}
+	},
+	updateR: function (model) {
+		model.updateQ(1.0);
+		model.updateP(1.0);
+//		model.updateQ(0.5);
+//		model.updateP(1.0);
+//		model.updateQ(0.5);
 	},
 };
 
@@ -138,9 +145,7 @@ var NEWTON = {
 		var step = INIT.timeStep;
 		var L = this.L;
 		if (this.r > INIT.horizon) {
-//			GLOBALS.updateR(this);
-			this.updateQ(1.0);
-			this.updateP(1.0);
+			GLOBALS.updateR(this);
 			this.phiDot = L / (this.r * this.r);
 			this.phi += this.phiDot * step;
 		} else {
@@ -206,9 +211,7 @@ var GR = { // can be spinning
 		var a = INIT.a;
 		var delta, tmp;
 		if (r > INIT.horizon) {
-//			GLOBALS.updateR(this);
-			this.updateQ(1.0);
-			this.updateP(1.0);
+			GLOBALS.updateR(this);
 			delta = r * r + a * a - 2.0 * r;
 			tmp = 2.0 / r;
 			this.phiDot = ((1.0 - tmp) * L + a * tmp * E) / delta;
@@ -260,9 +263,7 @@ var GR = { // non-spinning
 		var L = this.L;
 		var E = this.E;
 		if (r > INIT.horizon) {
-//			GLOBALS.updateR(this);
-			this.updateQ(1.0);
-			this.updateP(1.0);
+			GLOBALS.updateR(this);
 			this.phiDot = L / (r * r);
 			this.phi += this.phiDot * step;
 			this.tDot = E / (1.0 - 2.0 / r);
