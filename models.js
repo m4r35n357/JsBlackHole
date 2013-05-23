@@ -41,14 +41,12 @@ var GLOBALS = {
 		var phiDegrees = this.phiDegrees(model.phi);
 		if (model.direction === 1) {
 			model.rMinDisplay.innerHTML = (INIT.M * r).toFixed(1);
-			this.debug && console.log(model.name + " - Perihelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
 			model.pDisplay.innerHTML = phiDegrees + "&deg;";
-//			this.debug && console.log(model.name + " - Perihelion: PHI = " + phiDegrees);
+			this.debug && console.log(model.name + " - Perihelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
 		} else {
 			model.rMaxDisplay.innerHTML = (INIT.M * r).toFixed(1);
-			this.debug && console.log(model.name + " - Aphelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
 			model.aDisplay.innerHTML = phiDegrees + "&deg;";
-//			this.debug && console.log(model.name + " - Aphelion: PHI = " + phiDegrees);
+			this.debug && console.log(model.name + " - Aphelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
 		}
 	},
 	h: function (model) {
@@ -109,13 +107,15 @@ var INIT = {
 var NEWTON = {
 	name: "NEWTON",
 	initialize: function () {
+		var V0;
 		this.L = this.circular();
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
-		this.rDot = - Math.sqrt(2.0 * (this.energyBar - this.V(this.r)));
-		this.h0 =  0.5 * this.rDot * this.rDot + this.V(this.r);
+		V0 = this.V(this.r); // using adjusted L from above
+		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
+		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
 	circular: function () {
 		return Math.sqrt(this.r);
@@ -149,6 +149,7 @@ var NEWTON = {
 var GR = { // can be spinning
 	name: "GR",
 	initialize: function () {
+		var V0;
 		this.circular();
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(6));
@@ -159,8 +160,9 @@ var GR = { // can be spinning
 		this.tDot = 1.0;
 		this.rDot = 0.0;
 		this.phiDot = 0.0;
-		this.rDot = - Math.sqrt(2.0 * (this.energyBar - this.V(this.r)));
-		this.h0 =  0.5 * this.rDot * this.rDot + this.V(this.r);
+		V0 = this.V(this.r); // using adjusted L from above
+		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
+		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
 	circular: function () {
 		var a = INIT.a;
