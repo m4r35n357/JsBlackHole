@@ -136,14 +136,15 @@ var NEWTON = {
 	updateP: function (c) {  // update radial momentum
 		var r = this.r;
 		var L = this.L;
-		this.rDot += - c * (1.0 / (r * r) - L * L / (r * r * r)) * INIT.timeStep;
+		this.rDot -= c * (1.0 / (r * r) - L * L / (r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
 		var step = INIT.timeStep;
+		var r = this.r;
 		var L = this.L;
 		if (this.r > INIT.horizon) {
 			GLOBALS.updateR(this);
-			this.phiDot = L / (this.r * this.r);
+			this.phiDot = L / (r * r);
 			this.phi += this.phiDot * step;
 		} else {
 			this.collided = true;
@@ -164,8 +165,6 @@ var GR = { // can be spinning
 		this.L = this.L * INIT.lFac;
 		this.t = 0.0;
 		this.tDot = 1.0;
-		this.rDot = 0.0;
-		this.phiDot = 0.0;
 		V0 = this.V(this.r); // using (possibly) adjusted L from above
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
@@ -174,10 +173,9 @@ var GR = { // can be spinning
 		var a = INIT.a;
 		var r = this.r
 		var sqrtR = Math.sqrt(r);
-		var r2 = r * r;
-		var tmp = Math.sqrt(r2 - 3.0 * r + 2.0 * a * sqrtR);
-		this.L = (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * tmp);
-		this.E = (r2 - 2.0 * r + a * sqrtR) / (r * tmp);
+		var tmp = Math.sqrt(r * r - 3.0 * r + 2.0 * a * sqrtR);
+		this.L = (r * r - 2.0 * a * sqrtR + a * a) / (sqrtR * tmp);
+		this.E = (r * r - 2.0 * r + a * sqrtR) / (r * tmp);
 	},
 	V: function (r) {  // the Effective Potential
 		var a = INIT.a;
@@ -193,7 +191,7 @@ var GR = { // can be spinning
 		var a = INIT.a;
 		var L = this.L;
 		var E = this.E;
-		this.rDot += - c * (1.0 / (r * r) - (L * L - a * a * (E * E - 1.0)) / (r * r * r) + 3.0 * (L - a * E) * (L - a * E) / (r * r * r * r)) * INIT.timeStep;
+		this.rDot -= c * (1.0 / (r * r) - (L * L - a * a * (E * E - 1.0)) / (r * r * r) + 3.0 * (L - a * E) * (L - a * E) / (r * r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
 		var step = INIT.timeStep;
@@ -201,14 +199,13 @@ var GR = { // can be spinning
 		var L = this.L;
 		var E = this.E;
 		var a = INIT.a;
-		var delta, tmp;
+		var delta;
 		if (r > INIT.horizon) {
 			GLOBALS.updateR(this);
 			delta = r * r + a * a - 2.0 * r;
-			tmp = 2.0 / r;
-			this.phiDot = ((1.0 - tmp) * L + a * tmp * E) / delta;
+			this.phiDot = ((1.0 - 2.0 / r) * L + 2.0 * a * E / r) / delta;
 			this.phi += this.phiDot * step;
-			this.tDot = ((r * r + a * a * (1.0 + tmp)) * E - a * tmp * L ) / delta;
+			this.tDot = ((r * r + a * a * (1.0 + 2.0 / r)) * E - 2.0 * a * L / r) / delta;
 			this.t += this.tDot * step;
 		} else {
 			this.collided = true;
