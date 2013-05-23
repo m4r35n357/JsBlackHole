@@ -116,6 +116,7 @@ var NEWTON = {
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
+		this.rDot = - Math.sqrt(2.0 * (this.energyBar - this.V(this.r)));
 	},
 	circular: function () {
 		return Math.sqrt(this.r);
@@ -124,13 +125,23 @@ var NEWTON = {
 		var L = this.L;
 		return - 1.0 / r + L * L / (2.0 * r * r);
 	},
-	update: function () {
-		var step = INIT.timeStep;
+	updateQ: function (c) {
+		this.rOld = this.r;
+		this.r += c * this.rDot * INIT.timeStep;
+	},
+	updateP: function (c) {
 		var r = this.r;
 		var L = this.L;
-		if (r > INIT.horizon) {
-			GLOBALS.updateR(this);
-			this.phiDot = L / (r * r);
+		this.rDot += - c * (1.0 / (r * r) - L * L / (r * r * r)) * INIT.timeStep;
+	},
+	update: function () {
+		var step = INIT.timeStep;
+		var L = this.L;
+		if (this.r > INIT.horizon) {
+//			GLOBALS.updateR(this);
+			this.updateQ(1.0);
+			this.updateP(1.0);
+			this.phiDot = L / (this.r * this.r);
 			this.phi += this.phiDot * step;
 		} else {
 			this.collided = true;
@@ -139,7 +150,7 @@ var NEWTON = {
 	},
 };
 
-var GR = {
+var GR = { // can be spinning
 	name: "GR",
 	initialize: function () {
 		this.circular();
@@ -152,6 +163,7 @@ var GR = {
 		this.tDot = 1.0;
 		this.rDot = 0.0;
 		this.phiDot = 0.0;
+		this.rDot = - Math.sqrt(2.0 * (this.energyBar - this.V(this.r)));
 	},
 	circular: function () {
 		var a = INIT.a;
@@ -170,7 +182,21 @@ var GR = {
 		var a2 = a * a;
 		var E2 = E * E;
 		var L2 = L * L;
-		return - 1.0 / r + (L2 - a2 * (E2 - 1.0)) / (2.0 * r2) - (L2 - 2.0 * a * E * L + a2 * E2) / (r2 * r);
+		return - 1.0 / r + (L2 - a2 * (E2 - 1.0)) / (2.0 * r * r) - (L2 - 2.0 * a * E * L + a2 * E2) / (r * r * r);
+	},
+	updateQ: function (c) {
+		this.rOld = this.r;
+		this.r += c * this.rDot * INIT.timeStep;
+	},
+	updateP: function (c) {
+		var r = this.r;
+		var a = INIT.a;
+		var L = this.L;
+		var E = this.E;
+		var a2 = a * a;
+		var E2 = E * E;
+		var L2 = L * L;
+		this.rDot += - c * (1.0 / (r * r) - (L2 - a2 * (E2 - 1.0)) / (r * r * r) + 3.0 * (L2 - 2.0 * a * E * L + a2 * E2) / (r * r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
 		var step = INIT.timeStep;
@@ -180,7 +206,9 @@ var GR = {
 		var a = INIT.a;
 		var delta, tmp;
 		if (r > INIT.horizon) {
-			GLOBALS.updateR(this);
+//			GLOBALS.updateR(this);
+			this.updateQ(1.0);
+			this.updateP(1.0);
 			delta = r * r + a * a - 2.0 * r;
 			tmp = 2.0 / r;
 			this.phiDot = ((1.0 - tmp) * L + a * tmp * E) / delta;
@@ -194,7 +222,7 @@ var GR = {
 	},
 };
 /*
-var GR = {
+var GR = { // non-spinning
 	name: "GR",
 	initialize: function () {
 		this.L = this.circular();
@@ -208,6 +236,7 @@ var GR = {
 		this.tDot = 1.0;
 		this.rDot = 0.0;
 		this.phiDot = 0.0;
+		this.rDot = - Math.sqrt(2.0 * (this.energyBar - this.V(this.r)));
 	},
 	circular: function () {
 		return this.r / Math.sqrt(this.r - 3.0);
@@ -216,13 +245,24 @@ var GR = {
 		var L = this.L;
 		return - 1.0 / r + L * L / (2.0 * r * r) - L * L / (r * r * r);
 	},
+	updateQ: function (c) {
+		this.rOld = this.r;
+		this.r += c * this.rDot * INIT.timeStep;
+	},
+	updateP: function (c) {
+		var r = this.r;
+		var L = this.L;
+		this.rDot += - c * (1.0 / (r * r) - L * L / (r * r * r) + 3.0 * L * L / (r * r * r * r)) * INIT.timeStep;
+	},
 	update: function () {
 		var step = INIT.timeStep;
 		var r = this.r;
 		var L = this.L;
 		var E = this.E;
 		if (r > INIT.horizon) {
-			GLOBALS.updateR(this);
+//			GLOBALS.updateR(this);
+			this.updateQ(1.0);
+			this.updateP(1.0);
 			this.phiDot = L / (r * r);
 			this.phi += this.phiDot * step;
 			this.tDot = E / (1.0 - 2.0 / r);
