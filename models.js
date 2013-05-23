@@ -49,15 +49,14 @@ var GLOBALS = {
 			this.debug && console.log(model.name + " - Aphelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
 		}
 	},
-	h: function (model) {
+	h: function (model) {  // the radial "Hamiltonian"
 		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
-		this.debug && console.log(model.name + " - H0: " + model.h0.toFixed(6) + ", H: " + h.toFixed(6) + ", Error: " + ((h - model.h0) / model.h0).toExponential(1));
+		var h0 = model.h0;
+		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + ((h - h0) / h0).toExponential(1));
 		return h;
 	},
-	updateR: function (model) {
+	updateR: function (model) {  // Stormer-Verlet integrator, 2nd-order
 		var rOld = model.rOld = model.r;
-//		model.updateQ(1.0);
-//		model.updateP(1.0);
 		model.updateQ(0.5);
 		model.updateP(1.0);
 		model.updateQ(0.5);
@@ -117,17 +116,17 @@ var NEWTON = {
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
-	circular: function () {
+	circular: function () {  // L for a circular orbit of r
 		return Math.sqrt(this.r);
 	},
-	V: function (r) {
+	V: function (r) {  // the Effective Potential
 		var L = this.L;
 		return - 1.0 / r + L * L / (2.0 * r * r);
 	},
-	updateQ: function (c) {
+	updateQ: function (c) {  // update radial position
 		this.r += c * this.rDot * INIT.timeStep;
 	},
-	updateP: function (c) {
+	updateP: function (c) {  // update radial momentum
 		var r = this.r;
 		var L = this.L;
 		this.rDot += - c * (1.0 / (r * r) - L * L / (r * r * r)) * INIT.timeStep;
@@ -164,7 +163,7 @@ var GR = { // can be spinning
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
-	circular: function () {
+	circular: function () {  // L and E for a circular orbit of r
 		var a = INIT.a;
 		var r = this.r
 		var sqrtR = Math.sqrt(r);
@@ -173,28 +172,21 @@ var GR = { // can be spinning
 		this.L = (r2 - 2.0 * a * sqrtR + a * a) / (sqrtR * tmp);
 		this.E = (r2 - 2.0 * r + a * sqrtR) / (r * tmp);
 	},
-	V: function (r) {
+	V: function (r) {  // the Effective Potential
 		var a = INIT.a;
 		var L = this.L;
 		var E = this.E;
-		var r2 = r * r;
-		var a2 = a * a;
-		var E2 = E * E;
-		var L2 = L * L;
-		return - 1.0 / r + (L2 - a2 * (E2 - 1.0)) / (2.0 * r * r) - (L2 - 2.0 * a * E * L + a2 * E2) / (r * r * r);
+		return - 1.0 / r + (L * L - a * a * (E * E - 1.0)) / (2.0 * r * r) - (L - a * E) * (L - a * E) / (r * r * r);
 	},
-	updateQ: function (c) {
+	updateQ: function (c) {  // update radial position
 		this.r += c * this.rDot * INIT.timeStep;
 	},
-	updateP: function (c) {
+	updateP: function (c) {  // update radial momentum
 		var r = this.r;
 		var a = INIT.a;
 		var L = this.L;
 		var E = this.E;
-		var a2 = a * a;
-		var E2 = E * E;
-		var L2 = L * L;
-		this.rDot += - c * (1.0 / (r * r) - (L2 - a2 * (E2 - 1.0)) / (r * r * r) + 3.0 * (L2 - 2.0 * a * E * L + a2 * E2) / (r * r * r * r)) * INIT.timeStep;
+		this.rDot += - c * (1.0 / (r * r) - (L * L - a * a * (E * E - 1.0)) / (r * r * r) + 3.0 * (L - a * E) * (L - a * E) / (r * r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
 		var step = INIT.timeStep;
@@ -234,18 +226,18 @@ var GR = { // non-spinning
 		this.phiDot = 0.0;
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - this.V(this.r)));
 	},
-	circular: function () {
+	circular: function () {  // L and E for a circular orbit of r
 		return this.r / Math.sqrt(this.r - 3.0);
 	},
-	V: function (r) {
+	V: function (r) {  // the Effective Potential
 		var L = this.L;
 		return - 1.0 / r + L * L / (2.0 * r * r) - L * L / (r * r * r);
 	},
-	updateQ: function (c) {
+	updateQ: function (c) {  // update radial position
 		this.rOld = this.r;
 		this.r += c * this.rDot * INIT.timeStep;
 	},
-	updateP: function (c) {
+	updateP: function (c) {  // update radial momentum
 		var r = this.r;
 		var L = this.L;
 		this.rDot += - c * (1.0 / (r * r) - L * L / (r * r * r) + 3.0 * L * L / (r * r * r * r)) * INIT.timeStep;
