@@ -56,7 +56,7 @@ var GLOBALS = {
 		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + ((h - h0) / h0).toExponential(1));
 		return h;
 	},
-	sympBase: function (model, c) { // 2nd-order building block
+	sympBase: function (model, c) { // 2nd-order symplectic building block
 		model.updateQ(c * 0.5);
 		model.updateP(c);
 		model.updateQ(c * 0.5);
