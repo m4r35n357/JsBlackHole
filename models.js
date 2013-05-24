@@ -40,7 +40,7 @@ var GLOBALS = {
 	reportDirectionChange: function (model) {
 		var r = model.r;
 		var phiDegrees = this.phiDegrees(model.phi);
-		if (model.direction === 1) {
+		if (model.direction === -1) {
 			model.rMinDisplay.innerHTML = (INIT.M * r).toFixed(1);
 			model.pDisplay.innerHTML = phiDegrees + "&deg;";
 			this.debug && console.log(model.name + " - Perihelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
@@ -56,20 +56,20 @@ var GLOBALS = {
 		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + ((h - h0) / h0).toExponential(1));
 		return h;
 	},
-	symplecticBase: function (model, coefficient) { // 2nd-order building block
-		model.updateQ(coefficient * 0.5);
-		model.updateP(coefficient);
-		model.updateQ(coefficient * 0.5);
+	sympBase: function (model, c) { // 2nd-order building block
+		model.updateQ(c * 0.5);
+		model.updateP(c);
+		model.updateQ(c * 0.5);
 	},
 	updateR: function (model) {  // Stormer-Verlet integrator, 4th-order
 		var rOld = model.rOld = model.r;
-		var gamma = 1.0 / (2.0 - this.CUBEROOT2);
-		this.symplecticBase(model, gamma);
-		this.symplecticBase(model, - this.CUBEROOT2 * gamma);
-		this.symplecticBase(model, gamma);
+		var y = 1.0 / (2.0 - this.CUBEROOT2);
+		this.sympBase(model, y);
+		this.sympBase(model, - this.CUBEROOT2 * y);
+		this.sympBase(model, y);
 		if (((model.r >= rOld) && (model.direction < 0)) || ((model.r <= rOld) && (model.direction > 0))) {
-			model.direction = - model.direction;
 			this.reportDirectionChange(model);
+			model.direction = - model.direction;
 			this.h(model);
 		}
 	},
