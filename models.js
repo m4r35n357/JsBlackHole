@@ -21,7 +21,7 @@
 "use strict";
 
 var GLOBALS = {
-	debug: false,
+	debug: true,
 	TWOPI: 2.0 * Math.PI,
 	CUBEROOT2: Math.pow(2.0, 1.0 / 3.0),
 	// Physical constants
@@ -67,7 +67,7 @@ var GLOBALS = {
 		this.sympBase(model, y);
 		this.sympBase(model, - this.CUBEROOT2 * y);
 		this.sympBase(model, y);
-		if (((model.r >= rOld) && (model.direction < 0)) || ((model.r <= rOld) && (model.direction > 0))) {
+		if (((model.r > rOld) && (model.direction < 0)) || ((model.r < rOld) && (model.direction > 0))) {
 			this.reportDirectionChange(model);
 			model.direction = - model.direction;
 			this.h(model);
