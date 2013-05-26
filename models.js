@@ -114,7 +114,7 @@ var NEWTON = {
 	name: "NEWTON",
 	initialize: function () {
 		var V0;
-		this.L = this.circular();
+		this.circular(this.r);
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.L2 = this.L * this.L;
 		this.energyBar = this.V(this.r);
@@ -125,8 +125,8 @@ var NEWTON = {
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
-	circular: function () {  // L for a circular orbit of r
-		return Math.sqrt(this.r);
+	circular: function (r) {  // L for a circular orbit of r
+		this.L = Math.sqrt(r);
 	},
 	V: function (r) {  // the Effective Potential
 		return - 1.0 / r + this.L2 / (2.0 * r * r);
@@ -157,29 +157,29 @@ var GR = { // can be spinning
 	name: "GR",
 	initialize: function () {
 		var V0;
-		this.circular();
+		this.circular(this.r, INIT.a);
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(6));
-		this.k1 = (this.L * this.L - INIT.a * INIT.a * (this.E * this.E - 1.0));
-		this.k2 = (this.L - INIT.a * this.E) * (this.L - INIT.a * this.E);
+		this.potentialFactors(this.L, this.E, INIT.a);
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
-		this.k1 = (this.L * this.L - INIT.a * INIT.a * (this.E * this.E - 1.0));
-		this.k2 = (this.L - INIT.a * this.E) * (this.L - INIT.a * this.E);
+		this.potentialFactors(this.L, this.E, INIT.a);
 		this.t = 0.0;
 		this.tDot = 1.0;
 		V0 = this.V(this.r); // using (possibly) adjusted L from above
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
-	circular: function () {  // L and E for a circular orbit of r
-		var a = INIT.a;
-		var r = this.r
+	circular: function (r, a) {  // L and E for a circular orbit of r
 		var sqrtR = Math.sqrt(r);
 		var tmp = Math.sqrt(r * r - 3.0 * r + 2.0 * a * sqrtR);
 		this.L = (r * r - 2.0 * a * sqrtR + a * a) / (sqrtR * tmp);
 		this.E = (r * r - 2.0 * r + a * sqrtR) / (r * tmp);
+	},
+	potentialFactors: function (L, E, a) {
+		this.k1 = (L * L - a * a * (E * E - 1.0));
+		this.k2 = (L - a * E) * (L - a * E);
 	},
 	V: function (r) {  // the Effective Potential
 		return - 1.0 / r + this.k1 / (2.0 * r * r) - this.k2 / (r * r * r);
