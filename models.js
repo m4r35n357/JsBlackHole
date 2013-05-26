@@ -178,7 +178,7 @@ var GR = { // can be spinning
 		this.E = (r * r - 2.0 * r + a * sqrtR) / (r * tmp);
 	},
 	potentialFactors: function (L, E, a) {
-		this.k1 = (L * L - a * a * (E * E - 1.0));
+		this.k1 = L * L - a * a * (E * E - 1.0);
 		this.k2 = (L - a * E) * (L - a * E);
 	},
 	V: function (r) {  // the Effective Potential
