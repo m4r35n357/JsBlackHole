@@ -116,9 +116,11 @@ var NEWTON = {
 		var V0;
 		this.L = this.circular();
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
+		this.L2 = this.L * this.L;
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
+		this.L2 = this.L * this.L;
 		V0 = this.V(this.r); // using (possibly) adjusted L from above
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
@@ -127,16 +129,14 @@ var NEWTON = {
 		return Math.sqrt(this.r);
 	},
 	V: function (r) {  // the Effective Potential
-		var L = this.L;
-		return - 1.0 / r + L * L / (2.0 * r * r);
+		return - 1.0 / r + this.L2 / (2.0 * r * r);
 	},
 	updateQ: function (c) {  // update radial position
 		this.r += c * this.rDot * INIT.timeStep;
 	},
 	updateP: function (c) {  // update radial momentum
 		var r = this.r;
-		var L = this.L;
-		this.rDot -= c * (1.0 / (r * r) - L * L / (r * r * r)) * INIT.timeStep;
+		this.rDot -= c * (1.0 / (r * r) - this.L2 / (r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
 		var step = INIT.timeStep;
@@ -160,9 +160,13 @@ var GR = { // can be spinning
 		this.circular();
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(6));
+		this.k1 = (this.L * this.L - INIT.a * INIT.a * (this.E * this.E - 1.0));
+		this.k2 = (this.L - INIT.a * this.E) * (this.L - INIT.a * this.E);
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
+		this.k1 = (this.L * this.L - INIT.a * INIT.a * (this.E * this.E - 1.0));
+		this.k2 = (this.L - INIT.a * this.E) * (this.L - INIT.a * this.E);
 		this.t = 0.0;
 		this.tDot = 1.0;
 		V0 = this.V(this.r); // using (possibly) adjusted L from above
@@ -178,20 +182,14 @@ var GR = { // can be spinning
 		this.E = (r * r - 2.0 * r + a * sqrtR) / (r * tmp);
 	},
 	V: function (r) {  // the Effective Potential
-		var a = INIT.a;
-		var L = this.L;
-		var E = this.E;
-		return - 1.0 / r + (L * L - a * a * (E * E - 1.0)) / (2.0 * r * r) - (L - a * E) * (L - a * E) / (r * r * r);
+		return - 1.0 / r + this.k1 / (2.0 * r * r) - this.k2 / (r * r * r);
 	},
 	updateQ: function (c) {  // update radial position
 		this.r += c * this.rDot * INIT.timeStep;
 	},
 	updateP: function (c) {  // update radial momentum
 		var r = this.r;
-		var a = INIT.a;
-		var L = this.L;
-		var E = this.E;
-		this.rDot -= c * (1.0 / (r * r) - (L * L - a * a * (E * E - 1.0)) / (r * r * r) + 3.0 * (L - a * E) * (L - a * E) / (r * r * r * r)) * INIT.timeStep;
+		this.rDot -= c * (1.0 / (r * r) - this.k1 / (r * r * r) + 3.0 * this.k2 / (r * r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
 		var step = INIT.timeStep;
