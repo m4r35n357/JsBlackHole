@@ -53,7 +53,7 @@ var GLOBALS = {
 	h: function (model) {  // the radial "Hamiltonian"
 		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
 		var h0 = model.h0;
-		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + ((h - h0) / h0).toExponential(1));
+		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + (10.0 * Math.log(Math.abs((h - h0) / h0)) / Math.log(10.0)).toFixed(1) + "dBh0");
 		return h;
 	},
 	sympBase: function (model, c) { // 2nd-order symplectic building block
