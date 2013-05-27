@@ -63,18 +63,19 @@ var GLOBALS = {
 	},
 	updateR: function (model) {  // Stormer-Verlet integrator, 4th-order
 		var rOld = model.rOld = model.r;
-//		var y = 1.0 / (2.0 - this.CUBEROOT2);
-//		this.sympBase(model, y);
-//		this.sympBase(model, - this.CUBEROOT2 * y);
-//		this.sympBase(model, y);
-
-//		this.sympBase(model, 0.78451361047755726381949763);
-//		this.sympBase(model, 0.23557321335935813368479318);
-//		this.sympBase(model, -1.17767998417887100694641568);
-//		this.sympBase(model, 1.31518632068391121888424973);
-//		this.sympBase(model, -1.17767998417887100694641568);
-//		this.sympBase(model, 0.23557321335935813368479318);
-//		this.sympBase(model, 0.78451361047755726381949763);
+		var y = 1.0 / (2.0 - this.CUBEROOT2);
+		this.sympBase(model, y);
+		this.sympBase(model, - this.CUBEROOT2 * y);
+		this.sympBase(model, y);
+/*
+		this.sympBase(model, 0.78451361047755726381949763);
+		this.sympBase(model, 0.23557321335935813368479318);
+		this.sympBase(model, -1.17767998417887100694641568);
+		this.sympBase(model, 1.31518632068391121888424973);
+		this.sympBase(model, -1.17767998417887100694641568);
+		this.sympBase(model, 0.23557321335935813368479318);
+		this.sympBase(model, 0.78451361047755726381949763);
+*/
 /*
 		this.sympBase(model, 0.74167036435061295344822780);
 		this.sympBase(model, -0.40910082580003159399730010);
@@ -92,6 +93,7 @@ var GLOBALS = {
 		this.sympBase(model, -0.40910082580003159399730010);
 		this.sympBase(model, 0.74167036435061295344822780);
 */
+/*
 		this.sympBase(model, 0.09040619368607278492161150);
 		this.sympBase(model, 0.53591815953030120213784983);
 		this.sympBase(model, 0.35123257547493978187517736);
@@ -125,6 +127,7 @@ var GLOBALS = {
 		this.sympBase(model, 0.35123257547493978187517736);
 		this.sympBase(model, 0.53591815953030120213784983);
 		this.sympBase(model, 0.09040619368607278492161150);
+*/
 		if (((model.r > rOld) && (model.direction < 0)) || ((model.r < rOld) && (model.direction > 0))) {
 			this.reportDirectionChange(model);
 			model.direction = - model.direction;
