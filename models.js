@@ -23,6 +23,7 @@
 var GLOBALS = {
 	debug: true,
 	TWOPI: 2.0 * Math.PI,
+	LOG10: Math.log(10.0),
 	CUBEROOT2: Math.pow(2.0, 1.0 / 3.0),
 	// Physical constants
 	c: 299792.458,
@@ -37,23 +38,10 @@ var GLOBALS = {
 	speed: function (model) {
 		return this.c * Math.sqrt(model.rDot * model.rDot + model.r * model.r * model.phiDot * model.phiDot);
 	},
-	reportDirectionChange: function (model) {
-		var r = model.r;
-		var phiDegrees = this.phiDegrees(model.phi);
-		if (model.direction === -1) {
-			model.rMinDisplay.innerHTML = (INIT.M * r).toFixed(1);
-			model.pDisplay.innerHTML = phiDegrees + "&deg;";
-			this.debug && console.log(model.name + " - Perihelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
-		} else {
-			model.rMaxDisplay.innerHTML = (INIT.M * r).toFixed(1);
-			model.aDisplay.innerHTML = phiDegrees + "&deg;";
-			this.debug && console.log(model.name + " - Aphelion: R = " + (INIT.M * r).toExponential(2) + ", PHI = " + phiDegrees);
-		}
-	},
 	h: function (model) {  // the radial "Hamiltonian"
 		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
 		var h0 = model.h0;
-		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + (10.0 * Math.log(Math.abs((h - h0) / h0)) / Math.log(10.0)).toFixed(1) + "dBh0");
+		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + (10.0 * Math.log(Math.abs((h - h0) / h0)) / this.LOG10).toFixed(1) + "dBh0");
 		return h;
 	},
 	sympBase: function (model, c) { // 2nd-order symplectic building block
@@ -62,16 +50,33 @@ var GLOBALS = {
 		model.updateQ(c * 0.5);
 	},
 	updateR: function (model) {  // Stormer-Verlet integrator, 4th-order
+		var r, phiDegrees;
 		var rOld = model.rOld = model.r;
-		var y = 1.0 / (2.0 - this.CUBEROOT2);
-		this.sympBase(model, y);
-		this.sympBase(model, - y * this.CUBEROOT2);
-		this.sympBase(model, y);
-		if (((model.r > rOld) && (model.direction < 0)) || ((model.r < rOld) && (model.direction > 0))) {
-			this.reportDirectionChange(model);
-			model.direction = - model.direction;
+		var y = this.Y;
+		var M = INIT.M;
+		var sb = this.sympBase;
+		var direction = model.direction;
+		sb(model, y);
+		sb(model, - y * this.CUBEROOT2);
+		sb(model, y);
+		r = model.r;
+		if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
+			phiDegrees = this.phiDegrees(model.phi);
+			if (direction === -1) {
+				model.rMinDisplay.innerHTML = (M * r).toFixed(1);
+				model.pDisplay.innerHTML = phiDegrees + "&deg;";
+				this.debug && console.log(model.name + " - Perihelion: R = " + (M * r).toExponential(2) + ", PHI = " + phiDegrees);
+			} else {
+				model.rMaxDisplay.innerHTML = (M * r).toFixed(1);
+				model.aDisplay.innerHTML = phiDegrees + "&deg;";
+				this.debug && console.log(model.name + " - Aphelion: R = " + (M * r).toExponential(2) + ", PHI = " + phiDegrees);
+			}
+			model.direction = - direction;
 			this.h(model);
 		}
+	},
+	initialize: function () {
+		this.Y = 1.0 / (2.0 - this.CUBEROOT2);
 	},
 };
 

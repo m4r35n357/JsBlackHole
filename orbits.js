@@ -177,6 +177,7 @@ var getDom = function () {
 
 var scenarioChange = function () {
 	getDom();
+	GLOBALS.initialize();
 	// Newton initial conditions
 	INIT.initialize(NEWTON);
 	NEWTON.initialize();
