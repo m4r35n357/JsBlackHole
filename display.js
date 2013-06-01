@@ -104,17 +104,18 @@ var DISPLAY = {
 		var phi = model.phi;
 		var xOld = model.X;
 		var yOld = model.Y;
+		var colour = model.colour;
 		X = this.pointX(r, phi);
 		Y = this.pointY(r, phi);
 		canvas.clearRect(xOld - blank, yOld - blank, 2 * blank, 2 * blank);
-		canvas.fillStyle = model.colour;
+		canvas.fillStyle = colour;
 			canvas.beginPath();
 			canvas.arc(X, Y, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 		if (this.showTracks) {
 			tracksCanvas = this.tracks;
-			tracksCanvas.strokeStyle = model.colour;
+			tracksCanvas.strokeStyle = colour;
 				tracksCanvas.beginPath();
 				tracksCanvas.moveTo(xOld, yOld);
 				tracksCanvas.lineTo(X, Y);
@@ -133,6 +134,7 @@ var DISPLAY = {
 	},
 	plotPotential: function (model) {
 		var canvas = model.fgPotential;
+		var colour = model.colour;
 		var blank = this.blankSize;
 		var energy = this.potentialY;
 		var v = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
@@ -140,13 +142,13 @@ var DISPLAY = {
 		var r = model.r * scaledMass;
 		canvas.clearRect(model.rOld * scaledMass - blank, energy - blank, 2 * blank, v + 2 * blank);
 		// Potential ball
-		canvas.fillStyle = model.colour;
+		canvas.fillStyle = colour;
 			canvas.beginPath();
 			canvas.arc(r, v, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 		// Potential dropline
-		canvas.strokeStyle = model.colour;
+		canvas.strokeStyle = colour;
 			canvas.beginPath();
 			canvas.moveTo(r, v);
 			canvas.lineTo(r, energy);
