@@ -65,69 +65,8 @@ var GLOBALS = {
 		var rOld = model.rOld = model.r;
 		var y = 1.0 / (2.0 - this.CUBEROOT2);
 		this.sympBase(model, y);
-		this.sympBase(model, - this.CUBEROOT2 * y);
+		this.sympBase(model, - y * this.CUBEROOT2);
 		this.sympBase(model, y);
-/*
-		this.sympBase(model, 0.78451361047755726381949763);
-		this.sympBase(model, 0.23557321335935813368479318);
-		this.sympBase(model, -1.17767998417887100694641568);
-		this.sympBase(model, 1.31518632068391121888424973);
-		this.sympBase(model, -1.17767998417887100694641568);
-		this.sympBase(model, 0.23557321335935813368479318);
-		this.sympBase(model, 0.78451361047755726381949763);
-*/
-/*
-		this.sympBase(model, 0.74167036435061295344822780);
-		this.sympBase(model, -0.40910082580003159399730010);
-		this.sympBase(model, 0.19075471029623837995387626);
-		this.sympBase(model, -0.57386247111608226665638773);
-		this.sympBase(model, 0.29906418130365592384446354);
-		this.sympBase(model, 0.33462491824529818378495798);
-		this.sympBase(model, 0.31529309239676659663205666);
-		this.sympBase(model, -0.79688793935291635401978884);
-		this.sympBase(model, 0.31529309239676659663205666);
-		this.sympBase(model, 0.33462491824529818378495798);
-		this.sympBase(model, 0.29906418130365592384446354);
-		this.sympBase(model, -0.57386247111608226665638773);
-		this.sympBase(model, 0.19075471029623837995387626);
-		this.sympBase(model, -0.40910082580003159399730010);
-		this.sympBase(model, 0.74167036435061295344822780);
-*/
-/*
-		this.sympBase(model, 0.09040619368607278492161150);
-		this.sympBase(model, 0.53591815953030120213784983);
-		this.sympBase(model, 0.35123257547493978187517736);
-		this.sympBase(model, -0.31116802097815835426086544);
-		this.sympBase(model, -0.52556314194263510431065549);
-		this.sympBase(model, 0.14447909410225247647345695);
-		this.sympBase(model, 0.02983588609748235818064083);
-		this.sympBase(model, 0.17786179923739805133592238);
-		this.sympBase(model, 0.09826906939341637652532377);
-		this.sympBase(model, 0.46179986210411860873242126);
-		this.sympBase(model, -0.33377845599881851314531820);
-		this.sympBase(model, 0.07095684836524793621031152);
-		this.sympBase(model, 0.23666960070126868771909819);
-		this.sympBase(model, -0.49725977950660985445028388);
-		this.sympBase(model, -0.30399616617237257346546356);
-		this.sympBase(model, 0.05246957188100069574521612);
-		this.sympBase(model, 0.44373380805019087955111365);
-		this.sympBase(model, 0.05246957188100069574521612);
-		this.sympBase(model, -0.30399616617237257346546356);
-		this.sympBase(model, -0.49725977950660985445028388);
-		this.sympBase(model, 0.23666960070126868771909819);
-		this.sympBase(model, 0.07095684836524793621031152);
-		this.sympBase(model, -0.33377845599881851314531820);
-		this.sympBase(model, 0.46179986210411860873242126);
-		this.sympBase(model, 0.09826906939341637652532377);
-		this.sympBase(model, 0.17786179923739805133592238);
-		this.sympBase(model, 0.02983588609748235818064083);
-		this.sympBase(model, 0.14447909410225247647345695);
-		this.sympBase(model, -0.52556314194263510431065549);
-		this.sympBase(model, -0.31116802097815835426086544);
-		this.sympBase(model, 0.35123257547493978187517736);
-		this.sympBase(model, 0.53591815953030120213784983);
-		this.sympBase(model, 0.09040619368607278492161150);
-*/
 		if (((model.r > rOld) && (model.direction < 0)) || ((model.r < rOld) && (model.direction > 0))) {
 			this.reportDirectionChange(model);
 			model.direction = - model.direction;
