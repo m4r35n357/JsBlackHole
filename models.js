@@ -50,18 +50,18 @@ var GLOBALS = {
 		model.updateQ(c * 0.5);
 	},
 	updateR: function (model) {  // Stormer-Verlet integrator, 4th-order
-		var r, phiDegrees;
+		var M, r, phiDegrees;
 		var rOld = model.rOld = model.r;
-		var y = this.Y;
-		var M = INIT.M;
 		var sb = this.sympBase;
 		var direction = model.direction;
-		sb(model, y);
-		sb(model, - y * this.CUBEROOT2);
-		sb(model, y);
+		var y0 = this.y0;
+		sb(model, y0);
+		sb(model, this.y1);
+		sb(model, y0);
 		r = model.r;
 		if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
 			phiDegrees = this.phiDegrees(model.phi);
+			M = INIT.M;
 			if (direction === -1) {
 				model.rMinDisplay.innerHTML = (M * r).toFixed(1);
 				model.pDisplay.innerHTML = phiDegrees + "&deg;";
@@ -76,7 +76,8 @@ var GLOBALS = {
 		}
 	},
 	initialize: function () {
-		this.Y = 1.0 / (2.0 - this.CUBEROOT2);
+		this.y0 = 1.0 / (2.0 - this.CUBEROOT2);
+		this.y1 = - this.y0 * this.CUBEROOT2;
 	},
 };
 
