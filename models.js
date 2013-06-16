@@ -24,7 +24,6 @@ var GLOBALS = {
 	debug: true,
 	TWOPI: 2.0 * Math.PI,
 	LOG10: Math.log(10.0),
-	CUBEROOT2: Math.pow(2.0, 1.0 / 3.0),
 	// Physical constants
 	c: 299792.458,
 	G: 6.67398e-11,
@@ -44,20 +43,23 @@ var GLOBALS = {
 		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + (10.0 * Math.log(Math.abs((h - h0) / h0)) / this.LOG10).toFixed(1) + "dBh0");
 		return h;
 	},
-	sympBase: function (model, c) { // 2nd-order symplectic building block
-		model.updateQ(c * 0.5);
-		model.updateP(c);
-		model.updateQ(c * 0.5);
-	},
-	updateR: function (model) {  // Stormer-Verlet integrator, 4th-order
-		var M, r, phiDegrees;
+	solve: function (model) {  // Stormer-Verlet integrator, 4th-order
+		var sympBase = function (model, c) { // 2nd-order symplectic building block
+			var halfC = 0.5 * c;
+			model.updateQ(halfC);
+			model.updateP(c);
+			model.updateQ(halfC);
+		};
+		var i, M, r, phiDegrees, tmp;
 		var rOld = model.rOld = model.r;
-		var sb = this.sympBase;
 		var direction = model.direction;
-		var y0 = this.y0;
-		sb(model, y0);
-		sb(model, this.y1);
-		sb(model, y0);
+		tmp = this.coefficients.length - 1;
+		for (i = 0; i < tmp; i += 1) {
+			sympBase(model, this.coefficients[i]);
+		}
+		for (i = tmp; i >= 0; i -= 1) {
+			sympBase(model, this.coefficients[i]);
+		}
 		r = model.r;
 		if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
 			phiDegrees = this.phiDegrees(model.phi);
@@ -76,8 +78,54 @@ var GLOBALS = {
 		}
 	},
 	initialize: function () {
-		this.y0 = 1.0 / (2.0 - this.CUBEROOT2);
-		this.y1 = - this.y0 * this.CUBEROOT2;
+		this.coefficients = [];
+		switch (INIT.order) {
+		case 2:
+			this.coefficients.push(1.0);
+			break;
+		case 4:
+			var CUBEROOT2 = Math.pow(2.0, 1.0 / 3.0);
+			var y0 = 1.0 / (2.0 - CUBEROOT2);
+			var y1 = - y0 * CUBEROOT2;
+			this.coefficients.push(y0);
+			this.coefficients.push(y1);
+			break;
+		case 6:
+			this.coefficients.push(0.78451361047755726381949763);
+			this.coefficients.push(0.23557321335935813368479318);
+			this.coefficients.push(-1.17767998417887100694641568);
+			this.coefficients.push(1.31518632068391121888424973);
+			break;
+		case 8:
+			this.coefficients.push(0.74167036435061295344822780);
+			this.coefficients.push(-0.40910082580003159399730010);
+			this.coefficients.push(0.19075471029623837995387626);
+			this.coefficients.push(-0.57386247111608226665638773);
+			this.coefficients.push(0.29906418130365592384446354);
+			this.coefficients.push(0.33462491824529818378495798);
+			this.coefficients.push(0.31529309239676659663205666);
+			this.coefficients.push(-0.79688793935291635401978884);
+			break;
+		case 10:
+			this.coefficients.push(0.09040619368607278492161150);
+			this.coefficients.push(0.53591815953030120213784983);
+			this.coefficients.push(0.35123257547493978187517736);
+			this.coefficients.push(-0.31116802097815835426086544);
+			this.coefficients.push(-0.52556314194263510431065549);
+			this.coefficients.push(0.14447909410225247647345695);
+			this.coefficients.push(0.02983588609748235818064083);
+			this.coefficients.push(0.17786179923739805133592238);
+			this.coefficients.push(0.09826906939341637652532377);
+			this.coefficients.push(0.46179986210411860873242126);
+			this.coefficients.push(-0.33377845599881851314531820);
+			this.coefficients.push(0.07095684836524793621031152);
+			this.coefficients.push(0.23666960070126868771909819);
+			this.coefficients.push(-0.49725977950660985445028388);
+			this.coefficients.push(-0.30399616617237257346546356);
+			this.coefficients.push(0.05246957188100069574521612);
+			this.coefficients.push(0.44373380805019087955111365);
+			break;
+		}
 	},
 };
 
@@ -98,6 +146,8 @@ var INIT = {
 		GLOBALS.debug && console.info(this.name + ".r: " + this.r.toFixed(1));
 		this.a = this.getFloatById('spin');
 		GLOBALS.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
+		this.order = this.getFloatById('order');
+		GLOBALS.debug && console.info(this.name + ".order: " + this.order);
 		if (this.a >= 0.0) {
 			GLOBALS.prograde = true;
 		} else {
@@ -149,7 +199,7 @@ var NEWTON = {
 		var r = this.r;
 		var L = this.L;
 		if (this.r > INIT.horizon) {
-			GLOBALS.updateR(this);
+			GLOBALS.solve(this);
 			this.phiDot = L / (r * r);
 			this.phi += this.phiDot * step;
 		} else {
@@ -205,7 +255,7 @@ var GR = { // can be spinning
 		var a = INIT.a;
 		var delta;
 		if (r > INIT.horizon) {
-			GLOBALS.updateR(this);
+			GLOBALS.solve(this);
 			delta = r * r + a * a - 2.0 * r;
 			this.phiDot = ((1.0 - 2.0 / r) * L + 2.0 * a * E / r) / delta;
 			this.phi += this.phiDot * step;
