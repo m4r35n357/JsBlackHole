@@ -29,19 +29,19 @@ var GLOBALS = {
 	G: 6.67398e-11,
 	mSolar: 1.9891e30,
 	rSolar: 700000.0,
-//	hgR: 58e9,
 	ergosphere: 2.0,
+	dB: function (val, ref) {
+		return 10.0 * Math.log(Math.abs((val - ref) / ref)) / this.LOG10;
+	},
 	phiDegrees: function (phiRadians) {
 		return (phiRadians * 360.0 / this.TWOPI % 360).toFixed(0) + "&deg;";
 	},
 	phiDMS: function (phiRadians) {
 		var totalDegrees = phiRadians * 360.0 / this.TWOPI;
 		var circularDegrees = totalDegrees - Math.floor(totalDegrees / 360.0) * 360;
-//		var circularDegrees = totalDegrees % 360;
 		var minutes = (circularDegrees - Math.floor(circularDegrees)) * 60;
 		var seconds = (minutes - Math.floor(minutes)) * 60;
-		return circularDegrees.toFixed(0) + "&deg;" + minutes.toFixed(0) + "&#39;"
-//		return circularDegrees.toFixed(0) + "&deg;" + minutes.toFixed(0) + "&#39;" + seconds.toFixed(0) + "&#34;";
+		return circularDegrees.toFixed(0) + "&deg;" + minutes.toFixed(0) + "&#39;" + seconds.toFixed(0) + "&#34;";
 	},
 	speed: function (model) {
 		return this.c * Math.sqrt(model.rDot * model.rDot + model.r * model.r * model.phiDot * model.phiDot);
@@ -49,7 +49,7 @@ var GLOBALS = {
 	h: function (model) {  // the radial "Hamiltonian"
 		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
 		var h0 = model.h0;
-		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + (10.0 * Math.log(Math.abs((h - h0) / h0)) / this.LOG10).toFixed(1) + "dBh0");
+		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + this.dB(h, h0).toFixed(1) + "dBh0");
 		return h;
 	},
 	solve: function (model) {  // Stormer-Verlet integrator, 4th-order
@@ -76,11 +76,13 @@ var GLOBALS = {
 			if (direction === -1) {
 				model.rMinDisplay.innerHTML = (M * r).toFixed(1);
 				model.pDisplay.innerHTML = phiDegrees;
-				this.debug && console.log(model.name + " - Perihelion: R = " + (M * r).toExponential(2) + ", PHI = " + phiDegrees);
+//				this.debug && console.log(model.name + " - Perihelion: R = " + (M * r).toExponential(2) + ", PHI = " + phiDegrees);
+				this.debug && console.log(model.name + " - Perihelion");
 			} else {
 				model.rMaxDisplay.innerHTML = (M * r).toFixed(1);
 				model.aDisplay.innerHTML = phiDegrees;
-				this.debug && console.log(model.name + " - Aphelion: R = " + (M * r).toExponential(2) + ", PHI = " + phiDegrees);
+//				this.debug && console.log(model.name + " - Aphelion: R = " + (M * r).toExponential(2) + ", PHI = " + phiDegrees);
+				this.debug && console.log(model.name + " - Aphelion");
 			}
 			model.direction = - direction;
 			this.h(model);
