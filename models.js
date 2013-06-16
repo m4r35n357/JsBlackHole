@@ -71,7 +71,7 @@ var GLOBALS = {
 		}
 		r = model.r;
 		if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
-			phiDegrees = this.phiDegrees(model.phi);
+			phiDegrees = this.phiDMS(model.phi);
 			M = INIT.M;
 			if (direction === -1) {
 				model.rMinDisplay.innerHTML = (M * r).toFixed(1);
