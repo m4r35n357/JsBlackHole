@@ -49,7 +49,7 @@ var GLOBALS = {
 	h: function (model) {  // the radial "Hamiltonian"
 		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
 		var h0 = model.h0;
-		this.debug && console.log(model.name + " - H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", Error: " + this.dB(h, h0).toFixed(1) + "dBh0");
+		this.debug && console.log("H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", E: " + this.dB(h, h0).toFixed(1) + "dBh0");
 		return h;
 	},
 	solve: function (model) {  // Stormer-Verlet integrator, 4th-order
@@ -76,13 +76,11 @@ var GLOBALS = {
 			if (direction === -1) {
 				model.rMinDisplay.innerHTML = (M * r).toFixed(1);
 				model.pDisplay.innerHTML = phiDegrees;
-//				this.debug && console.log(model.name + " - Perihelion: R = " + (M * r).toExponential(2) + ", PHI = " + phiDegrees);
-				this.debug && console.log(model.name + " - Perihelion");
+				this.debug && console.log(model.name + ": Perihelion");
 			} else {
 				model.rMaxDisplay.innerHTML = (M * r).toFixed(1);
 				model.aDisplay.innerHTML = phiDegrees;
-//				this.debug && console.log(model.name + " - Aphelion: R = " + (M * r).toExponential(2) + ", PHI = " + phiDegrees);
-				this.debug && console.log(model.name + " - Aphelion");
+				this.debug && console.log(model.name + ": Aphelion");
 			}
 			model.direction = - direction;
 			this.h(model);
