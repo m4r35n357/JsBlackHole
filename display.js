@@ -57,7 +57,7 @@ var DISPLAY = {
 		var gamma;
 		if (! NEWTON.collided) {
 			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(1);
-			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi) + "&deg;";
+			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
 			NEWTON.tDisplay.innerHTML = properTime.toExponential(2);
 			NEWTON.vDisplay.innerHTML = GLOBALS.speed(NEWTON).toFixed(1);
 		}
@@ -65,7 +65,7 @@ var DISPLAY = {
 			gamma = GR.tDot;
 			GR.tDisplay.innerHTML = (M * GR.t / c).toExponential(2);
 			GR.rDisplay.innerHTML = (M * GR.r).toFixed(1);
-			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi) + "&deg;";
+			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
 			GR.tauDisplay.innerHTML = properTime.toExponential(2);
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
