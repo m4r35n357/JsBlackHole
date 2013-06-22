@@ -27,14 +27,25 @@
 				</tr>
 				<tr>
 					<td><label for="lfactor">L &percnt;</label></td><td><input id="lfactor" type="text" value="97.9" size="4" /></td>
-					<td><label for="spin">J/M (&vert;a&vert;&lt;1)</label></td><td><input id="spin" type="text" value="0.0" size="4" /></td>
+					<td><label for="spin">J/M (&vert;a&vert;&lt;1)</label></td><!--<td><input id="spin" type="text" value="0.0" size="4" /></td>-->
+					<td><select id="spin">
+						<option value="1.00">&nbsp;1.0</option>
+						<option value="0.75">&nbsp;0.75</option>
+						<option value="0.50">&nbsp;0.5</option>
+						<option value="0.25">&nbsp;0.25</option>
+						<option value="0.00">&nbsp;0.0</option>
+						<option value="-0.25">-0.25</option>
+						<option value="-0.50">-0.5</option>
+						<option value="-0.75">-0.75</option>
+						<option value="-1.00">-1.0</option>
+					</select></td>
 				</tr>
 				<tr>
 					<td><label for="pscale">PZoom</label></td><td><input id="pscale" type="text" value="1.0" size="8" /></td>
 					<td><label for="showTracks">Tracks</label></td><td><input id="showTracks" type="checkbox" checked /></td>
 				</tr>
 				<tr>
-					<td><label for="order">Order</label></td></td>
+					<td><label for="order">Order</label></td>
 					<td><select id="order">
 						<option value="2">&nbsp;&nbsp;2nd</option>
 						<option value="4">&nbsp;&nbsp;4th</option>
