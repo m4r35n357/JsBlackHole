@@ -25,12 +25,13 @@ var DISPLAY = {
 	// Misc. constants
 	BLACK: "#000000",
 	RED: "#ff0000",
-	GREEN: "#00ff00",
-	BLUE: "#0000ff",
+	GREEN: "#004000",
+	BLUE: "#000080",
 	YELLOW: "#808000",
 	CYAN: "#008080",
 	MAGENTA: "#800080",
 	WHITE: "#ffffff",
+	GREY: "#a0a0a0",
 	n: 0,
 	ballSize: 3,
 	blankSize: 4,
@@ -156,17 +157,18 @@ var DISPLAY = {
 	},
 	plotTauDot: function (model) {
 		var canvas = model.fgPotential;
+		var colour = this.GREY;
 		var tDotValue;
 		var xValue = 395;
 		// dTau/dt plot for GR
 		tDotValue = 400.0 * (1.0 - 1.0 / model.tDot);
 		canvas.clearRect(xValue - 3, 0, xValue + 3, 400);
-		canvas.fillStyle = this.WHITE;
+		canvas.fillStyle = colour;
 			canvas.beginPath();
 			canvas.arc(xValue, tDotValue, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
-		canvas.strokeStyle = this.WHITE;
+		canvas.strokeStyle = colour;
 			canvas.beginPath();
 			canvas.moveTo(xValue, 400);
 			canvas.lineTo(xValue, tDotValue);
