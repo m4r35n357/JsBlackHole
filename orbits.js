@@ -152,6 +152,7 @@ var getDom = function () {
 	GR.vDisplay = document.getElementById('vGR');
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale') * 0.000005;
+	DISPLAY.pScale = INIT.getFloatById('pscale');
 	if (document.getElementById('showTracks').checked) {
 		DISPLAY.showTracks = true;
 	} else {

@@ -137,7 +137,7 @@ var DISPLAY = {
 		var colour = model.colour;
 		var blank = this.blankSize;
 		var energy = this.potentialY;
-		var v = this.potentialY + (400 - this.potentialY) * (model.energyBar - model.V(model.r));
+		var v = this.potentialY + (400 - this.potentialY) * this.pScale * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
 		canvas.clearRect(model.rOld * scaledMass - blank, energy - blank, 2 * blank, v + 2 * blank);
@@ -181,8 +181,8 @@ var DISPLAY = {
 			r = i / (INIT.M * this.scale);
 			v = model.V(r);
 				DISPLAY.bgPotential.beginPath();
-				DISPLAY.bgPotential.moveTo(r * INIT.M * this.scale - 1, this.potentialY + (400 - this.potentialY) * (model.energyBar - vOld));
-				DISPLAY.bgPotential.lineTo(r * INIT.M * this.scale, this.potentialY + (400 - this.potentialY) * (model.energyBar - v));
+				DISPLAY.bgPotential.moveTo(r * INIT.M * this.scale - 1, this.potentialY + (400 - this.potentialY) * this.pScale * (model.energyBar - vOld));
+				DISPLAY.bgPotential.lineTo(r * INIT.M * this.scale, this.potentialY + (400 - this.potentialY) * this.pScale * (model.energyBar - v));
 			DISPLAY.bgPotential.stroke();
 			vOld = v;
 		}
