@@ -30,7 +30,7 @@ var drawBackground = function () {
 	NEWTON.fg.clearRect(0, 0, 800, 800);
 	GR.fg.clearRect(0, 0, 800, 800);
 	DISPLAY.circularGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
-	grd = GR.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
+	grd = DISPLAY.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
 	grd.addColorStop(0, DISPLAY.WHITE);
 	grd.addColorStop(1, DISPLAY.BLACK);
 	// Solar perimeter
@@ -50,48 +50,34 @@ var drawBackground = function () {
 	DISPLAY.bg.globalAlpha = 1.0;
 	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.M * INIT.horizon, DISPLAY.BLACK);
 	// Initialize potential canvases
-	NEWTON.bgPotential.clearRect(0, 0, 400, 200);
-	NEWTON.fgPotential.clearRect(0, 0, 400, 200);
-	GR.bgPotential.clearRect(0, 0, 400, 200);
-	GR.fgPotential.clearRect(0, 0, 400, 200);
-	// Newton energy
-	NEWTON.bgPotential.fillStyle = grd;
-	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
-	NEWTON.bgPotential.fillStyle = DISPLAY.BLACK;
-	NEWTON.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * INIT.horizon, 200);
-	// Solar perimeter
-	NEWTON.bgPotential.strokeStyle = DISPLAY.YELLOW;
-		NEWTON.bgPotential.beginPath();
-		NEWTON.bgPotential.moveTo(GLOBALS.rSolar * DISPLAY.scale, 0);
-		NEWTON.bgPotential.lineTo(GLOBALS.rSolar * DISPLAY.scale, 200);
-	NEWTON.bgPotential.stroke();
-	// Effective potentials
-	DISPLAY.energyBar(NEWTON);
-	DISPLAY.potential(NEWTON);
-	// GR energy
-	GR.bgPotential.fillStyle = grd;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.width, 200);
+	DISPLAY.bgPotential.clearRect(0, 0, 400, 400);
+	NEWTON.fgPotential.clearRect(0, 0, 400, 400);
+	GR.fgPotential.clearRect(0, 0, 400, 400);
+	// Background
+	DISPLAY.bgPotential.fillStyle = grd;
+	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.width, 400);
 	// Stable orbit limit
-	GR.bgPotential.globalAlpha = 0.2;
-	GR.bgPotential.fillStyle = DISPLAY.YELLOW;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * isco, 200); 
+	DISPLAY.bgPotential.globalAlpha = 0.2;
+	DISPLAY.bgPotential.fillStyle = DISPLAY.YELLOW;
+	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * isco, 400); 
 	// Ergoregion
-	GR.bgPotential.globalAlpha = 0.6;
-	GR.bgPotential.fillStyle = DISPLAY.CYAN;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * GLOBALS.ergosphere, 200); 
-	// Gravitational radius
-	GR.bgPotential.globalAlpha = 1.0;
-	GR.bgPotential.fillStyle = DISPLAY.BLACK;
-	GR.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * INIT.horizon, 200);
-	// Solar perimeter
-	GR.bgPotential.strokeStyle = DISPLAY.YELLOW;
-		GR.bgPotential.beginPath();
-		GR.bgPotential.moveTo(GLOBALS.rSolar * DISPLAY.scale, 0);
-		GR.bgPotential.lineTo(GLOBALS.rSolar * DISPLAY.scale, 200);
-	GR.bgPotential.stroke();
+	DISPLAY.bgPotential.globalAlpha = 0.6;
+	DISPLAY.bgPotential.fillStyle = DISPLAY.CYAN;
+	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * GLOBALS.ergosphere, 400); 
 	// Effective potentials
-	DISPLAY.energyBar(GR);
+	DISPLAY.potential(NEWTON);
 	DISPLAY.potential(GR);
+	// Horizon
+	DISPLAY.bgPotential.globalAlpha = 1.0;
+	DISPLAY.bgPotential.fillStyle = DISPLAY.BLACK;
+	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * INIT.horizon, 400);
+	// Solar perimeter
+	DISPLAY.bgPotential.strokeStyle = DISPLAY.YELLOW;
+		DISPLAY.bgPotential.beginPath();
+		DISPLAY.bgPotential.moveTo(GLOBALS.rSolar * DISPLAY.scale, 0);
+		DISPLAY.bgPotential.lineTo(GLOBALS.rSolar * DISPLAY.scale, 400);
+	DISPLAY.bgPotential.stroke();
+	DISPLAY.energyBar();
 	// Constants of motion for table
 	NEWTON.lDisplay.innerHTML = (INIT.M * NEWTON.L).toFixed(4);
 	GR.eDisplay.innerHTML = (INIT.M * GR.E).toFixed(6);
@@ -126,7 +112,7 @@ var drawForeground = function () {
 
 var getDom = function () {
 	var orbitPlot = document.getElementById('tracks');
-	var potential = document.getElementById('fgpotn');
+	var potential = document.getElementById('bgpot');
 	DISPLAY.originX = orbitPlot.width / 2;
 	DISPLAY.originY = orbitPlot.height / 2;
 	DISPLAY.width = potential.width;
@@ -135,10 +121,9 @@ var getDom = function () {
 	NEWTON.fg = document.getElementById('fgorbitn').getContext('2d');
 	GR.fg = document.getElementById('fgorbitgr').getContext('2d');
 	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
+	DISPLAY.bgPotential = document.getElementById('bgpot').getContext('2d');
 	NEWTON.fgPotential = document.getElementById('fgpotn').getContext('2d');
-	NEWTON.bgPotential = document.getElementById('bgpotn').getContext('2d');
 	GR.fgPotential = document.getElementById('fgpotgr').getContext('2d');
-	GR.bgPotential = document.getElementById('bgpotgr').getContext('2d');
 	NEWTON.eDisplay = document.getElementById('eNEWTON');
 	NEWTON.lDisplay = document.getElementById('lNEWTON');
 	NEWTON.tDisplay = document.getElementById('timeNEWTON');

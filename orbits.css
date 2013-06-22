@@ -14,14 +14,9 @@ input {
 	top: 20px;
 }
 
-#fgpotn, #bgpotn {
+#fgpotn, #fgpotgr, #bgpot {
 	left: 10px;
 	top: 411px;
-}
-
-#fgpotgr, #bgpotgr {
-	left: 10px;
-	top: 621px;
 }
 
 .bg {

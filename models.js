@@ -52,7 +52,7 @@ var GLOBALS = {
 		this.debug && console.log("H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", E: " + this.dB(h, h0).toFixed(1) + "dBh0");
 		return h;
 	},
-	solve: function (model) {  // Stormer-Verlet integrator, 4th-order
+	solve: function (model) {  // Generalized symplectic integrator
 		var sympBase = function (model, c) { // 2nd-order symplectic building block
 			var halfC = 0.5 * c;
 			model.updateQ(halfC);
@@ -62,7 +62,7 @@ var GLOBALS = {
 		var i, M, r, phiDegrees, tmp;
 		var rOld = model.rOld = model.r;
 		var direction = model.direction;
-		tmp = this.coefficients.length - 1;
+		tmp = this.coefficients.length - 1;  // compose higher orders
 		for (i = 0; i < tmp; i += 1) {
 			sympBase(model, this.coefficients[i]);
 		}

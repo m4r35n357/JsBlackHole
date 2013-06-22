@@ -34,7 +34,7 @@ var DISPLAY = {
 	n: 0,
 	ballSize: 3,
 	blankSize: 4,
-	potentialY: 10,
+	potentialY: 160,
 	phiBH: 0.0,
 	circularGradient: function (canvas, x, y, innerColour, outerColour) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
@@ -124,8 +124,8 @@ var DISPLAY = {
 		model.X = X;
 		model.Y = Y;
 	},
-	energyBar: function (model) {
-		var canvas = model.bgPotential;
+	energyBar: function () {
+		var canvas = DISPLAY.bgPotential;
 		canvas.strokeStyle = this.RED;
 			canvas.beginPath();
 			canvas.moveTo(Math.floor(INIT.horizon * INIT.M * this.scale), this.potentialY);
@@ -137,7 +137,7 @@ var DISPLAY = {
 		var colour = model.colour;
 		var blank = this.blankSize;
 		var energy = this.potentialY;
-		var v = this.potentialY + 180.0 * (model.energyBar - model.V(model.r));
+		var v = this.potentialY + (400 - this.potentialY) * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
 		canvas.clearRect(model.rOld * scaledMass - blank, energy - blank, 2 * blank, v + 2 * blank);
@@ -159,8 +159,8 @@ var DISPLAY = {
 		var tDotValue;
 		var xValue = 395;
 		// dTau/dt plot for GR
-		tDotValue = 200 - 200.0 / model.tDot;
-		canvas.clearRect(xValue - 3, 0, xValue + 3, 200);
+		tDotValue = 400.0 * (1.0 - 1.0 / model.tDot);
+		canvas.clearRect(xValue - 3, 0, xValue + 3, 400);
 		canvas.fillStyle = this.WHITE;
 			canvas.beginPath();
 			canvas.arc(xValue, tDotValue, this.ballSize, 0, GLOBALS.TWOPI, true);
@@ -168,22 +168,22 @@ var DISPLAY = {
 		canvas.fill();
 		canvas.strokeStyle = this.WHITE;
 			canvas.beginPath();
-			canvas.moveTo(xValue, 200);
+			canvas.moveTo(xValue, 400);
 			canvas.lineTo(xValue, tDotValue);
 		canvas.stroke();
 	},
 	potential: function (model) {
 		var i, r, v, vOld;
-		var horizon = Math.floor(INIT.horizon * this.scale);
+		var horizon = Math.ceil(INIT.horizon * this.scale);
 		vOld = model.V(horizon / this.scale);
-		model.bgPotential.strokeStyle = this.BLACK;
+		DISPLAY.bgPotential.strokeStyle = model.colour;
 		for (i = horizon; i < this.originX; i += 1) {
 			r = i / (INIT.M * this.scale);
 			v = model.V(r);
-				model.bgPotential.beginPath();
-				model.bgPotential.moveTo(r * INIT.M * this.scale - 1, this.potentialY + 180.0 * (model.energyBar - vOld));
-				model.bgPotential.lineTo(r * INIT.M * this.scale, this.potentialY + 180.0 * (model.energyBar - v));
-			model.bgPotential.stroke();
+				DISPLAY.bgPotential.beginPath();
+				DISPLAY.bgPotential.moveTo(r * INIT.M * this.scale - 1, this.potentialY + (400 - this.potentialY) * (model.energyBar - vOld));
+				DISPLAY.bgPotential.lineTo(r * INIT.M * this.scale, this.potentialY + (400 - this.potentialY) * (model.energyBar - v));
+			DISPLAY.bgPotential.stroke();
 			vOld = v;
 		}
 	},
