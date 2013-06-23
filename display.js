@@ -35,7 +35,7 @@ var DISPLAY = {
 	n: 0,
 	ballSize: 3,
 	blankSize: 4,
-	potentialY: 160,
+	potentialY: 120,
 	phiBH: 0.0,
 	circularGradient: function (canvas, x, y, innerColour, outerColour) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
@@ -137,11 +137,11 @@ var DISPLAY = {
 		var canvas = model.fgPotential;
 		var colour = model.colour;
 		var blank = this.blankSize;
-		var energy = this.potentialY;
-		var v = this.potentialY + (400 - this.potentialY) * this.pScale * (model.energyBar - model.V(model.r));
+		var energyBar = this.potentialY;
+		var v = energyBar + (400 - energyBar) * this.pScale * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
-		canvas.clearRect(model.rOld * scaledMass - blank, energy - blank, 2 * blank, v + 2 * blank);
+		canvas.clearRect(model.rOld * scaledMass - blank, energyBar - blank, 2 * blank, v + 2 * blank);
 		// Potential ball
 		canvas.fillStyle = colour;
 			canvas.beginPath();
@@ -152,7 +152,7 @@ var DISPLAY = {
 		canvas.strokeStyle = colour;
 			canvas.beginPath();
 			canvas.moveTo(r, v);
-			canvas.lineTo(r, energy);
+			canvas.lineTo(r, energyBar);
 		canvas.stroke();
 	},
 	plotTauDot: function (model) {
@@ -175,19 +175,15 @@ var DISPLAY = {
 		canvas.stroke();
 	},
 	potential: function (model) {
-		var i, r, v, vOld;
-		var horizon = Math.ceil(INIT.horizon * this.scale);
-		vOld = model.V(horizon / this.scale);
-		DISPLAY.bgPotential.strokeStyle = model.colour;
-		for (i = horizon; i < this.originX; i += 1) {
-			r = i / (INIT.M * this.scale);
-			v = model.V(r);
-				DISPLAY.bgPotential.beginPath();
-				DISPLAY.bgPotential.moveTo(r * INIT.M * this.scale - 1, this.potentialY + (400 - this.potentialY) * this.pScale * (model.energyBar - vOld));
-				DISPLAY.bgPotential.lineTo(r * INIT.M * this.scale, this.potentialY + (400 - this.potentialY) * this.pScale * (model.energyBar - v));
-			DISPLAY.bgPotential.stroke();
-			vOld = v;
+		var canvas = DISPLAY.bgPotential;
+		var energyBar = this.potentialY;
+		var i, r;
+		canvas.strokeStyle = model.colour;
+		canvas.beginPath();
+		for (i = Math.ceil(INIT.horizon * this.scale); i < this.originX; i += 1) {
+			canvas.lineTo(i, energyBar + (400 - energyBar) * this.pScale * (model.energyBar - model.V(i / (INIT.M * this.scale))));
 		}
+		canvas.stroke();
 	},
 	isco: function () {
 		var a = INIT.a;
