@@ -49,7 +49,7 @@ var GLOBALS = {
 	h: function (model) {  // the radial "Hamiltonian"
 		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
 		var h0 = model.h0;
-		this.debug && console.log("H0: " + h0.toExponential(3) + ", H: " + h.toExponential(3) + ", E: " + this.dB(h, h0).toFixed(1) + "dBh0");
+		this.debug && console.log("H0: " + h0.toExponential(6) + ", H: " + h.toExponential(6) + ", E: " + this.dB(h, h0).toFixed(1) + "dBh0");
 		return h;
 	},
 	solve: function (model) {  // Generalized symplectic integrator

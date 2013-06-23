@@ -25,8 +25,8 @@ var DISPLAY = {
 	// Misc. constants
 	BLACK: "#000000",
 	RED: "#ff0000",
-	GREEN: "#004000",
-	BLUE: "#000080",
+	GREEN: "#00ff00",
+	BLUE: "#0000ff",
 	YELLOW: "#808000",
 	CYAN: "#008080",
 	MAGENTA: "#800080",
