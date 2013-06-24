@@ -48,8 +48,6 @@ var GLOBALS = {
 	},
 	h: function (model) {  // the radial "Hamiltonian"
 		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
-		var h0 = model.h0;
-		this.debug && console.log("H0: " + h0.toExponential(6) + ", H: " + h.toExponential(6) + ", E: " + this.dB(h, h0).toFixed(1) + "dBh0");
 		return h;
 	},
 	solve: function (model) {  // Generalized symplectic integrator
@@ -59,9 +57,10 @@ var GLOBALS = {
 			model.updateP(c);
 			model.updateQ(halfC);
 		};
-		var i, M, r, phiDegrees, tmp;
+		var i, M, r, phiDegrees, tmp, h;
 		var rOld = model.rOld = model.r;
 		var direction = model.direction;
+		var h0 = model.h0;
 		tmp = this.coefficients.length - 1;  // compose higher orders
 		for (i = 0; i < tmp; i += 1) {
 			sympBase(model, this.coefficients[i]);
@@ -83,7 +82,8 @@ var GLOBALS = {
 				this.debug && console.log(model.name + ": Aphelion");
 			}
 			model.direction = - direction;
-			this.h(model);
+			h = this.h(model);
+			this.debug && console.log("H0: " + h0.toExponential(6) + ", H: " + h.toExponential(6) + ", E: " + this.dB(h, h0).toFixed(1) + "dBh0");
 		}
 	},
 	initialize: function () {

@@ -135,13 +135,14 @@ var DISPLAY = {
 	},
 	plotPotential: function (model) {
 		var canvas = model.fgPotential;
-		var colour = model.colour;
+		var colour;
 		var blank = this.blankSize;
 		var energyBar = this.potentialY;
 		var v = energyBar + (400 - energyBar) * this.pScale * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
 		canvas.clearRect(model.rOld * scaledMass - blank, energyBar - blank, 2 * blank, v + 2 * blank);
+		colour = GLOBALS.dB(GLOBALS.h(model), model.h0) < -60.0 ? model.colour : this.MAGENTA;
 		// Potential ball
 		canvas.fillStyle = colour;
 			canvas.beginPath();
