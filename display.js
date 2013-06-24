@@ -157,11 +157,11 @@ var DISPLAY = {
 	},
 	plotTauDot: function (model) {
 		var canvas = model.fgPotential;
-		var colour = this.GREY;
+		var colour = this.YELLOW;
 		var tDotValue;
 		var xValue = 395;
 		// dTau/dt plot for GR
-		tDotValue = 400.0 * (1.0 - 1.0 / model.tDot);
+		tDotValue = 400.0 / model.tDot;
 		canvas.clearRect(xValue - 3, 0, xValue + 3, 400);
 		canvas.fillStyle = colour;
 			canvas.beginPath();
