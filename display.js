@@ -127,7 +127,7 @@ var DISPLAY = {
 	},
 	energyBar: function () {
 		var canvas = DISPLAY.bgPotential;
-		canvas.strokeStyle = this.RED;
+		canvas.strokeStyle = this.BLACK;
 			canvas.beginPath();
 			canvas.moveTo(Math.floor(INIT.horizon * INIT.M * this.scale), this.potentialY);
 			canvas.lineTo(this.originX, this.potentialY);
@@ -135,30 +135,29 @@ var DISPLAY = {
 	},
 	plotPotential: function (model) {
 		var canvas = model.fgPotential;
-		var colour;
+		var colour = model.colour;
 		var blank = this.blankSize;
 		var energyBar = this.potentialY;
 		var v = energyBar + (400 - energyBar) * this.pScale * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
 		canvas.clearRect(model.rOld * scaledMass - blank, energyBar - blank, 2 * blank, v + 2 * blank);
-		colour = GLOBALS.dB(GLOBALS.h(model), model.h0) < -60.0 ? model.colour : this.MAGENTA;
-		// Potential ball
-		canvas.fillStyle = colour;
-			canvas.beginPath();
-			canvas.arc(r, v, this.ballSize, 0, GLOBALS.TWOPI, true);
-			canvas.closePath();
-		canvas.fill();
 		// Potential dropline
 		canvas.strokeStyle = colour;
 			canvas.beginPath();
 			canvas.moveTo(r, v);
 			canvas.lineTo(r, energyBar);
 		canvas.stroke();
+		// Potential ball
+		canvas.fillStyle = GLOBALS.dB(GLOBALS.h(model), model.h0) < -90.0 ? colour : GLOBALS.dB(GLOBALS.h(model), model.h0) < -60.0 ? this.YELLOW : this.RED;
+			canvas.beginPath();
+			canvas.arc(r, v, this.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.closePath();
+		canvas.fill();
 	},
 	plotTauDot: function (model) {
 		var canvas = model.fgPotential;
-		var colour = this.YELLOW;
+		var colour = this.MAGENTA;
 		var tDotValue;
 		var xValue = 395;
 		// dTau/dt plot for GR
