@@ -25,13 +25,13 @@ var drawBackground = function () {
 	var i;
 	var isco = DISPLAY.isco();
 	// Initialize orbit canvases
-	DISPLAY.bg.clearRect(0, 0, 800, 800);
-	DISPLAY.tracks.clearRect(0, 0, 800, 800);
-	NEWTON.fg.clearRect(0, 0, 800, 800);
-	GR.fg.clearRect(0, 0, 800, 800);
-	DISPLAY.circularGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.WHITE, DISPLAY.BLACK);
+	DISPLAY.bg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
+	DISPLAY.tracks.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
+	NEWTON.fg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
+	GR.fg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
+	DISPLAY.circularGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.GREY, DISPLAY.BLACK);
 	grd = DISPLAY.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
-	grd.addColorStop(0, DISPLAY.WHITE);
+	grd.addColorStop(0, DISPLAY.GREY);
 	grd.addColorStop(1, DISPLAY.BLACK);
 	// Solar perimeter
 	DISPLAY.bg.strokeStyle = DISPLAY.YELLOW;
@@ -50,32 +50,32 @@ var drawBackground = function () {
 	DISPLAY.bg.globalAlpha = 1.0;
 	DISPLAY.circle(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, INIT.M * INIT.horizon, DISPLAY.BLACK);
 	// Initialize potential canvases
-	DISPLAY.bgPotential.clearRect(0, 0, 400, 400);
-	NEWTON.fgPotential.clearRect(0, 0, 400, 400);
-	GR.fgPotential.clearRect(0, 0, 400, 400);
+	DISPLAY.bgPotential.clearRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
+	NEWTON.fgPotential.clearRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
+	GR.fgPotential.clearRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
 	// Background
 	DISPLAY.bgPotential.fillStyle = grd;
-	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.width, 400);
+	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.width, DISPLAY.pSize);
 	// Stable orbit limit
 	DISPLAY.bgPotential.globalAlpha = 0.2;
 	DISPLAY.bgPotential.fillStyle = DISPLAY.YELLOW;
-	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * isco, 400); 
+	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * isco, DISPLAY.pSize); 
 	// Ergoregion
 	DISPLAY.bgPotential.globalAlpha = 0.6;
 	DISPLAY.bgPotential.fillStyle = DISPLAY.CYAN;
-	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * GLOBALS.ergosphere, 400); 
+	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * GLOBALS.ergosphere, DISPLAY.pSize); 
 	// Effective potentials
 	DISPLAY.potential(NEWTON);
 	DISPLAY.potential(GR);
 	// Horizon
 	DISPLAY.bgPotential.globalAlpha = 1.0;
 	DISPLAY.bgPotential.fillStyle = DISPLAY.BLACK;
-	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * INIT.horizon, 400);
+	DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.scale * INIT.M * INIT.horizon, DISPLAY.pSize);
 	// Solar perimeter
 	DISPLAY.bgPotential.strokeStyle = DISPLAY.YELLOW;
 		DISPLAY.bgPotential.beginPath();
 		DISPLAY.bgPotential.moveTo(GLOBALS.rSolar * DISPLAY.scale, 0);
-		DISPLAY.bgPotential.lineTo(GLOBALS.rSolar * DISPLAY.scale, 400);
+		DISPLAY.bgPotential.lineTo(GLOBALS.rSolar * DISPLAY.scale, DISPLAY.pSize);
 	DISPLAY.bgPotential.stroke();
 	DISPLAY.energyBar();
 	// Constants of motion for table
@@ -113,6 +113,8 @@ var drawForeground = function () {
 var getDom = function () {
 	var orbitPlot = document.getElementById('tracks');
 	var potential = document.getElementById('bgpot');
+	DISPLAY.oSize = orbitPlot.width;
+	DISPLAY.pSize = potential.width;
 	DISPLAY.originX = orbitPlot.width / 2;
 	DISPLAY.originY = orbitPlot.height / 2;
 	DISPLAY.width = potential.width;

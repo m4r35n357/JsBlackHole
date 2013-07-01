@@ -138,7 +138,7 @@ var DISPLAY = {
 		var colour = model.colour;
 		var blank = this.blankSize;
 		var energyBar = this.potentialY;
-		var v = energyBar + (400 - energyBar) * this.pScale * (model.energyBar - model.V(model.r));
+		var v = energyBar + (DISPLAY.pSize - energyBar) * this.pScale * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
 		canvas.clearRect(model.rOld * scaledMass - blank, energyBar - blank, 2 * blank, v + 2 * blank);
@@ -159,10 +159,10 @@ var DISPLAY = {
 		var canvas = model.fgPotential;
 		var colour = this.MAGENTA;
 		var tDotValue;
-		var xValue = 395;
+		var xValue = DISPLAY.pSize - 5;
 		// dTau/dt plot for GR
-		tDotValue = 400.0 / model.tDot;
-		canvas.clearRect(xValue - 3, 0, xValue + 3, 400);
+		tDotValue = DISPLAY.pSize / model.tDot;
+		canvas.clearRect(xValue - 3, 0, xValue + 3, DISPLAY.pSize);
 		canvas.fillStyle = colour;
 			canvas.beginPath();
 			canvas.arc(xValue, tDotValue, this.ballSize, 0, GLOBALS.TWOPI, true);
@@ -170,7 +170,7 @@ var DISPLAY = {
 		canvas.fill();
 		canvas.strokeStyle = colour;
 			canvas.beginPath();
-			canvas.moveTo(xValue, 400);
+			canvas.moveTo(xValue, DISPLAY.pSize);
 			canvas.lineTo(xValue, tDotValue);
 		canvas.stroke();
 	},
@@ -181,7 +181,7 @@ var DISPLAY = {
 		canvas.strokeStyle = model.colour;
 		canvas.beginPath();
 		for (i = Math.ceil(INIT.horizon * this.scale); i < this.originX; i += 1) {
-			canvas.lineTo(i, energyBar + (400 - energyBar) * this.pScale * (model.energyBar - model.V(i / (INIT.M * this.scale))));
+			canvas.lineTo(i, energyBar + (DISPLAY.pSize - energyBar) * this.pScale * (model.energyBar - model.V(i / (INIT.M * this.scale))));
 		}
 		canvas.stroke();
 	},
