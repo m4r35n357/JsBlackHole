@@ -27,15 +27,16 @@ var DISPLAY = {
 	RED: "#ff0000",
 	GREEN: "#00ff00",
 	BLUE: "#0000ff",
-	YELLOW: "#808000",
+	YELLOW: "#ffff00",
 	CYAN: "#008080",
 	MAGENTA: "#800080",
+	ORANGE: "#ff8000",
 	WHITE: "#ffffff",
 	GREY: "#a0a0a0",
 	n: 0,
 	ballSize: 3,
 	blankSize: 4,
-	potentialY: 120,
+	potentialY: 100,
 	phiBH: 0.0,
 	circularGradient: function (canvas, x, y, innerColour, outerColour) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
@@ -149,9 +150,10 @@ var DISPLAY = {
 			canvas.lineTo(r, energyBar);
 		canvas.stroke();
 		// Potential ball
-		canvas.fillStyle = GLOBALS.dB(GLOBALS.h(model), model.h0) < -90.0 ? colour : GLOBALS.dB(GLOBALS.h(model), model.h0) < -60.0 ? this.YELLOW : this.RED;
+		canvas.fillStyle = GLOBALS.dB(GLOBALS.h(model), model.h0) < -120.0 ? colour : GLOBALS.dB(GLOBALS.h(model), model.h0) < -90.0 ? this.YELLOW : GLOBALS.dB(GLOBALS.h(model), model.h0) < -60.0 ? this.ORANGE : this.RED;
 			canvas.beginPath();
-			canvas.arc(r, v, this.ballSize, 0, GLOBALS.TWOPI, true);
+//			canvas.arc(r, v, this.ballSize, 0, GLOBALS.TWOPI, true);
+			canvas.arc(r, energyBar, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
 	},
