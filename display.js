@@ -152,7 +152,6 @@ var DISPLAY = {
 		// Potential ball
 		canvas.fillStyle = GLOBALS.dB(GLOBALS.h(model), model.h0) < -120.0 ? colour : GLOBALS.dB(GLOBALS.h(model), model.h0) < -90.0 ? this.YELLOW : GLOBALS.dB(GLOBALS.h(model), model.h0) < -60.0 ? this.ORANGE : this.RED;
 			canvas.beginPath();
-//			canvas.arc(r, v, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.arc(r, energyBar, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
 		canvas.fill();
