@@ -21,14 +21,14 @@
 "use strict";
 
 var GLOBALS = {
-	debug: false,
+	debug: true,
 	TWOPI: 2.0 * Math.PI,
 	LOG10: Math.log(10.0),
 	// Physical constants
-	c: 299792.458,
+	c: 299792458.0,
 	G: 6.67398e-11,
 	mSolar: 1.9891e30,
-	rSolar: 700000.0,
+	rSolar: 700000000.0,
 	ergosphere: 2.0,
 	dB: function (val, ref) {
 		return 10.0 * Math.log(Math.abs((val - ref) / ref)) / this.LOG10;
@@ -73,11 +73,11 @@ var GLOBALS = {
 			phiDegrees = this.phiDMS(model.phi);
 			M = INIT.M;
 			if (direction === -1) {
-				model.rMinDisplay.innerHTML = (M * r).toFixed(1);
+				model.rMinDisplay.innerHTML = (M * r).toExponential(3);
 				model.pDisplay.innerHTML = phiDegrees;
 				this.debug && console.log(model.name + ": Perihelion");
 			} else {
-				model.rMaxDisplay.innerHTML = (M * r).toFixed(1);
+				model.rMaxDisplay.innerHTML = (M * r).toExponential(3);
 				model.aDisplay.innerHTML = phiDegrees;
 				this.debug && console.log(model.name + ": Aphelion");
 			}
@@ -147,9 +147,9 @@ var INIT = {
 	},
 	getHtmlValues: function () {
 		GLOBALS.debug && console.info("Restarting . . . ");
-		this.timeStep = this.getFloatById('timestep') * 500000000.0;
+		this.timeStep = this.getFloatById('timestep');
 		this.lFac = this.getFloatById('lfactor') / 100.0;
-		this.M = this.getFloatById('mass') * 0.000000001 * GLOBALS.mSolar * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
+		this.M = this.getFloatById('mass') * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
 		GLOBALS.debug && console.info(this.name + ".M: " + this.M.toFixed(3));
 		this.r = this.getFloatById('radius') / this.M;
 		GLOBALS.debug && console.info(this.name + ".r: " + this.r.toFixed(1));

@@ -23,12 +23,12 @@
 			<form id="scenarioForm" method="post">
 				<table border="0">
 					<tr>
-						<td align="right">RZoom</td><td><input id="scale" type="text" value="1" size="8" /></td>
-						<td align="right">Mass, &odot;</td><td><input id="mass" type="text" value="1.0" size="8" /></td>
+						<td align="right">RZoom</td><td><input id="scale" type="text" value="0.0000000075" size="12" /></td>
+						<td align="right">Mass, kg;</td><td><input id="mass" type="text" value="1.9891e30" size="8" /></td>
 					</tr>
 					<tr>
-						<td align="right">&delta;T</td><td><input id="timestep" type="text" value="1.0" size="12" /></td>
-						<td align="right">"radius", km</td><td><input id="radius" type="text" value="58000000" size="8" /></td>
+						<td align="right">&delta;T</td><td><input id="timestep" type="text" value="1000000000" size="12" /></td>
+						<td align="right">"radius", m</td><td><input id="radius" type="text" value="58e9" size="8" /></td>
 					</tr>
 					<tr>
 						<td align="right">L &percnt;</td><td><input id="lfactor" type="text" value="97.9" size="4" /></td>
@@ -38,7 +38,7 @@
 							<option value="0.75">&nbsp;0.75</option>
 							<option value="0.50">&nbsp;0.5</option>
 							<option value="0.25">&nbsp;0.25</option>
-							<option value="0.00">&nbsp;0.0</option>
+							<option value="0.00" selected="selected">&nbsp;0.0</option>
 							<option value="-0.25">-0.25</option>
 							<option value="-0.50">-0.5</option>
 							<option value="-0.75">-0.75</option>
@@ -46,7 +46,7 @@
 						</select></td>
 					</tr>
 					<tr>
-						<td align="right">PZoom</td><td><input id="pscale" type="text" value="1" size="8" /></td>
+						<td align="right">PZoom</td><td><input id="pscale" type="text" value="1600000000" size="12" /></td>
 						<td align="right">Tracks</td><td><input id="showTracks" type="checkbox" checked /></td>
 					</tr>
 					<tr>
@@ -67,16 +67,16 @@
 		<div id="output">
 			<table border="0">
 				<tr><th></th><th class="newton">Newton</th><th class="gr">GR</th><th class="gr">GR</th></tr>			
-				<tr><td>E</td><td id="eNEWTON" class="newton">-</td><td id="eGR" class="gr"></td><td id="rs" class="gr"><td>EH, km</td></tr>
+				<tr><td>E</td><td id="eNEWTON" class="newton">-</td><td id="eGR" class="gr"></td><td id="rs" class="gr"><td>EH, m</td></tr>
 				<tr><td>L</td><td id="lNEWTON" class="newton"></td><td id="lGR" class="gr"></td><td id="tauGR" class="gr"><td>&tau;, s</td></tr>
 				<tr><td>t, s</td><td id="timeNEWTON" class="newton"></td><td id="tGR" class="gr"></td><td id="tdotGR" class="gr"></td><td>dt/d&tau;, &gamma;</td></tr>
-				<tr><td>r, km</td><td id="rNEWTON" class="newton"></td><td id="rGR" class="gr"></td><td id="rdotGR" class="gr"></td><td>dr/d&tau;</td></tr>
+				<tr><td>r, m</td><td id="rNEWTON" class="newton"></td><td id="rGR" class="gr"></td><td id="rdotGR" class="gr"></td><td>dr/d&tau;</td></tr>
 				<tr><td>&phi;</td><td id="phiNEWTON" class="newton"></td><td id="phiGR" class="gr"></td><td id="phidotGR" class="gr"></td><td>d&phi;/d&tau;</td></tr>
 				<tr><td>r<sub>min</sub></td><td id="rminNEWTON" class="newton">-</td><td id="rminGR" class="gr">-</td></tr>
 				<tr><td>&phi;<sub>min</sub></td><td id="pNEWTON" class="newton">-</td><td id="pGR" class="gr">-</td></tr>
 				<tr><td>r<sub>max</sub></td><td id="rmaxNEWTON" class="newton">-</td><td id="rmaxGR" class="gr">-</td></tr>
 				<tr><td>&phi;<sub>max</sub></td><td id="aNEWTON" class="newton">-</td><td id="aGR" class="gr">-</td></tr>
-				<tr><td>v, km/s</td><td id="vNEWTON" class="newton">-</td><td id="vGR" class="gr">-</td></tr>
+				<tr><td>v, m/s</td><td id="vNEWTON" class="newton">-</td><td id="vGR" class="gr">-</td></tr>
 			</table>
 		</div>
 

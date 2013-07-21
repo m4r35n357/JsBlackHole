@@ -79,10 +79,10 @@ var drawBackground = function () {
 	DISPLAY.bgPotential.stroke();
 	DISPLAY.energyBar();
 	// Constants of motion for table
-	NEWTON.lDisplay.innerHTML = (INIT.M * NEWTON.L).toFixed(4);
-	GR.eDisplay.innerHTML = (INIT.M * GR.E).toFixed(6);
-	GR.lDisplay.innerHTML = (INIT.M * GR.L).toFixed(4);
-	GR.rsDisplay.innerHTML = (INIT.M * INIT.horizon).toFixed(3);
+	NEWTON.lDisplay.innerHTML = (INIT.M * NEWTON.L).toExponential(3);
+	GR.eDisplay.innerHTML = GR.E.toFixed(6);
+	GR.lDisplay.innerHTML = (INIT.M * GR.L).toExponential(3);
+	GR.rsDisplay.innerHTML = (INIT.M * INIT.horizon).toExponential(3);
 	// time step counter
 	DISPLAY.n = 0;
 };
@@ -153,7 +153,7 @@ var getDom = function () {
 	GR.tauDotDisplay = document.getElementById('taudotGR');
 	GR.vDisplay = document.getElementById('vGR');
 	INIT.getHtmlValues();
-	DISPLAY.scale = INIT.getFloatById('scale') * 0.000005;
+	DISPLAY.scale = INIT.getFloatById('scale');
 	DISPLAY.pScale = INIT.getFloatById('pscale');
 	if (document.getElementById('showTracks').checked) {
 		DISPLAY.showTracks = true;

@@ -58,21 +58,21 @@ var DISPLAY = {
 		var properTime = this.n * INIT.timeStep * M / c;
 		var gamma;
 		if (! NEWTON.collided) {
-			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(1);
+			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toExponential(3);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
 			NEWTON.tDisplay.innerHTML = properTime.toExponential(2);
-			NEWTON.vDisplay.innerHTML = GLOBALS.speed(NEWTON).toFixed(1);
+			NEWTON.vDisplay.innerHTML = GLOBALS.speed(NEWTON).toExponential(3);
 		}
 		if (! GR.collided) {
 			gamma = GR.tDot;
 			GR.tDisplay.innerHTML = (M * GR.t / c).toExponential(2);
-			GR.rDisplay.innerHTML = (M * GR.r).toFixed(1);
+			GR.rDisplay.innerHTML = (M * GR.r).toExponential(3);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
 			GR.tauDisplay.innerHTML = properTime.toExponential(2);
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot / M * 360.0 / GLOBALS.TWOPI).toFixed(3);
-			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / gamma).toFixed(1);
+			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / gamma).toExponential(3);
 		}
 	},
 	pointX: function (r, phi) {
@@ -181,8 +181,8 @@ var DISPLAY = {
 		var i, r;
 		canvas.strokeStyle = model.colour;
 		canvas.beginPath();
-		for (i = Math.ceil(INIT.horizon * this.scale); i < this.originX; i += 1) {
-			canvas.lineTo(i, energyBar + (DISPLAY.pSize - energyBar) * this.pScale * (model.energyBar - model.V(i / (INIT.M * this.scale))));
+		for (i = Math.floor(INIT.horizon * this.scale); i < this.pSize; i += 1) {
+			canvas.lineTo(i, energyBar + (this.pSize - energyBar) * this.pScale * (model.energyBar - model.V(i / (INIT.M * this.scale))));
 		}
 		canvas.stroke();
 	},
