@@ -21,7 +21,7 @@
 "use strict";
 
 var GLOBALS = {
-	debug: true,
+	debug: false,
 	TWOPI: 2.0 * Math.PI,
 	LOG10: Math.log(10.0),
 	// Physical constants

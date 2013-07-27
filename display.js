@@ -139,9 +139,10 @@ var DISPLAY = {
 		var colour = model.colour;
 		var blank = this.blankSize;
 		var energyBar = this.potentialY;
-		var v = energyBar + (DISPLAY.pSize - energyBar) * this.pScale * (model.energyBar - model.V(model.r));
+		var v = energyBar + this.pScale * this.pSize * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
+		var dBerror = GLOBALS.dB(GLOBALS.h(model), model.h0);
 		canvas.clearRect(model.rOld * scaledMass - blank, energyBar - blank, 2 * blank, v + 2 * blank);
 		// Potential dropline
 		canvas.strokeStyle = colour;
@@ -150,7 +151,7 @@ var DISPLAY = {
 			canvas.lineTo(r, energyBar);
 		canvas.stroke();
 		// Potential ball
-		canvas.fillStyle = GLOBALS.dB(GLOBALS.h(model), model.h0) < -120.0 ? colour : GLOBALS.dB(GLOBALS.h(model), model.h0) < -90.0 ? this.YELLOW : GLOBALS.dB(GLOBALS.h(model), model.h0) < -60.0 ? this.ORANGE : this.RED;
+		canvas.fillStyle = dBerror < -120.0 ? colour : dBerror < -90.0 ? this.YELLOW : dBerror < -60.0 ? this.ORANGE : this.RED;
 			canvas.beginPath();
 			canvas.arc(r, energyBar, this.ballSize, 0, GLOBALS.TWOPI, true);
 			canvas.closePath();
@@ -177,12 +178,11 @@ var DISPLAY = {
 	},
 	potential: function (model) {
 		var canvas = DISPLAY.bgPotential;
-		var energyBar = this.potentialY;
-		var i, r;
+		var i;
 		canvas.strokeStyle = model.colour;
 		canvas.beginPath();
 		for (i = Math.floor(INIT.horizon * this.scale); i < this.pSize; i += 1) {
-			canvas.lineTo(i, energyBar + (this.pSize - energyBar) * this.pScale * (model.energyBar - model.V(i / (INIT.M * this.scale))));
+			canvas.lineTo(i, this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(i / (INIT.M * this.scale))));
 		}
 		canvas.stroke();
 	},

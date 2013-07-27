@@ -110,7 +110,7 @@ var drawForeground = function () {
 //	DISPLAY.refreshId = window.requestAnimationFrame(drawForeground);
 };
 
-var getDom = function () {
+var getDom = function () {  // read values from HTML page
 	var orbitPlot = document.getElementById('tracks');
 	var potential = document.getElementById('bgpot');
 	DISPLAY.oSize = orbitPlot.width;
@@ -163,7 +163,7 @@ var getDom = function () {
 	document.getElementById('scenarioForm').onsubmit = scenarioChange;
 };
 
-var scenarioChange = function () {
+var scenarioChange = function () {  // reload with form data
 	getDom();
 	GLOBALS.initialize();
 	// Newton initial conditions
@@ -181,7 +181,7 @@ var scenarioChange = function () {
 	// Start drawing . . .
 	drawBackground();
 	drawForeground();
-	return false;
+	return false;  // don't reload from scratch
 };
 
 window.onload = function () {
