@@ -71,7 +71,7 @@ var DISPLAY = {
 			GR.tauDisplay.innerHTML = properTime.toExponential(2);
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
-			GR.phiDotDisplay.innerHTML = (GR.phiDot / M * 360.0 / GLOBALS.TWOPI).toFixed(3);
+			GR.phiDotDisplay.innerHTML = (GR.phiDot / M).toFixed(3);
 			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / gamma).toExponential(3);
 		}
 	},
