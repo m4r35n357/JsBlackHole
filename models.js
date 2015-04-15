@@ -89,54 +89,54 @@ var GLOBALS = {
 		}
 	},
 	initialize: function () {
-		this.coefficients = [];
-		switch (INIT.order) {
-		case 2:
-			this.coefficients.push(1.0);
+		switch(INIT.order) {
+		    case 2:
+		        this.coefficients = [1.0];
 			break;
-		case 4:
+		    case 4:
 			var CUBEROOT2 = Math.pow(2.0, 1.0 / 3.0);
-			var y0 = 1.0 / (2.0 - CUBEROOT2);
-			var y1 = - y0 * CUBEROOT2;
-			this.coefficients.push(y0);
-			this.coefficients.push(y1);
+			var y = 1.0 / (2.0 - CUBEROOT2);
+			this.coefficients = [y, - y * CUBEROOT2];
 			break;
-		case 6:
-			this.coefficients.push(0.78451361047755726381949763);
-			this.coefficients.push(0.23557321335935813368479318);
-			this.coefficients.push(-1.17767998417887100694641568);
-			this.coefficients.push(1.31518632068391121888424973);
+		    case 6:
+		        this.coefficients = [0.78451361047755726381949763,
+						0.23557321335935813368479318,
+						-1.17767998417887100694641568,
+						1.31518632068391121888424973];
 			break;
-		case 8:
-			this.coefficients.push(0.74167036435061295344822780);
-			this.coefficients.push(-0.40910082580003159399730010);
-			this.coefficients.push(0.19075471029623837995387626);
-			this.coefficients.push(-0.57386247111608226665638773);
-			this.coefficients.push(0.29906418130365592384446354);
-			this.coefficients.push(0.33462491824529818378495798);
-			this.coefficients.push(0.31529309239676659663205666);
-			this.coefficients.push(-0.79688793935291635401978884);
+		    case 8:
+		        this.coefficients = [0.74167036435061295344822780,
+						-0.40910082580003159399730010,
+						0.19075471029623837995387626,
+						-0.57386247111608226665638773,
+						0.29906418130365592384446354,
+						0.33462491824529818378495798,
+						0.31529309239676659663205666,
+						-0.79688793935291635401978884];
 			break;
-		case 10:
-			this.coefficients.push(0.09040619368607278492161150);
-			this.coefficients.push(0.53591815953030120213784983);
-			this.coefficients.push(0.35123257547493978187517736);
-			this.coefficients.push(-0.31116802097815835426086544);
-			this.coefficients.push(-0.52556314194263510431065549);
-			this.coefficients.push(0.14447909410225247647345695);
-			this.coefficients.push(0.02983588609748235818064083);
-			this.coefficients.push(0.17786179923739805133592238);
-			this.coefficients.push(0.09826906939341637652532377);
-			this.coefficients.push(0.46179986210411860873242126);
-			this.coefficients.push(-0.33377845599881851314531820);
-			this.coefficients.push(0.07095684836524793621031152);
-			this.coefficients.push(0.23666960070126868771909819);
-			this.coefficients.push(-0.49725977950660985445028388);
-			this.coefficients.push(-0.30399616617237257346546356);
-			this.coefficients.push(0.05246957188100069574521612);
-			this.coefficients.push(0.44373380805019087955111365);
+		    case 10:
+		        this.coefficients = [0.09040619368607278492161150,
+						0.53591815953030120213784983,
+						0.35123257547493978187517736,
+						-0.31116802097815835426086544,
+						-0.52556314194263510431065549,
+						0.14447909410225247647345695,
+						0.02983588609748235818064083,
+						0.17786179923739805133592238,
+						0.09826906939341637652532377,
+						0.46179986210411860873242126,
+						-0.33377845599881851314531820,
+						0.07095684836524793621031152,
+						0.23666960070126868771909819,
+						-0.49725977950660985445028388,
+						-0.30399616617237257346546356,
+						0.05246957188100069574521612,
+						0.44373380805019087955111365];
 			break;
-		}
+		    default:
+		        this.coefficients = [1.0];
+			break;
+		} 
 	},
 };
 
