@@ -87,28 +87,35 @@ var drawBackground = function () {
 	DISPLAY.n = 0;
 };
 
+var plotModel = function (model) {
+	if (! model.collided) {
+		model.update();
+		DISPLAY.plotOrbit(model);
+		DISPLAY.plotPotential(model);
+	}
+}
+
 var drawForeground = function () {  // main loop
 	DISPLAY.refreshId && window.cancelAnimationFrame(DISPLAY.refreshId);
 	if ((DISPLAY.n % 10) === 0) {
 		DISPLAY.varTable();
 	}
 	DISPLAY.plotRotation(); // BH spin direction indicator
-	if (! NEWTON.collided) {
-		NEWTON.update();
-		DISPLAY.plotOrbit(NEWTON.fg, NEWTON);
-		DISPLAY.plotPotential(NEWTON);
-	}
-	if (! GR.collided) {
-		GR.update();
-		DISPLAY.plotOrbit(GR.fg, GR);
-		DISPLAY.plotPotential(GR);
-		DISPLAY.plotTauDot(GR);
-	}
+	plotModel(NEWTON);
+	plotModel(GR);
 	DISPLAY.n += 1;
 	DISPLAY.refreshId = window.requestAnimationFrame(drawForeground);
 };
 
-var scenarioChange = function () {  // reload with new form data
+var setupModel = function (model, colour) {
+	INIT.initialize(model);
+	model.initialize();
+	model.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * model.r, model.phi);
+	model.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * model.r, model.phi);
+	model.colour = colour;
+}
+
+var scenarioChange = function () {  // refresh form data
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
 	DISPLAY.pScale = INIT.getFloatById('pscale');
@@ -118,25 +125,14 @@ var scenarioChange = function () {  // reload with new form data
 		DISPLAY.showTracks = false;
 	}
 	GLOBALS.initialize();
-	// Newton initial conditions
-	INIT.initialize(NEWTON);
-	NEWTON.initialize();
-	NEWTON.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * NEWTON.r, NEWTON.phi);
-	NEWTON.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * NEWTON.r, NEWTON.phi);
-	NEWTON.colour = DISPLAY.GREEN;
-	// GR initial conditions
-	INIT.initialize(GR);
-	GR.initialize();
-	GR.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * GR.r, GR.phi);
-	GR.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * GR.r, GR.phi);
-	GR.colour = DISPLAY.BLUE;
-	// Start drawing . . .
+	setupModel(NEWTON, DISPLAY.GREEN);
+	setupModel(GR, DISPLAY.BLUE);
 	drawBackground();
-	drawForeground();
+	drawForeground();  // start thimgs moving
 	return false;  // don't reload from scratch
 };
 
-window.onload = function () {
+window.onload = function () {  // load static DOM elements
 	var orbitPlot = document.getElementById('tracks');
 	var potential = document.getElementById('bgpot');
 	DISPLAY.oSize = orbitPlot.width;
@@ -178,6 +174,6 @@ window.onload = function () {
 	GR.tauDotDisplay = document.getElementById('taudotGR');
 	GR.vDisplay = document.getElementById('vGR');
 	document.getElementById('scenarioForm').onsubmit = scenarioChange;
-	scenarioChange();
+	scenarioChange();  // start thimgs moving
 };
 
