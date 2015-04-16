@@ -88,8 +88,8 @@ var drawBackground = function () {
 };
 
 var drawForeground = function () {
-	DISPLAY.refreshId && window.clearTimeout(DISPLAY.refreshId);
-//	DISPLAY.refreshId && window.cancelAnimationFrame(DISPLAY.refreshId);
+//	DISPLAY.refreshId && window.clearTimeout(DISPLAY.refreshId);
+	DISPLAY.refreshId && window.cancelAnimationFrame(DISPLAY.refreshId);
 	if ((DISPLAY.n % 10) === 0) {
 		DISPLAY.varTable();
 	}
@@ -106,8 +106,8 @@ var drawForeground = function () {
 		DISPLAY.plotTauDot(GR);
 	}
 	DISPLAY.n += 1;
-	DISPLAY.refreshId = window.setTimeout(drawForeground, DISPLAY.msRefresh);
-//	DISPLAY.refreshId = window.requestAnimationFrame(drawForeground);
+//	DISPLAY.refreshId = window.setTimeout(drawForeground, DISPLAY.msRefresh);
+	DISPLAY.refreshId = window.requestAnimationFrame(drawForeground);
 };
 
 var getDom = function () {  // read values from HTML page
