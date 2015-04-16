@@ -47,9 +47,9 @@ var DISPLAY = {
 	},
 	circle: function (canvas, X, Y, radius, colour) {
 		canvas.fillStyle = colour;
-			canvas.beginPath();
-			canvas.arc(X, Y, this.scale * radius, 0, GLOBALS.TWOPI, true);
-			canvas.closePath();
+		canvas.beginPath();
+		canvas.arc(X, Y, this.scale * radius, 0, GLOBALS.TWOPI, true);
+		canvas.closePath();
 		canvas.fill();
 	},
 	varTable: function () {
@@ -82,109 +82,93 @@ var DISPLAY = {
 		return this.originY + r * Math.sin(phi);
 	},
 	plotRotation: function () {
-		var canvas = this.tracks;
-		var blank = this.blankSize;
 		var phiBH, X, Y;
 		var radius = 0.7 * INIT.M * this.scale * INIT.horizon;
 		this.phiBH += INIT.deltaPhi;
 		phiBH = this.phiBH;
 		X = this.pointX(radius, phiBH);
 		Y = this.pointY(radius, phiBH);
-		canvas.clearRect(this.X - blank, this.Y - blank, 2 * blank, 2 * blank);
-		canvas.fillStyle = this.RED;
-			canvas.beginPath();
-			canvas.arc(X, Y, 2, 0, GLOBALS.TWOPI, true);
-			canvas.closePath();
-		canvas.fill();
+		this.tracks.clearRect(this.X - this.blankSize, this.Y - this.blankSize, 2 * this.blankSize, 2 * this.blankSize);
+		this.tracks.fillStyle = this.RED;
+		this.tracks.beginPath();
+		this.tracks.arc(X, Y, 2, 0, GLOBALS.TWOPI, true);
+		this.tracks.closePath();
+		this.tracks.fill();
 		this.X = X;
 		this.Y = Y;
 	},
-	plotOrbit: function (canvas, model) {
-		var X, Y, tracksCanvas;
-		var blank = this.blankSize;
+	plotOrbit: function (model) {
+		var X, Y;
 		var r = model.r * INIT.M * this.scale;
-		var phi = model.phi;
-		var xOld = model.X;
-		var yOld = model.Y;
-		var colour = model.colour;
-		X = this.pointX(r, phi);
-		Y = this.pointY(r, phi);
-		canvas.clearRect(xOld - blank, yOld - blank, 2 * blank, 2 * blank);
-		canvas.fillStyle = colour;
-			canvas.beginPath();
-			canvas.arc(X, Y, this.ballSize, 0, GLOBALS.TWOPI, true);
-			canvas.closePath();
-		canvas.fill();
+		X = this.pointX(r, model.phi);
+		Y = this.pointY(r, model.phi);
+		model.fg.clearRect(model.X - this.blankSize, model.Y - this.blankSize, 2 * this.blankSize, 2 * this.blankSize);
+		model.fg.fillStyle = model.colour;
+		model.fg.beginPath();
+		model.fg.arc(X, Y, this.ballSize, 0, GLOBALS.TWOPI, true);
+		model.fg.closePath();
+		model.fg.fill();
 		if (this.showTracks) {
-			tracksCanvas = this.tracks;
-			tracksCanvas.strokeStyle = colour;
-				tracksCanvas.beginPath();
-				tracksCanvas.moveTo(xOld, yOld);
-				tracksCanvas.lineTo(X, Y);
-			tracksCanvas.stroke();
+			this.tracks.strokeStyle = model.colour;
+			this.tracks.beginPath();
+			this.tracks.moveTo(model.X, model.Y);
+			this.tracks.lineTo(X, Y);
+			this.tracks.stroke();
 		}
 		model.X = X;
 		model.Y = Y;
 	},
 	energyBar: function () {
-		var canvas = DISPLAY.bgPotential;
-		canvas.strokeStyle = this.BLACK;
-			canvas.beginPath();
-			canvas.moveTo(Math.floor(INIT.horizon * INIT.M * this.scale), this.potentialY);
-			canvas.lineTo(this.originX, this.potentialY);
-		canvas.stroke();
+		DISPLAY.bgPotential.strokeStyle = this.BLACK;
+		DISPLAY.bgPotential.beginPath();
+		DISPLAY.bgPotential.moveTo(Math.floor(INIT.horizon * INIT.M * this.scale), this.potentialY);
+		DISPLAY.bgPotential.lineTo(this.originX, this.potentialY);
+		DISPLAY.bgPotential.stroke();
 	},
 	plotPotential: function (model) {
-		var canvas = model.fgPotential;
-		var colour = model.colour;
-		var blank = this.blankSize;
 		var energyBar = this.potentialY;
 		var v = energyBar + this.pScale * this.pSize * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
 		var dBerror = GLOBALS.dB(GLOBALS.h(model), model.h0);
-		canvas.clearRect(model.rOld * scaledMass - blank, energyBar - blank, 2 * blank, v + 2 * blank);
+		model.fgPotential.clearRect(model.rOld * scaledMass - this.blankSize, energyBar - this.blankSize, 2 * this.blankSize, v + 2 * this.blankSize);
 		// Potential dropline
-		canvas.strokeStyle = colour;
-			canvas.beginPath();
-			canvas.moveTo(r, v);
-			canvas.lineTo(r, energyBar);
-		canvas.stroke();
+		model.fgPotential.strokeStyle = model.colour;
+		model.fgPotential.beginPath();
+		model.fgPotential.moveTo(r, v);
+		model.fgPotential.lineTo(r, energyBar);
+		model.fgPotential.stroke();
 		// Potential ball
-		canvas.fillStyle = dBerror < -120.0 ? colour : dBerror < -90.0 ? this.YELLOW : dBerror < -60.0 ? this.ORANGE : this.RED;
-			canvas.beginPath();
-			canvas.arc(r, energyBar, this.ballSize, 0, GLOBALS.TWOPI, true);
-			canvas.closePath();
-		canvas.fill();
+		model.fgPotential.fillStyle = dBerror < -120.0 ? model.colour : dBerror < -90.0 ? this.YELLOW : dBerror < -60.0 ? this.ORANGE : this.RED;
+		model.fgPotential.beginPath();
+		model.fgPotential.arc(r, energyBar, this.ballSize, 0, GLOBALS.TWOPI, true);
+		model.fgPotential.closePath();
+		model.fgPotential.fill();
 	},
-	plotTauDot: function (model) {
-		var canvas = model.fgPotential;
-		var colour = this.MAGENTA;
+	plotTauDot: function (model) {  // dTau/dt plot for GR
 		var tDotValue;
-		var xValue = DISPLAY.pSize - 5;
-		// dTau/dt plot for GR
+		var xValue = DISPLAY.pSize - 5;		
 		tDotValue = DISPLAY.pSize / model.tDot;
-		canvas.clearRect(xValue - 3, 0, xValue + 3, DISPLAY.pSize);
-		canvas.fillStyle = colour;
-			canvas.beginPath();
-			canvas.arc(xValue, tDotValue, this.ballSize, 0, GLOBALS.TWOPI, true);
-			canvas.closePath();
-		canvas.fill();
-		canvas.strokeStyle = colour;
-			canvas.beginPath();
-			canvas.moveTo(xValue, DISPLAY.pSize);
-			canvas.lineTo(xValue, tDotValue);
-		canvas.stroke();
+		model.fgPotential.clearRect(xValue - 3, 0, xValue + 3, DISPLAY.pSize);
+		model.fgPotential.fillStyle = this.MAGENTA;
+		model.fgPotential.beginPath();
+		model.fgPotential.arc(xValue, tDotValue, this.ballSize, 0, GLOBALS.TWOPI, true);
+		model.fgPotential.closePath();
+		model.fgPotential.fill();
+		model.fgPotential.strokeStyle = this.MAGENTA;
+		model.fgPotential.beginPath();
+		model.fgPotential.moveTo(xValue, DISPLAY.pSize);
+		model.fgPotential.lineTo(xValue, tDotValue);
+		model.fgPotential.stroke();
 	},
 	potential: function (model) {
-		var canvas = DISPLAY.bgPotential;
 		var i;
-		canvas.strokeStyle = model.colour;
-		canvas.beginPath();
+		DISPLAY.bgPotential.strokeStyle = model.colour;
+		DISPLAY.bgPotential.beginPath();
 		for (i = Math.floor(INIT.horizon * this.scale); i < this.pSize; i += 1) {
-			canvas.lineTo(i, this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(i / (INIT.M * this.scale))));
+			DISPLAY.bgPotential.lineTo(i, this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(i / (INIT.M * this.scale))));
 		}
-		canvas.stroke();
+		DISPLAY.bgPotential.stroke();
 	},
 	isco: function () {
 		var a = INIT.a;

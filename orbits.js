@@ -103,6 +103,7 @@ var drawForeground = function () {  // main loop
 	DISPLAY.plotRotation(); // BH spin direction indicator
 	plotModel(NEWTON);
 	plotModel(GR);
+	DISPLAY.plotTauDot(GR);
 	DISPLAY.n += 1;
 	DISPLAY.refreshId = window.requestAnimationFrame(drawForeground);
 };
