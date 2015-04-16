@@ -87,7 +87,7 @@ var drawBackground = function () {
 	DISPLAY.n = 0;
 };
 
-var drawForeground = function () {
+var drawForeground = function () {  // main loop
 	DISPLAY.refreshId && window.cancelAnimationFrame(DISPLAY.refreshId);
 	if ((DISPLAY.n % 10) === 0) {
 		DISPLAY.varTable();
@@ -108,7 +108,35 @@ var drawForeground = function () {
 	DISPLAY.refreshId = window.requestAnimationFrame(drawForeground);
 };
 
-var getDom = function () {  // read values from HTML page
+var scenarioChange = function () {  // reload with new form data
+	INIT.getHtmlValues();
+	DISPLAY.scale = INIT.getFloatById('scale');
+	DISPLAY.pScale = INIT.getFloatById('pscale');
+	if (document.getElementById('showTracks').checked) {
+		DISPLAY.showTracks = true;
+	} else {
+		DISPLAY.showTracks = false;
+	}
+	GLOBALS.initialize();
+	// Newton initial conditions
+	INIT.initialize(NEWTON);
+	NEWTON.initialize();
+	NEWTON.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * NEWTON.r, NEWTON.phi);
+	NEWTON.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * NEWTON.r, NEWTON.phi);
+	NEWTON.colour = DISPLAY.GREEN;
+	// GR initial conditions
+	INIT.initialize(GR);
+	GR.initialize();
+	GR.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * GR.r, GR.phi);
+	GR.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * GR.r, GR.phi);
+	GR.colour = DISPLAY.BLUE;
+	// Start drawing . . .
+	drawBackground();
+	drawForeground();
+	return false;  // don't reload from scratch
+};
+
+window.onload = function () {
 	var orbitPlot = document.getElementById('tracks');
 	var potential = document.getElementById('bgpot');
 	DISPLAY.oSize = orbitPlot.width;
@@ -117,7 +145,6 @@ var getDom = function () {  // read values from HTML page
 	DISPLAY.originY = orbitPlot.height / 2;
 	DISPLAY.width = potential.width;
 	DISPLAY.tracks = orbitPlot.getContext('2d');
-
 	NEWTON.fg = document.getElementById('fgorbitn').getContext('2d');
 	GR.fg = document.getElementById('fgorbitgr').getContext('2d');
 	DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
@@ -150,39 +177,7 @@ var getDom = function () {  // read values from HTML page
 	GR.phiDotDisplay = document.getElementById('phidotGR');
 	GR.tauDotDisplay = document.getElementById('taudotGR');
 	GR.vDisplay = document.getElementById('vGR');
-	INIT.getHtmlValues();
-	DISPLAY.scale = INIT.getFloatById('scale');
-	DISPLAY.pScale = INIT.getFloatById('pscale');
-	if (document.getElementById('showTracks').checked) {
-		DISPLAY.showTracks = true;
-	} else {
-		DISPLAY.showTracks = false;
-	}
 	document.getElementById('scenarioForm').onsubmit = scenarioChange;
-};
-
-var scenarioChange = function () {  // reload with form data
-	getDom();
-	GLOBALS.initialize();
-	// Newton initial conditions
-	INIT.initialize(NEWTON);
-	NEWTON.initialize();
-	NEWTON.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * NEWTON.r, NEWTON.phi);
-	NEWTON.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * NEWTON.r, NEWTON.phi);
-	NEWTON.colour = DISPLAY.GREEN;
-	// GR initial conditions
-	INIT.initialize(GR);
-	GR.initialize();
-	GR.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * GR.r, GR.phi);
-	GR.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * GR.r, GR.phi);
-	GR.colour = DISPLAY.BLUE;
-	// Start drawing . . .
-	drawBackground();
-	drawForeground();
-	return false;  // don't reload from scratch
-};
-
-window.onload = function () {
 	scenarioChange();
 };
 
