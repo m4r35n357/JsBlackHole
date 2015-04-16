@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013  Ian Smith <m4r35n357@gmail.com>
+    Copyright (C) 2013-2015  Ian Smith <m4r35n357@gmail.com>
 
     The JavaScript code in this page is free software: you can
     redistribute it and/or modify it under the terms of the GNU
