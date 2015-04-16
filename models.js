@@ -63,11 +63,10 @@ var GLOBALS = {
 		var rOld = model.rOld = model.r;
 		var direction = model.direction;
 		var h0 = model.h0;
-		tmp = this.coefficients.length - 1;  // compose higher orders
-		for (i = 0; i < tmp; i += 1) {
+		for (i = 0; i < this.gammaLength; i += 1) {
 			sympBase(model, this.coefficients[i]);
 		}
-		for (i = tmp; i >= 0; i -= 1) {
+		for (i = this.gammaLength; i >= 0; i -= 1) {
 			sympBase(model, this.coefficients[i]);
 		}
 		r = model.r;
@@ -136,7 +135,8 @@ var GLOBALS = {
 		    default:
 		        this.coefficients = [1.0];
 			break;
-		} 
+		}
+		this.gammaLength = this.coefficients.length - 1;
 	},
 };
 
