@@ -120,11 +120,7 @@ var scenarioChange = function () {  // refresh form data
 	INIT.getHtmlValues();
 	DISPLAY.scale = INIT.getFloatById('scale');
 	DISPLAY.pScale = INIT.getFloatById('pscale');
-	if (document.getElementById('showTracks').checked) {
-		DISPLAY.showTracks = true;
-	} else {
-		DISPLAY.showTracks = false;
-	}
+	document.getElementById('showTracks').checked ? DISPLAY.showTracks = true : DISPLAY.showTracks = false;
 	GLOBALS.initialize();
 	setupModel(NEWTON, DISPLAY.GREEN);
 	setupModel(GR, DISPLAY.BLUE);

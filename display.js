@@ -125,41 +125,36 @@ var DISPLAY = {
 		DISPLAY.bgPotential.lineTo(this.originX, this.potentialY);
 		DISPLAY.bgPotential.stroke();
 	},
+	dropline: function (canvas, colour, x, y1, y2) {
+		canvas.strokeStyle = colour;
+		canvas.beginPath();
+		canvas.moveTo(x, y1);
+		canvas.lineTo(x, y2);
+		canvas.stroke();
+	},
+	ball: function (canvas, colour, x, y, radius) {
+		canvas.fillStyle = colour;
+		canvas.beginPath();
+		canvas.arc(x, y, radius, 0, GLOBALS.TWOPI, true);
+		canvas.closePath();
+		canvas.fill();
+	},
 	plotPotential: function (model) {
-		var energyBar = this.potentialY;
-		var v = energyBar + this.pScale * this.pSize * (model.energyBar - model.V(model.r));
+		var dBerror = GLOBALS.dB(GLOBALS.h(model), model.h0);
+		var v = this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
-		var dBerror = GLOBALS.dB(GLOBALS.h(model), model.h0);
-		model.fgPotential.clearRect(model.rOld * scaledMass - this.blankSize, energyBar - this.blankSize, 2 * this.blankSize, v + 2 * this.blankSize);
-		// Potential dropline
-		model.fgPotential.strokeStyle = model.colour;
-		model.fgPotential.beginPath();
-		model.fgPotential.moveTo(r, v);
-		model.fgPotential.lineTo(r, energyBar);
-		model.fgPotential.stroke();
-		// Potential ball
-		model.fgPotential.fillStyle = dBerror < -120.0 ? model.colour : dBerror < -90.0 ? this.YELLOW : dBerror < -60.0 ? this.ORANGE : this.RED;
-		model.fgPotential.beginPath();
-		model.fgPotential.arc(r, energyBar, this.ballSize, 0, GLOBALS.TWOPI, true);
-		model.fgPotential.closePath();
-		model.fgPotential.fill();
+		var errorColour = dBerror < -120.0 ? model.colour : (dBerror < -90.0 ? this.YELLOW : (dBerror < -60.0 ? this.ORANGE : this.RED));
+		model.fgPotential.clearRect(model.rOld * scaledMass - this.blankSize, this.potentialY - this.blankSize, 2 * this.blankSize, v + 2 * this.blankSize);
+		this.dropline(model.fgPotential, model.colour, r, v, this.potentialY);
+		this.ball(model.fgPotential, errorColour, r, this.potentialY, this.ballSize);
 	},
 	plotTauDot: function (model) {  // dTau/dt plot for GR
-		var tDotValue;
 		var xValue = DISPLAY.pSize - 5;		
-		tDotValue = DISPLAY.pSize / model.tDot;
+		var tDotValue = DISPLAY.pSize / model.tDot;
 		model.fgPotential.clearRect(xValue - 3, 0, xValue + 3, DISPLAY.pSize);
-		model.fgPotential.fillStyle = this.MAGENTA;
-		model.fgPotential.beginPath();
-		model.fgPotential.arc(xValue, tDotValue, this.ballSize, 0, GLOBALS.TWOPI, true);
-		model.fgPotential.closePath();
-		model.fgPotential.fill();
-		model.fgPotential.strokeStyle = this.MAGENTA;
-		model.fgPotential.beginPath();
-		model.fgPotential.moveTo(xValue, DISPLAY.pSize);
-		model.fgPotential.lineTo(xValue, tDotValue);
-		model.fgPotential.stroke();
+		this.dropline(model.fgPotential, this.MAGENTA, xValue, DISPLAY.pSize, tDotValue);
+		this.ball(model.fgPotential, this.MAGENTA, xValue, tDotValue, this.ballSize);
 	},
 	potential: function (model) {
 		var i;

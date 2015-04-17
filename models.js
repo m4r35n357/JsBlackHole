@@ -159,11 +159,7 @@ var INIT = {
 		GLOBALS.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
 		this.order = this.getFloatById('order');
 		GLOBALS.debug && console.info(this.name + ".order: " + this.order);
-		if (this.a >= 0.0) {
-			GLOBALS.prograde = true;
-		} else {
-			GLOBALS.prograde = false;
-		}
+		this.a >= 0.0 ? GLOBALS.prograde = true : GLOBALS.prograde = false;
 		this.horizon = 1.0 + Math.sqrt(1.0 - this.a * this.a);
 		GLOBALS.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(3));
 		this.deltaPhi = this.a / (this.horizon * this.horizon + this.a * this.a) * this.timeStep;
