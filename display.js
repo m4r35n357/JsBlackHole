@@ -38,19 +38,32 @@ var DISPLAY = {
 	blankSize: 4,
 	potentialY: 100,
 	phiBH: 0.0,
+	pointX: function (r, phi) {
+		return this.originX + r * Math.cos(phi);
+	},
+	pointY: function (r, phi) {
+		return this.originY + r * Math.sin(phi);
+	},
+	line: function (canvas, colour, x1, y1, x2, y2) {
+		canvas.strokeStyle = colour;
+		canvas.beginPath();
+		canvas.moveTo(x1, y1);
+		canvas.lineTo(x2, y2);
+		canvas.stroke();
+	},
+	ball: function (canvas, colour, x, y, radius) {
+		canvas.fillStyle = colour;
+		canvas.beginPath();
+		canvas.arc(x, y, radius, 0, GLOBALS.TWOPI, true);
+		canvas.closePath();
+		canvas.fill();
+	},
 	circularGradient: function (canvas, x, y, innerColour, outerColour) {
 		var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
 		grd.addColorStop(0, innerColour);
 		grd.addColorStop(1, outerColour);
 		canvas.fillStyle = grd;
 		canvas.fillRect(0, 0, 2 * x, 2 * y);
-	},
-	circle: function (canvas, X, Y, radius, colour) {
-		canvas.fillStyle = colour;
-		canvas.beginPath();
-		canvas.arc(X, Y, this.scale * radius, 0, GLOBALS.TWOPI, true);
-		canvas.closePath();
-		canvas.fill();
 	},
 	varTable: function () {
 		var M = INIT.M;
@@ -75,12 +88,6 @@ var DISPLAY = {
 			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / gamma).toExponential(3);
 		}
 	},
-	pointX: function (r, phi) {
-		return this.originX + r * Math.cos(phi);
-	},
-	pointY: function (r, phi) {
-		return this.originY + r * Math.sin(phi);
-	},
 	plotRotation: function () {
 		var phiBH, X, Y;
 		var radius = 0.7 * INIT.M * this.scale * INIT.horizon;
@@ -89,11 +96,7 @@ var DISPLAY = {
 		X = this.pointX(radius, phiBH);
 		Y = this.pointY(radius, phiBH);
 		this.tracks.clearRect(this.X - this.blankSize, this.Y - this.blankSize, 2 * this.blankSize, 2 * this.blankSize);
-		this.tracks.fillStyle = this.RED;
-		this.tracks.beginPath();
-		this.tracks.arc(X, Y, 2, 0, GLOBALS.TWOPI, true);
-		this.tracks.closePath();
-		this.tracks.fill();
+		this.ball(this.tracks, this.RED, X, Y, 2);
 		this.X = X;
 		this.Y = Y;
 	},
@@ -103,41 +106,15 @@ var DISPLAY = {
 		X = this.pointX(r, model.phi);
 		Y = this.pointY(r, model.phi);
 		model.fg.clearRect(model.X - this.blankSize, model.Y - this.blankSize, 2 * this.blankSize, 2 * this.blankSize);
-		model.fg.fillStyle = model.colour;
-		model.fg.beginPath();
-		model.fg.arc(X, Y, this.ballSize, 0, GLOBALS.TWOPI, true);
-		model.fg.closePath();
-		model.fg.fill();
+		this.ball(model.fg, model.colour, X, Y, this.ballSize);
 		if (this.showTracks) {
-			this.tracks.strokeStyle = model.colour;
-			this.tracks.beginPath();
-			this.tracks.moveTo(model.X, model.Y);
-			this.tracks.lineTo(X, Y);
-			this.tracks.stroke();
+			this.line(this.tracks, model.colour, model.X, model.Y, X, Y);
 		}
 		model.X = X;
 		model.Y = Y;
 	},
 	energyBar: function () {
-		DISPLAY.bgPotential.strokeStyle = this.BLACK;
-		DISPLAY.bgPotential.beginPath();
-		DISPLAY.bgPotential.moveTo(Math.floor(INIT.horizon * INIT.M * this.scale), this.potentialY);
-		DISPLAY.bgPotential.lineTo(this.originX, this.potentialY);
-		DISPLAY.bgPotential.stroke();
-	},
-	dropline: function (canvas, colour, x, y1, y2) {
-		canvas.strokeStyle = colour;
-		canvas.beginPath();
-		canvas.moveTo(x, y1);
-		canvas.lineTo(x, y2);
-		canvas.stroke();
-	},
-	ball: function (canvas, colour, x, y, radius) {
-		canvas.fillStyle = colour;
-		canvas.beginPath();
-		canvas.arc(x, y, radius, 0, GLOBALS.TWOPI, true);
-		canvas.closePath();
-		canvas.fill();
+		this.line(DISPLAY.bgPotential, this.BLACK, Math.floor(INIT.horizon * INIT.M * this.scale), this.potentialY, this.originX, this.potentialY);
 	},
 	plotPotential: function (model) {
 		var dBerror = GLOBALS.dB(GLOBALS.h(model), model.h0);
@@ -146,14 +123,14 @@ var DISPLAY = {
 		var r = model.r * scaledMass;
 		var errorColour = dBerror < -120.0 ? model.colour : (dBerror < -90.0 ? this.YELLOW : (dBerror < -60.0 ? this.ORANGE : this.RED));
 		model.fgPotential.clearRect(model.rOld * scaledMass - this.blankSize, this.potentialY - this.blankSize, 2 * this.blankSize, v + 2 * this.blankSize);
-		this.dropline(model.fgPotential, model.colour, r, v, this.potentialY);
+		this.line(model.fgPotential, model.colour, r, v, r, this.potentialY);
 		this.ball(model.fgPotential, errorColour, r, this.potentialY, this.ballSize);
 	},
 	plotTauDot: function (model) {  // dTau/dt plot for GR
 		var xValue = DISPLAY.pSize - 5;		
 		var tDotValue = DISPLAY.pSize / model.tDot;
 		model.fgPotential.clearRect(xValue - 3, 0, xValue + 3, DISPLAY.pSize);
-		this.dropline(model.fgPotential, this.MAGENTA, xValue, DISPLAY.pSize, tDotValue);
+		this.line(model.fgPotential, this.MAGENTA, xValue, DISPLAY.pSize, xValue, tDotValue);
 		this.ball(model.fgPotential, this.MAGENTA, xValue, tDotValue, this.ballSize);
 	},
 	potential: function (model) {
