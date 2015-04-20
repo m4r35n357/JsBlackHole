@@ -55,9 +55,9 @@ var GLOBALS = {
 	solve: function (model) {  // Generalized symplectic integrator
 		var sympBase = function (model, c) { // 2nd-order symplectic building block
 			var halfC = 0.5 * c;
-			model.updateQ(halfC);
-			model.updateP(c);
-			model.updateQ(halfC);
+			model.updateQ(halfC, model.rDot);
+			model.updateP(c, model.r);
+			model.updateQ(halfC, model.rDot);
 		};
 		var i, M, r, phiDegrees, tmp, h;
 		var rOld = model.rOld = model.r;
@@ -194,11 +194,10 @@ var NEWTON = {
 	V: function (r) {  // the Effective Potential
 		return - 1.0 / r + this.L2 / (2.0 * r * r);
 	},
-	updateQ: function (c) {  // update radial position
-		this.r += c * this.rDot * INIT.timeStep;
+	updateQ: function (c, rDot) {  // update radial position
+		this.r += c * rDot * INIT.timeStep;
 	},
-	updateP: function (c) {  // update radial momentum
-		var r = this.r;
+	updateP: function (c, r) {  // update radial momentum
 		this.rDot -= c * (1.0 / (r * r) - this.L2 / (r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
@@ -223,11 +222,11 @@ var GR = { // can be spinning
 		this.circular(this.r, INIT.a);
 		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(6));
-		this.potentialFactors(this.L, this.E, INIT.a);
+		this.intermediates(this.L, this.E, INIT.a);
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
 		this.L = this.L * INIT.lFac;
-		this.potentialFactors(this.L, this.E, INIT.a);
+		this.intermediates(this.L, this.E, INIT.a);
 		this.t = 0.0;
 		this.tDot = 1.0;
 		V0 = this.V(this.r); // using (possibly) adjusted L from above
@@ -240,34 +239,32 @@ var GR = { // can be spinning
 		this.L = (r * r - 2.0 * a * sqrtR + a * a) / (sqrtR * tmp);
 		this.E = (r * r - 2.0 * r + a * sqrtR) / (r * tmp);
 	},
-	potentialFactors: function (L, E, a) {
+	intermediates: function (L, E, a) {
 		this.k1 = L * L - a * a * (E * E - 1.0);
 		this.k2 = (L - a * E) * (L - a * E);
+		this.a2 = a * a;
+		this.twoAE = 2.0 * a * E;
+		this.twoAL = 2.0 * a * L;
 	},
 	V: function (r) {  // the Effective Potential
 		return - 1.0 / r + this.k1 / (2.0 * r * r) - this.k2 / (r * r * r);
 	},
-	updateQ: function (c) {  // update radial position
-		this.r += c * this.rDot * INIT.timeStep;
+	updateQ: function (c, rDot) {  // update radial position
+		this.r += c * rDot * INIT.timeStep;
 	},
-	updateP: function (c) {  // update radial momentum
-		var r = this.r;
+	updateP: function (c, r) {  // update radial momentum
 		this.rDot -= c * (1.0 / (r * r) - this.k1 / (r * r * r) + 3.0 * this.k2 / (r * r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
-		var step = INIT.timeStep;
-		var r = this.r;
-		var L = this.L;
-		var E = this.E;
-		var a = INIT.a;
+		var r2 = this.r * this.r;
 		var delta;
-		if (r > INIT.horizon) {
+		if (this.r > INIT.horizon) {
 			GLOBALS.solve(this);
-			delta = r * r + a * a - 2.0 * r;
-			this.phiDot = ((1.0 - 2.0 / r) * L + 2.0 * a * E / r) / delta;
-			this.phi += this.phiDot * step;
-			this.tDot = ((r * r + a * a * (1.0 + 2.0 / r)) * E - 2.0 * a * L / r) / delta;
-			this.t += this.tDot * step;
+			delta = r2 + this.a2 - 2.0 * this.r;
+			this.phiDot = ((1.0 - 2.0 / this.r) * this.L + this.twoAE / this.r) / delta;
+			this.phi += this.phiDot * INIT.timeStep;
+			this.tDot = ((r2 + this.a2 * (1.0 + 2.0 / this.r)) * this.E - this.twoAL / this.r) / delta;
+			this.t += this.tDot * INIT.timeStep;
 		} else {
 			this.collided = true;
 			GLOBALS.debug && console.info(this.name + " - collided\n");
