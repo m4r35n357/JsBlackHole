@@ -74,11 +74,11 @@ var GLOBALS = {
 			phiDegrees = this.phiDMS(model.phi);
 			M = INIT.M;
 			if (direction === -1) {
-				model.rMinDisplay.innerHTML = (M * r).toExponential(3);
+				model.rMinDisplay.innerHTML = (M * r).toFixed(3);
 				model.pDisplay.innerHTML = phiDegrees;
 				this.debug && console.log(model.name + ": Perihelion");
 			} else {
-				model.rMaxDisplay.innerHTML = (M * r).toExponential(3);
+				model.rMaxDisplay.innerHTML = (M * r).toFixed(3);
 				model.aDisplay.innerHTML = phiDegrees;
 				this.debug && console.log(model.name + ": Aphelion");
 			}
