@@ -205,9 +205,9 @@ var NEWTON = {
 		var r = this.r;
 		var L = this.L;
 		if (this.r > INIT.horizon) {
-			GLOBALS.solve(this);
 			this.phiDot = L / (r * r);
 			this.phi += this.phiDot * step;
+			GLOBALS.solve(this);
 		} else {
 			this.collided = true;
 			GLOBALS.debug && console.info(this.name + " - collided\n");
@@ -255,20 +255,19 @@ var GR = { // can be spinning
 	},
 	updateQ: function (c, rDot) {  // update radial position
 		this.r += c * rDot * INIT.timeStep;
+		var r2 = this.r * this.r;
+		var delta = r2 + this.a2 - 2.0 * this.r;
+		this.phiDot = ((1.0 - 2.0 / this.r) * this.L + this.twoAE / this.r) / delta;
+		this.tDot = ((r2 + this.a2 * (1.0 + 2.0 / this.r)) * this.E - this.twoAL / this.r) / delta;
+		this.phi += c * this.phiDot * INIT.timeStep;
+		this.t += c * this.tDot * INIT.timeStep;
 	},
 	updateP: function (c, r) {  // update radial momentum
 		this.rDot -= c * (1.0 / (r * r) - this.k1 / (r * r * r) + 3.0 * this.k2 / (r * r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
-		var r2 = this.r * this.r;
-		var delta;
 		if (this.r > INIT.horizon) {
 			GLOBALS.solve(this);
-			delta = r2 + this.a2 - 2.0 * this.r;
-			this.phiDot = ((1.0 - 2.0 / this.r) * this.L + this.twoAE / this.r) / delta;
-			this.phi += this.phiDot * INIT.timeStep;
-			this.tDot = ((r2 + this.a2 * (1.0 + 2.0 / this.r)) * this.E - this.twoAL / this.r) / delta;
-			this.t += this.tDot * INIT.timeStep;
 		} else {
 			this.collided = true;
 			GLOBALS.debug && console.info(this.name + " - collided\n");
