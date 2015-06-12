@@ -73,15 +73,15 @@ var DISPLAY = {
 		if (! NEWTON.collided) {
 			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(3);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
-			NEWTON.tDisplay.innerHTML = properTime.toExponential(2);
+			NEWTON.tDisplay.innerHTML = properTime.toFixed(1);
 			NEWTON.vDisplay.innerHTML = GLOBALS.speed(NEWTON).toExponential(3);
 		}
 		if (! GR.collided) {
 			gamma = GR.tDot;
-			GR.tDisplay.innerHTML = (M * GR.t / c).toExponential(2);
+			GR.tDisplay.innerHTML = (M * GR.t / c).toFixed(1);
 			GR.rDisplay.innerHTML = (M * GR.r).toFixed(3);
 			GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
-			GR.tauDisplay.innerHTML = properTime.toExponential(2);
+			GR.tauDisplay.innerHTML = properTime.toFixed(1);
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot / M).toFixed(3);
