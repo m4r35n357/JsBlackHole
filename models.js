@@ -45,9 +45,6 @@ var GLOBALS = {
 		var seconds = (minutes - Math.floor(minutes)) * 60;
 		return circularDegrees.toFixed(0) + "&deg;" + minutes.toFixed(0) + "&#39;" + seconds.toFixed(0) + "&#34;";
 	},
-	speed: function (model) {
-		return this.c * Math.sqrt(model.rDot * model.rDot + model.r * model.r * model.phiDot * model.phiDot);
-	},
 	h: function (model) {  // the radial "Hamiltonian"
 		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
 		return h;
@@ -188,6 +185,9 @@ var NEWTON = {
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
+	speed: function () {
+		return Math.sqrt(this.rDot * this.rDot + this.r * this.r * this.phiDot * this.phiDot);
+	},
 	circular: function (r) {  // L for a circular orbit of r
 		this.L = Math.sqrt(r);
 	},
@@ -232,6 +232,10 @@ var GR = { // can be spinning
 		V0 = this.V(this.r); // using (possibly) adjusted L from above
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
+	},
+	speed: function () {
+		return Math.sqrt(this.rDot * this.rDot + this.r * this.r * this.phiDot * this.phiDot);
+//		return -1.0 + Math.sqrt(this.tDot * this.tDot);
 	},
 	circular: function (r, a) {  // L and E for a circular orbit of r
 		var sqrtR = Math.sqrt(r);

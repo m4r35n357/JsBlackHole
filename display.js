@@ -74,7 +74,7 @@ var DISPLAY = {
 			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(3);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
 			NEWTON.tDisplay.innerHTML = properTime.toFixed(1);
-			NEWTON.vDisplay.innerHTML = GLOBALS.speed(NEWTON).toExponential(3);
+			NEWTON.vDisplay.innerHTML = NEWTON.speed().toFixed(3);
 		}
 		if (! GR.collided) {
 			gamma = GR.tDot;
@@ -85,7 +85,7 @@ var DISPLAY = {
 			GR.tDotDisplay.innerHTML = gamma.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot / M).toFixed(3);
-			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / gamma).toExponential(3);
+			GR.vDisplay.innerHTML = (GR.speed()).toFixed(3);
 		}
 	},
 	plotRotation: function () {
