@@ -83,7 +83,7 @@ var DISPLAY = {
 			GR.tDotDisplay.innerHTML = GR.tDot.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot / M).toFixed(3);
-			GR.vDisplay.innerHTML = GLOBALS.speed(GR).toFixed(3);
+			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / GR.tDot).toFixed(3);
 		}
 	},
 	plotRotation: function () {
