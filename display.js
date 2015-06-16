@@ -73,7 +73,7 @@ var DISPLAY = {
 			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(3);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
 			NEWTON.tDisplay.innerHTML = properTime.toFixed(1);
-			NEWTON.vDisplay.innerHTML = GLOBALS.speed(NEWTON).toFixed(3);
+//			NEWTON.vDisplay.innerHTML = GLOBALS.speed(NEWTON).toFixed(3);
 		}
 		if (! GR.collided) {
 			GR.tDisplay.innerHTML = (M * GR.t / c).toFixed(1);
@@ -83,7 +83,7 @@ var DISPLAY = {
 			GR.tDotDisplay.innerHTML = GR.tDot.toFixed(3);
 			GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
 			GR.phiDotDisplay.innerHTML = (GR.phiDot / M).toFixed(3);
-			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / GR.tDot).toFixed(3);
+//			GR.vDisplay.innerHTML = (GLOBALS.speed(GR) / GR.tDot).toFixed(3);
 		}
 	},
 	plotRotation: function () {

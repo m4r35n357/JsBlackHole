@@ -45,9 +45,9 @@ var GLOBALS = {
 		var seconds = (minutes - Math.floor(minutes)) * 60;
 		return circularDegrees.toFixed(0) + "&deg;" + minutes.toFixed(0) + "&#39;" + seconds.toFixed(0) + "&#34;";
 	},
-	speed: function (model) {
-		return this.c * Math.sqrt(model.rDot * model.rDot + model.r * model.r * model.phiDot * model.phiDot);
-	},
+//	speed: function (model) {
+//		return this.c * Math.sqrt(model.rDot * model.rDot + model.r * model.r * model.phiDot * model.phiDot);
+//	},
 	h: function (model) {  // the radial "Hamiltonian"
 		var h = 0.5 * model.rDot * model.rDot + model.V(model.r);
 		return h;
