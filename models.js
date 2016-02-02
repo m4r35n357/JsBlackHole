@@ -25,10 +25,10 @@ var GLOBALS = {
 	TWOPI: 2.0 * Math.PI,
 	LOG10: Math.log(10.0),
 	// Physical constants
-//	c: 299792458.0,
-//	G: 6.67398e-11,
-	c: 1.0,
-	G: 1.0,
+	c: 299792458.0,
+	G: 6.67398e-11,
+//	c: 1.0,
+//	G: 1.0,
 	mSolar: 1.9891e30,
 	rSolar: 700000000.0,
 	ergosphere: 2.0,
@@ -93,9 +93,9 @@ var GLOBALS = {
 		        this.coefficients = [1.0];
 			break;
 		    case 4:
-			var CUBEROOT2 = Math.pow(2.0, 1.0 / 3.0);
-			var y = 1.0 / (2.0 - CUBEROOT2);
-			this.coefficients = [y, - y * CUBEROOT2];
+			    var CUBEROOT2 = Math.pow(2.0, 1.0 / 3.0);
+			    var y = 1.0 / (2.0 - CUBEROOT2);
+			    this.coefficients = [y, - y * CUBEROOT2];
 			break;
 		    case 6:
 		        this.coefficients = [0.78451361047755726381949763,
@@ -204,9 +204,6 @@ var NEWTON = {
 		this.rDot -= c * (1.0 / (r * r) - this.L2 / (r * r * r)) * INIT.timeStep;
 	},
 	update: function () {
-		var step = INIT.timeStep;
-		var r = this.r;
-		var L = this.L;
 		if (this.r > INIT.horizon) {
 			GLOBALS.solve(this);
 		} else {
