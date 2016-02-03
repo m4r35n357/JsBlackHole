@@ -196,8 +196,7 @@ var NEWTON = {
 	},
 	updateQ: function (c, rDot) {  // update radial position
 		this.r += c * rDot * INIT.timeStep;
-		var r2 = this.r * this.r;
-		this.phiDot = this.L / r2;
+		this.phiDot = this.L / (this.r * this.r);
 		this.phi += c * this.phiDot * INIT.timeStep;
 	},
 	updateP: function (c, r) {  // update radial momentum
