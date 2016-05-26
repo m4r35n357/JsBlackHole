@@ -25,8 +25,8 @@ var GLOBALS = {
 	TWOPI: 2.0 * Math.PI,
 	LOG10: Math.log(10.0),
 	// Physical constants
-	c: 299792458.0,
-	G: 6.67398e-11,
+//	c: 299792458.0,
+//	G: 6.67398e-11,
 //	c: 1.0,
 //	G: 1.0,
 	mSolar: 1.9891e30,
@@ -148,6 +148,8 @@ var INIT = {
 		GLOBALS.debug && console.info("Restarting . . . ");
 		this.timeStep = this.getFloatById('timestep');
 		this.lFac = this.getFloatById('lfactor') / 100.0;
+		GLOBALS.c = this.getFloatById('c');
+		GLOBALS.G = this.getFloatById('G');
 		this.M = this.getFloatById('mass') * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
 		GLOBALS.debug && console.info(this.name + ".M: " + this.M.toFixed(3));
 		this.r = this.getFloatById('radius') / this.M;
