@@ -21,7 +21,7 @@
 "use strict";
 
 var GLOBALS = {
-	debug: false,
+	debug: true,
 	TWOPI: 2.0 * Math.PI,
 	LOG10: Math.log(10.0),
 	// Physical constants
@@ -217,8 +217,8 @@ var GR = { // can be spinning
 	initialize: function () {
 		var V0;
 		this.circular(this.r, INIT.a);
-		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
-		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(6));
+		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(12));
+		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(12));
 		this.intermediates(this.L, this.E, INIT.a);
 		this.energyBar = this.V(this.r);
 		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
@@ -231,7 +231,7 @@ var GR = { // can be spinning
 		this.h0 =  0.5 * this.rDot * this.rDot + V0;
 	},
 	speed: function () {
-		return Math.sqrt(this.tDot * this.tDot * (1.0 - 2.0 * this.r / (this.r * this.r + this.a2)) - 1.0) / this.tDot;
+        return Math.sqrt(1.0 - 1.0 / (this.tDot * this.tDot));
 	},
 	circular: function (r, a) {  // L and E for a circular orbit of r
 		var sqrtR = Math.sqrt(r);
