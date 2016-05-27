@@ -73,7 +73,7 @@ var DISPLAY = {
 			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(3);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
 			NEWTON.tDisplay.innerHTML = properTime.toFixed(1);
-			NEWTON.vDisplay.innerHTML = NEWTON.speed().toFixed(3);
+			NEWTON.vDisplay.innerHTML = NEWTON.speed().toFixed(6);
 		}
 		if (! GR.collided) {
 			GR.tDisplay.innerHTML = (M * GR.t / c).toFixed(1);
