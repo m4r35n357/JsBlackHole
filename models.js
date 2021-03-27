@@ -20,6 +20,79 @@
 
 "use strict";
 
+var SYMPLECTIC = {
+	initialize: function () {
+		this.wFwd = 1.0 / (4.0 - 4.0**(1.0 / 9.0))
+		this.xFwd = 1.0 / (4.0 - 4.0**(1.0 / 7.0))
+		this.yFwd = 1.0 / (4.0 - 4.0**(1.0 / 5.0))
+		this.zFwd = 1.0 / (4.0 - 4.0**(1.0 / 3.0))
+		this.wBack = 1.0 - 4.0 * this.wFwd
+		this.xBack = 1.0 - 4.0 * this.xFwd
+		this.yBack = 1.0 - 4.0 * this.yFwd
+		this.zBack = 1.0 - 4.0 * this.zFwd
+		switch(INIT.order) {
+		    case 2:
+		        this.method = this.secondOrder;
+			break;
+		    case 4:
+		        this.method = this.fourthOrder;
+			break;
+		    case 6:
+		        this.method = this.sixthOrder;
+			break;
+		    case 8:
+		        this.method = this.eightthOrder;
+			break;
+		    case 10:
+		        this.method = this.tenthOrder;
+			break;
+		    default:
+		        this.method = this.eightthOrder;
+			break;
+		}
+	},
+	suzuki: function (self, model, base, s, forward, back) {
+       		base(self, model, s * forward);
+       		base(self, model, s * forward);
+	        base(self, model, s * back);
+       		base(self, model, s * forward);
+       		base(self, model, s * forward);
+	},
+	base2: function (self, model, c) { // 2nd-order symplectic building block
+		model.updateQ(0.5 * c, model.rDot);
+		model.updateP(c, model.r);
+		model.updateQ(0.5 * c, model.rDot);
+	},
+	secondOrder: function (model) {
+		this.base2(this, model, 1.0);
+	},
+	base4: function (self, model, s) {
+		self.suzuki(self, model, self.base2, s, self.zFwd, self.zBack);
+	},
+	fourthOrder: function (model) {
+		this.base4(this, model, 1.0);
+	},
+	base6: function (self, model, s) {
+		self.suzuki(self, model, self.base4, s, self.yFwd, self.yBack);
+	},
+	sixthOrder: function (model) {
+		this.base6(this, model, 1.0);
+	},
+	base8: function (self, model, s) {
+		self.suzuki(self, model, self.base6, s, self.xFwd, self.xBack);
+	},
+	eightthOrder: function (model) {
+		this.base8(this, model, 1.0);
+	},
+	base10: function (self, model, s) {
+		self.suzuki(self, model, self.base8, s, self.wFwd, self.wBack);
+	},
+	tenthOrder: function (model) {
+                const self = this;
+		self.base10(self, model, 1.0);
+	},
+}
+
 var GLOBALS = {
 	debug: false,
 	TWOPI: 2.0 * Math.PI,
@@ -58,51 +131,12 @@ var GLOBALS = {
 			return 3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
 		}
 	},
-	suzuki: function (model, base, s, forward, back) {
-       		base(model, s * forward);
-       		base(model, s * forward);
-	        base(model, s * back);
-       		base(model, s * forward);
-       		base(model, s * forward);
-	},
-	base2: function (model, c) { // 2nd-order symplectic building block
-		model.updateQ(0.5 * c, model.rDot);
-		model.updateP(c, model.r);
-		model.updateQ(0.5 * c, model.rDot);
-	},
-	secondOrder: function (model) {
-		this.base2(model, 1.0);
-	},
-	base4: function (model, s) {
-		GLOBALS.suzuki(model, GLOBALS.base2, s, GLOBALS.zFwd, GLOBALS.zBack)
-	},
-	fourthOrder: function (model) {
-		this.base4(model, 1.0);
-	},
-	base6: function (model, s) {
-		GLOBALS.suzuki(model, GLOBALS.base4, s, GLOBALS.yFwd, GLOBALS.yBack)
-	},
-	sixthOrder: function (model) {
-		this.base6(model, 1.0);
-	},
-	base8: function (model, s) {
-		GLOBALS.suzuki(model, GLOBALS.base6, s, GLOBALS.xFwd, GLOBALS.xBack)
-	},
-	eightthOrder: function (model) {
-		this.base8(model, 1.0);
-	},
-	base10: function (model, s) {
-		GLOBALS.suzuki(model, GLOBALS.base8, s, GLOBALS.wFwd, GLOBALS.wBack)
-	},
-	tenthOrder: function (model) {
-		this.base10(model, 1.0);
-	},
 	solve: function (model) {  // Generalized symplectic integrator
 		var i, M, r, phiDegrees, tmp, h;
 		var rOld = model.rOld = model.r;
 		var direction = model.direction;
 		var h0 = model.h0;
-		this.method(model);
+		SYMPLECTIC.method(model);
 		r = model.r;
 		if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
 			phiDegrees = this.phiDMS(model.phi);
@@ -119,36 +153,6 @@ var GLOBALS = {
 			model.direction = - direction;
 			h = this.h(model);
 			this.debug && console.log("H0: " + h0.toExponential(6) + ", H: " + h.toExponential(6) + ", E: " + this.dB(h, h0).toFixed(1) + "dBh0");
-		}
-	},
-	initialize: function () {
-		this.wFwd = 1.0 / (4.0 - 4.0**(1.0 / 9.0))
-		this.xFwd = 1.0 / (4.0 - 4.0**(1.0 / 7.0))
-		this.yFwd = 1.0 / (4.0 - 4.0**(1.0 / 5.0))
-		this.zFwd = 1.0 / (4.0 - 4.0**(1.0 / 3.0))
-		this.wBack = 1.0 - 4.0 * this.wFwd
-		this.xBack = 1.0 - 4.0 * this.xFwd
-		this.yBack = 1.0 - 4.0 * this.yFwd
-		this.zBack = 1.0 - 4.0 * this.zFwd
-		switch(INIT.order) {
-		    case 2:
-		        this.method = this.secondOrder;
-			break;
-		    case 4:
-		        this.method = this.fourthOrder;
-			break;
-		    case 6:
-		        this.method = this.sixthOrder;
-			break;
-		    case 8:
-		        this.method = this.eightthOrder;
-			break;
-		    case 10:
-		        this.method = this.tenthOrder;
-			break;
-		    default:
-		        this.method = this.eightthOrder;
-			break;
 		}
 	},
 };
