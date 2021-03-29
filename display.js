@@ -105,15 +105,16 @@ var DISPLAY = {
 		this.X = X;
 		this.Y = Y;
 	},
+        errorColour: function (model) {
+                var error = GLOBALS.dB(GLOBALS.h(model), model.h0);
+                return error < -120.0 ? model.colour : (error < -90.0 ? this.YELLOW : (error < -60.0 ? this.ORANGE : this.RED));
+        },
 	plotOrbit: function (model) {
-		var dBerror = GLOBALS.dB(GLOBALS.h(model), model.h0);
-		var X, Y;
 		var r = model.r * INIT.M * this.scale;
-		X = this.pointX(r, model.phi);
-		Y = this.pointY(r, model.phi);
-		var errorColour = dBerror < -120.0 ? model.colour : (dBerror < -90.0 ? this.YELLOW : (dBerror < -60.0 ? this.ORANGE : this.RED));
+		var X = this.pointX(r, model.phi);
+		var Y = this.pointY(r, model.phi);
 		model.fg.clearRect(model.X - this.blankSize, model.Y - this.blankSize, 2 * this.blankSize, 2 * this.blankSize);
-		this.ball(model.fg, errorColour, X, Y, this.ballSize);
+		this.ball(model.fg, this.errorColour(model), X, Y, this.ballSize);
 		if (this.showTracks) {
 			this.line(this.tracks, model.colour, model.X, model.Y, X, Y);
 		}
@@ -124,16 +125,14 @@ var DISPLAY = {
 		this.line(DISPLAY.bgPotential, this.BLACK, Math.floor(INIT.horizon * INIT.M * this.scale), this.potentialY, this.originX, this.potentialY);
 	},
 	plotPotential: function (model) {
-		var dBerror = GLOBALS.dB(GLOBALS.h(model), model.h0);
 		var v = this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
-		var errorColour = dBerror < -120.0 ? model.colour : (dBerror < -90.0 ? this.YELLOW : (dBerror < -60.0 ? this.ORANGE : this.RED));
 		model.fgPotential.clearRect(model.rOld * scaledMass - this.blankSize, this.potentialY - this.blankSize, 2 * this.blankSize, v + 2 * this.blankSize);
 		this.line(model.fgPotential, model.colour, r, v, r, this.potentialY);
-		this.ball(model.fgPotential, errorColour, r, this.potentialY, this.ballSize);
+		this.ball(model.fgPotential, this.errorColour(model), r, this.potentialY, this.ballSize);
 	},
-	plotTauDot: function (model) {  // dTau/dt plot for GR
+	plotSpeed: function (model) {  // dTau/dt plot for GR
 		var xValue = DISPLAY.pSize - 5;		
 		var tDotValue = DISPLAY.pSize * (1.0 - model.speed());
 		model.fgPotential.clearRect(xValue - 3, 0, xValue + 3, DISPLAY.pSize);

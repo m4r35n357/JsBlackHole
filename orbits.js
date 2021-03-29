@@ -112,8 +112,8 @@ var drawForeground = function () {  // main loop
 	DISPLAY.plotRotation(); // BH spin direction indicator
 	plotModel(NEWTON);
 	plotModel(GR);
-	DISPLAY.plotTauDot(NEWTON);
-	DISPLAY.plotTauDot(GR);
+	DISPLAY.plotSpeed(NEWTON);
+	DISPLAY.plotSpeed(GR);
 	DISPLAY.n += 1;
 	DISPLAY.refreshId = window.requestAnimationFrame(drawForeground);
 };
@@ -136,7 +136,7 @@ var scenarioChange = function () {  // refresh form data
 	setupModel(NEWTON, DISPLAY.GREEN);
 	setupModel(GR, DISPLAY.BLUE);
 	drawBackground();
-	drawForeground();  // start thimgs moving
+	drawForeground();  // start things moving
 	return false;  // don't reload from scratch
 };
 
