@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2013-2015  Ian Smith <m4r35n357@gmail.com>
+    Copyright (C) 2013-2021  Ian Smith <m4r35n357@gmail.com>
 
     The JavaScript code in this page is free software: you can
     redistribute it and/or modify it under the terms of the GNU
@@ -35,7 +35,7 @@ var DISPLAY = {
 	GREY: "#a0a0a0",
 	n: 0,
 	ballSize: 3,
-	blankSize: 4,
+	blank: 4,
 	potentialY: 100,
 	phiBH: 0.0,
 	pointX: function (r, phi) {
@@ -100,7 +100,7 @@ var DISPLAY = {
 		phiBH = this.phiBH;
 		X = this.pointX(radius, phiBH);
 		Y = this.pointY(radius, phiBH);
-		this.tracks.clearRect(this.X - this.blankSize, this.Y - this.blankSize, 2 * this.blankSize, 2 * this.blankSize);
+		this.tracks.clearRect(this.X - this.blank, this.Y - this.blank, 2 * this.blank, 2 * this.blank);
 		this.ball(this.tracks, this.RED, X, Y, 2);
 		this.X = X;
 		this.Y = Y;
@@ -113,7 +113,7 @@ var DISPLAY = {
 		var r = model.r * INIT.M * this.scale;
 		var X = this.pointX(r, model.phi);
 		var Y = this.pointY(r, model.phi);
-		model.fg.clearRect(model.X - this.blankSize, model.Y - this.blankSize, 2 * this.blankSize, 2 * this.blankSize);
+		model.fg.clearRect(model.X - this.blank, model.Y - this.blank, 2 * this.blank, 2 * this.blank);
 		this.ball(model.fg, this.errorColour(model), X, Y, this.ballSize);
 		if (this.showTracks) {
 			this.line(this.tracks, model.colour, model.X, model.Y, X, Y);
@@ -128,7 +128,7 @@ var DISPLAY = {
 		var v = this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(model.r));
 		var scaledMass = INIT.M * this.scale;
 		var r = model.r * scaledMass;
-		model.fgPotential.clearRect(model.rOld * scaledMass - this.blankSize, this.potentialY - this.blankSize, 2 * this.blankSize, v + 2 * this.blankSize);
+		model.fgPotential.clearRect(model.rOld * scaledMass - this.blank, this.potentialY - this.blank, 2 * this.blank, v + 2 * this.blank);
 		this.line(model.fgPotential, model.colour, r, v, r, this.potentialY);
 		this.ball(model.fgPotential, this.errorColour(model), r, this.potentialY, this.ballSize);
 	},
