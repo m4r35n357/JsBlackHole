@@ -52,11 +52,11 @@ var SYMPLECTIC = {
 		}
 	},
 	suzuki: function (self, model, base, s, forward, back) {
-       		base(self, model, s * forward);
-       		base(self, model, s * forward);
-	        base(self, model, s * back);
-       		base(self, model, s * forward);
-       		base(self, model, s * forward);
+   		base(self, model, s * forward);
+   		base(self, model, s * forward);
+        base(self, model, s * back);
+   		base(self, model, s * forward);
+   		base(self, model, s * forward);
 	},
 	base2: function (self, model, c) { // 2nd-order symplectic building block
 		model.updateQ(0.5 * c, model.rDot);
@@ -88,8 +88,7 @@ var SYMPLECTIC = {
 		self.suzuki(self, model, self.base8, s, self.wFwd, self.wBack);
 	},
 	tenthOrder: function (model) {
-                const self = this;
-		self.base10(self, model, 1.0);
+		this.base10(this, model, 1.0);
 	},
 }
 
