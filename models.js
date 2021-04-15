@@ -59,9 +59,9 @@ var SYMPLECTIC = {
    		base(self, model, s * forward);
 	},
 	base2: function (self, model, c) { // 2nd-order symplectic building block
-		model.updateQ(0.5 * c, model.rDot);
-		model.updateP(c, model.r);
-		model.updateQ(0.5 * c, model.rDot);
+		model.updateQ(c * 0.5);
+		model.updateP(c);
+		model.updateQ(c * 0.5);
 	},
 	secondOrder: function (model) {
 		this.base2(this, model, 1.0);
@@ -223,13 +223,14 @@ var NEWTON = {
 	V: function (r) {  // the Effective Potential
 		return - 1.0 / r + this.L2 / (2.0 * r * r);
 	},
-	updateQ: function (c, rDot) {  // update radial position
-		this.r += c * rDot * INIT.timeStep;
+	updateQ: function (c) {  // update radial position
+		this.r += c * this.rDot * INIT.timeStep;
 		this.phiDot = this.L / (this.r * this.r);
 		this.phi += c * this.phiDot * INIT.timeStep;
 	},
-	updateP: function (c, r) {  // update radial momentum
-		this.rDot -= c * (1.0 / (r * r) - this.L2 / (r * r * r)) * INIT.timeStep;
+	updateP: function (c) {  // update radial momentum
+        var r2 = this.r * this.r;
+		this.rDot -= c * (1.0 / r2 - this.L2 / (r2 * this.r)) * INIT.timeStep;
 	},
 };
 
@@ -270,8 +271,8 @@ var GR = { // can be spinning
 	V: function (r) {  // the Effective Potential
 		return - 1.0 / r + this.k1 / (2.0 * r * r) - this.k2 / (r * r * r);
 	},
-	updateQ: function (c, rDot) {  // update radial position
-		this.r += c * rDot * INIT.timeStep;
+	updateQ: function (c) {  // update radial position
+		this.r += c * this.rDot * INIT.timeStep;
 		var r2 = this.r * this.r;
 		var delta = r2 + this.a2 - 2.0 * this.r;
 		this.tDot = ((r2 + this.a2 * (1.0 + 2.0 / this.r)) * this.E - this.twoAL / this.r) / delta;
@@ -279,8 +280,9 @@ var GR = { // can be spinning
 		this.phiDot = ((1.0 - 2.0 / this.r) * this.L + this.twoAE / this.r) / delta;
 		this.phi += c * this.phiDot * INIT.timeStep;
 	},
-	updateP: function (c, r) {  // update radial momentum
-		this.rDot -= c * (1.0 / (r * r) - this.k1 / (r * r * r) + 3.0 * this.k2 / (r * r * r * r)) * INIT.timeStep;
+	updateP: function (c) {  // update radial momentum
+        var r2 = this.r * this.r;
+		this.rDot -= c * (1.0 / r2 - this.k1 / (r2 * this.r) + 3.0 * this.k2 / (r2 * r2)) * INIT.timeStep;
 	},
 };
 
