@@ -98,7 +98,7 @@ var drawBackground = function () {
 
 var plotModel = function (model) {
 	if (! model.collided) {
-		model.update();
+		GLOBALS.update(model);
 		DISPLAY.plotOrbit(model);
 		DISPLAY.plotPotential(model);
 	}

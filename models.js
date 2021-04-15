@@ -155,6 +155,14 @@ var GLOBALS = {
 			this.debug && console.log("H0: " + h0.toExponential(6) + ", H: " + h.toExponential(6) + ", E: " + this.dB(h, h0).toFixed(1) + "dBh0");
 		}
 	},
+	update: function (model) {
+		if (model.r > INIT.horizon) {
+			GLOBALS.solve(model);
+		} else {
+			model.collided = true;
+			GLOBALS.debug && console.info(model.name + " - collided\n");
+		}
+	},
 };
 
 var INIT = {
@@ -224,14 +232,6 @@ var NEWTON = {
 	updateP: function (c, r) {  // update radial momentum
 		this.rDot -= c * (1.0 / (r * r) - this.L2 / (r * r * r)) * INIT.timeStep;
 	},
-	update: function () {
-		if (this.r > INIT.horizon) {
-			GLOBALS.solve(this);
-		} else {
-			this.collided = true;
-			GLOBALS.debug && console.info(this.name + " - collided\n");
-		}
-	},
 };
 
 var GR = { // can be spinning
@@ -282,14 +282,6 @@ var GR = { // can be spinning
 	},
 	updateP: function (c, r) {  // update radial momentum
 		this.rDot -= c * (1.0 / (r * r) - this.k1 / (r * r * r) + 3.0 * this.k2 / (r * r * r * r)) * INIT.timeStep;
-	},
-	update: function () {
-		if (this.r > INIT.horizon) {
-			GLOBALS.solve(this);
-		} else {
-			this.collided = true;
-			GLOBALS.debug && console.info(this.name + " - collided\n");
-		}
 	},
 };
 
