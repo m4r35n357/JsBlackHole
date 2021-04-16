@@ -51,44 +51,44 @@ var SYMPLECTIC = {
 			break;
 		}
 	},
-	suzuki: function (self, model, base, s, forward, back) {
-   		base(self, model, s * forward);
-   		base(self, model, s * forward);
-        base(self, model, s * back);
-   		base(self, model, s * forward);
-   		base(self, model, s * forward);
+	suzuki: function (self, model, base, cd, forward, back) {
+   		base(self, model, cd * forward);
+   		base(self, model, cd * forward);
+        base(self, model, cd * back);
+   		base(self, model, cd * forward);
+   		base(self, model, cd * forward);
 	},
-	base2: function (self, model, c) { // 2nd-order symplectic building block
-		model.updateQ(c * 0.5);
-		model.updateP(c);
-		model.updateQ(c * 0.5);
+	base2: function (self, model, cd) { // 2nd-order symplectic building block
+		model.updateQ(cd * 0.5);
+		model.updateP(cd);
+		model.updateQ(cd * 0.5);
 	},
-	secondOrder: function (model) {
-		this.base2(this, model, 1.0);
+	secondOrder: function (model, h) {
+		this.base2(this, model, h);
 	},
-	base4: function (self, model, s) {
-		self.suzuki(self, model, self.base2, s, self.zFwd, self.zBack);
+	base4: function (self, model, cd) {
+		self.suzuki(self, model, self.base2, cd, self.zFwd, self.zBack);
 	},
-	fourthOrder: function (model) {
-		this.base4(this, model, 1.0);
+	fourthOrder: function (model, h) {
+		this.base4(this, model, h);
 	},
-	base6: function (self, model, s) {
-		self.suzuki(self, model, self.base4, s, self.yFwd, self.yBack);
+	base6: function (self, model, cd) {
+		self.suzuki(self, model, self.base4, cd, self.yFwd, self.yBack);
 	},
-	sixthOrder: function (model) {
-		this.base6(this, model, 1.0);
+	sixthOrder: function (model, h) {
+		this.base6(this, model, h);
 	},
-	base8: function (self, model, s) {
-		self.suzuki(self, model, self.base6, s, self.xFwd, self.xBack);
+	base8: function (self, model, cd) {
+		self.suzuki(self, model, self.base6, cd, self.xFwd, self.xBack);
 	},
-	eightthOrder: function (model) {
-		this.base8(this, model, 1.0);
+	eightthOrder: function (model, h) {
+		this.base8(this, model, h);
 	},
-	base10: function (self, model, s) {
-		self.suzuki(self, model, self.base8, s, self.wFwd, self.wBack);
+	base10: function (self, model, cd) {
+		self.suzuki(self, model, self.base8, cd, self.wFwd, self.wBack);
 	},
-	tenthOrder: function (model) {
-		this.base10(this, model, 1.0);
+	tenthOrder: function (model, h) {
+		this.base10(this, model, h);
 	},
 }
 
@@ -135,7 +135,7 @@ var GLOBALS = {
 		var rOld = model.rOld = model.r;
 		var direction = model.direction;
 		var h0 = model.h0;
-		SYMPLECTIC.method(model);
+		SYMPLECTIC.method(model, INIT.timeStep);
 		r = model.r;
 		if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
 			phiDegrees = this.phiDMS(model.phi);
@@ -224,13 +224,13 @@ var NEWTON = {
 		return - 1.0 / r + this.L2 / (2.0 * r * r);
 	},
 	updateQ: function (c) {  // update radial position
-		this.r += c * this.rDot * INIT.timeStep;
+		this.r += c * this.rDot;
 		this.phiDot = this.L / (this.r * this.r);
-		this.phi += c * this.phiDot * INIT.timeStep;
+		this.phi += c * this.phiDot;
 	},
 	updateP: function (c) {  // update radial momentum
         var r2 = this.r * this.r;
-		this.rDot -= c * (1.0 / r2 - this.L2 / (r2 * this.r)) * INIT.timeStep;
+		this.rDot -= c * (1.0 / r2 - this.L2 / (r2 * this.r));
 	},
 };
 
@@ -272,17 +272,17 @@ var GR = { // can be spinning
 		return - 1.0 / r + this.k1 / (2.0 * r * r) - this.k2 / (r * r * r);
 	},
 	updateQ: function (c) {  // update radial position
-		this.r += c * this.rDot * INIT.timeStep;
+		this.r += c * this.rDot;
 		var r2 = this.r * this.r;
 		var delta = r2 + this.a2 - 2.0 * this.r;
 		this.tDot = ((r2 + this.a2 * (1.0 + 2.0 / this.r)) * this.E - this.twoAL / this.r) / delta;
-		this.t += c * this.tDot * INIT.timeStep;
+		this.t += c * this.tDot;
 		this.phiDot = ((1.0 - 2.0 / this.r) * this.L + this.twoAE / this.r) / delta;
-		this.phi += c * this.phiDot * INIT.timeStep;
+		this.phi += c * this.phiDot;
 	},
 	updateP: function (c) {  // update radial momentum
         var r2 = this.r * this.r;
-		this.rDot -= c * (1.0 / r2 - this.k1 / (r2 * this.r) + 3.0 * this.k2 / (r2 * r2)) * INIT.timeStep;
+		this.rDot -= c * (1.0 / r2 - this.k1 / (r2 * this.r) + 3.0 * this.k2 / (r2 * r2));
 	},
 };
 
