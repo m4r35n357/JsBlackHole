@@ -21,7 +21,7 @@
 "use strict";
 
 var SYMPLECTIC = {
-	initialize: function () {
+	initialize: function (order) {
 		this.wFwd = 1.0 / (4.0 - 4.0**(1.0 / 9.0))
 		this.xFwd = 1.0 / (4.0 - 4.0**(1.0 / 7.0))
 		this.yFwd = 1.0 / (4.0 - 4.0**(1.0 / 5.0))
@@ -30,7 +30,7 @@ var SYMPLECTIC = {
 		this.xBack = 1.0 - 4.0 * this.xFwd
 		this.yBack = 1.0 - 4.0 * this.yFwd
 		this.zBack = 1.0 - 4.0 * this.zFwd
-		switch(INIT.order) {
+		switch(order) {
 		    case 2:
 		        this.method = this.secondOrder;
 			break;
@@ -115,7 +115,7 @@ var GLOBALS = {
 		return 0.5 * model.rDot * model.rDot + model.V(model.r);
 	},
 	photonSphere: function (a) {
-        if (GLOBALS.prograde) {
+        if (this.prograde) {
             return 2.0 * (1.0 + Math.cos(2.0 / 3.0 * Math.acos(- Math.abs(a))));
         } else {
             return 2.0 * (1.0 + Math.cos(2.0 / 3.0 * Math.acos(Math.abs(a))));
@@ -124,7 +124,7 @@ var GLOBALS = {
 	isco: function (a) {
 		var z1 = 1.0 + Math.pow(1.0 - a * a, 1.0 / 3.0) * (Math.pow(1.0 + a, 1.0 / 3.0) + Math.pow(1.0 - a, 1.0 / 3.0));
 		var z2 = Math.sqrt(3.0 * a * a + z1 * z1);
-		if (GLOBALS.prograde) {
+		if (this.prograde) {
 			return 3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
 		} else {
 			return 3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
@@ -135,11 +135,11 @@ var GLOBALS = {
 		var rOld = model.rOld = model.r;
 		var direction = model.direction;
 		var h0 = model.h0;
-		SYMPLECTIC.method(model, INIT.timeStep);
+		SYMPLECTIC.method(model, this.timeStep);
 		r = model.r;
 		if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
 			phiDegrees = this.phiDMS(model.phi);
-			M = INIT.M;
+			M = this.M;
 			if (direction === -1) {
 				model.rMinDisplay.innerHTML = (M * r).toFixed(3);
 				model.pDisplay.innerHTML = phiDegrees;
@@ -155,60 +155,54 @@ var GLOBALS = {
 		}
 	},
 	update: function (model) {
-		if (model.r > INIT.horizon) {
-			GLOBALS.solve(model);
+		if (model.r > this.horizon) {
+			this.solve(model);
 		} else {
 			model.collided = true;
-			GLOBALS.debug && console.info(model.name + " - collided\n");
+			this.debug && console.info(model.name + " - collided\n");
 		}
 	},
-};
-
-var INIT = {
-	name: "INIT",
-	phi: 0.0,
- 	direction: -1.0,
 	getFloatById: function (id) {
 		return parseFloat(document.getElementById(id).value);
 	},
 	getHtmlValues: function () {
-		GLOBALS.debug && console.info("Restarting . . . ");
+		this.debug && console.info("Restarting . . . ");
 		this.timeStep = this.getFloatById('timestep');
 		this.lFac = this.getFloatById('lfactor') / 100.0;
-		GLOBALS.c = this.getFloatById('c');
-		GLOBALS.G = this.getFloatById('G');
-		this.M = this.getFloatById('mass') * GLOBALS.G / (GLOBALS.c * GLOBALS.c);
-		GLOBALS.debug && console.info(this.name + ".M: " + this.M.toFixed(3));
+		this.c = this.getFloatById('c');
+		this.G = this.getFloatById('G');
+		this.M = this.getFloatById('mass') * this.G / (this.c * this.c);
+		this.debug && console.info(this.name + ".M: " + this.M.toFixed(3));
 		this.r = this.getFloatById('radius') / this.M;
-		GLOBALS.debug && console.info(this.name + ".r: " + this.r.toFixed(1));
+		this.debug && console.info(this.name + ".r: " + this.r.toFixed(1));
 		this.a = this.getFloatById('spin');
-		GLOBALS.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
+		this.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
 		this.order = this.getFloatById('order');
-		GLOBALS.debug && console.info(this.name + ".order: " + this.order);
-		this.a >= 0.0 ? GLOBALS.prograde = true : GLOBALS.prograde = false;
+		this.debug && console.info(this.name + ".order: " + this.order);
+		this.a >= 0.0 ? this.prograde = true : this.prograde = false;
 		this.horizon = 1.0 + Math.sqrt(1.0 - this.a * this.a);
-		GLOBALS.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(3));
+		this.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(3));
 		this.deltaPhi = this.a / (this.horizon * this.horizon + this.a * this.a) * this.timeStep;
 	},
 	initialize: function (model) {
 		model.collided = false;
 		model.r = this.r;
 		model.rOld = this.r;
-		model.phi = this.phi;
-		model.direction = this.direction;
+		model.phi = 0.0;
+		model.direction = - 1.0;
 	},
 };
 
 var NEWTON = {
 	name: "NEWTON",
-	initialize: function () {
+	initialize: function (a, lFac, debug) {
 		var V0;
 		this.circular(this.r);
-		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(3));
+		debug && console.info(this.name + ".L: " + this.L.toFixed(3));
 		this.L2 = this.L * this.L;
 		this.energyBar = this.V(this.r);
-		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
-		this.L = this.L * INIT.lFac;
+		debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
+		this.L = this.L * lFac;
 		this.L2 = this.L * this.L;
 		V0 = this.V(this.r); // using (possibly) adjusted L from above
 		this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
@@ -236,16 +230,16 @@ var NEWTON = {
 
 var GR = { // can be spinning
 	name: "GR",
-	initialize: function () {
+	initialize: function (a, lFac, debug) {
 		var V0;
-		this.circular(this.r, INIT.a);
-		GLOBALS.debug && console.info(this.name + ".L: " + this.L.toFixed(12));
-		GLOBALS.debug && console.info(this.name + ".E: " + this.E.toFixed(12));
-		this.intermediates(this.L, this.E, INIT.a);
+		this.circular(this.r, a);
+		debug && console.info(this.name + ".L: " + this.L.toFixed(12));
+		debug && console.info(this.name + ".E: " + this.E.toFixed(12));
+		this.intermediates(this.L, this.E, a);
 		this.energyBar = this.V(this.r);
-		GLOBALS.debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
-		this.L = this.L * INIT.lFac;
-		this.intermediates(this.L, this.E, INIT.a);
+		debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
+		this.L = this.L * lFac;
+		this.intermediates(this.L, this.E, a);
 		this.t = 0.0;
 		this.tDot = 1.0;
 		V0 = this.V(this.r); // using (possibly) adjusted L from above

@@ -73,9 +73,9 @@ var DISPLAY = {
 		canvas.fillRect(0, 0, 2 * x, 2 * y);
 	},
 	varTable: function () {
-		var M = INIT.M;
+		var M = GLOBALS.M;
 		var c = GLOBALS.c;
-		var properTime = this.n * INIT.timeStep * M / c;
+		var properTime = this.n * GLOBALS.timeStep * M / c;
 		if (! NEWTON.collided) {
 			NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(3);
 			NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
@@ -95,8 +95,8 @@ var DISPLAY = {
 	},
 	plotRotation: function () {
 		var phiBH, X, Y;
-		var radius = 0.7 * INIT.M * this.scale * INIT.horizon;
-		this.phiBH += INIT.deltaPhi;
+		var radius = 0.7 * GLOBALS.M * this.scale * GLOBALS.horizon;
+		this.phiBH += GLOBALS.deltaPhi;
 		phiBH = this.phiBH;
 		X = this.pointX(radius, phiBH);
 		Y = this.pointY(radius, phiBH);
@@ -110,7 +110,7 @@ var DISPLAY = {
                 return error < -120.0 ? model.colour : (error < -90.0 ? this.YELLOW : (error < -60.0 ? this.ORANGE : this.RED));
         },
 	plotOrbit: function (model) {
-		var r = model.r * INIT.M * this.scale;
+		var r = model.r * GLOBALS.M * this.scale;
 		var X = this.pointX(r, model.phi);
 		var Y = this.pointY(r, model.phi);
 		model.fg.clearRect(model.X - this.blank, model.Y - this.blank, 2 * this.blank, 2 * this.blank);
@@ -122,11 +122,11 @@ var DISPLAY = {
 		model.Y = Y;
 	},
 	energyBar: function () {
-		this.line(DISPLAY.bgPotential, this.BLACK, Math.floor(INIT.horizon * INIT.M * this.scale), this.potentialY, this.originX, this.potentialY);
+		this.line(DISPLAY.bgPotential, this.BLACK, Math.floor(GLOBALS.horizon * GLOBALS.M * this.scale), this.potentialY, this.originX, this.potentialY);
 	},
 	plotPotential: function (model) {
 		var v = this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(model.r));
-		var scaledMass = INIT.M * this.scale;
+		var scaledMass = GLOBALS.M * this.scale;
 		var r = model.r * scaledMass;
 		model.fgPotential.clearRect(model.rOld * scaledMass - this.blank, this.potentialY - this.blank, 2 * this.blank, v + 2 * this.blank);
 		this.line(model.fgPotential, model.colour, r, v, r, this.potentialY);
@@ -143,8 +143,8 @@ var DISPLAY = {
 		var i;
 		DISPLAY.bgPotential.strokeStyle = model.colour;
 		DISPLAY.bgPotential.beginPath();
-		for (i = Math.floor(INIT.horizon * this.scale); i < this.pSize; i += 1) {
-			DISPLAY.bgPotential.lineTo(i, this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(i / (INIT.M * this.scale))));
+		for (i = Math.floor(GLOBALS.horizon * this.scale); i < this.pSize; i += 1) {
+			DISPLAY.bgPotential.lineTo(i, this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(i / (GLOBALS.M * this.scale))));
 		}
 		DISPLAY.bgPotential.stroke();
 	},

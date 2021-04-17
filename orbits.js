@@ -23,10 +23,10 @@
 var drawBackground = function () {
 	var grd;
 	var i;
-	var isco = DISPLAY.scale * INIT.M * GLOBALS.isco(INIT.a);
-	var photonSphere = DISPLAY.scale * INIT.M * GLOBALS.photonSphere(INIT.a);
-	var ergosphere = DISPLAY.scale * INIT.M * GLOBALS.ergosphere;
-	var horizon = DISPLAY.scale * INIT.M * INIT.horizon;
+	var isco = DISPLAY.scale * GLOBALS.M * GLOBALS.isco(GLOBALS.a);
+	var photonSphere = DISPLAY.scale * GLOBALS.M * GLOBALS.photonSphere(GLOBALS.a);
+	var ergosphere = DISPLAY.scale * GLOBALS.M * GLOBALS.ergosphere;
+	var horizon = DISPLAY.scale * GLOBALS.M * GLOBALS.horizon;
 	// Initialize orbit canvases
 	DISPLAY.bg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
 	DISPLAY.tracks.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
@@ -88,10 +88,10 @@ var drawBackground = function () {
 	DISPLAY.bgPotential.stroke();
 	DISPLAY.energyBar();
 	// Constants of motion for table
-	NEWTON.lDisplay.innerHTML = (INIT.M * NEWTON.L).toFixed(6);
-	GR.eDisplay.innerHTML = (INIT.M * GR.E).toFixed(6);
-	GR.lDisplay.innerHTML = (INIT.M * GR.L).toFixed(6);
-	GR.rsDisplay.innerHTML = (INIT.M * INIT.horizon).toFixed(3);
+	NEWTON.lDisplay.innerHTML = (GLOBALS.M * NEWTON.L).toFixed(6);
+	GR.eDisplay.innerHTML = (GLOBALS.M * GR.E).toFixed(6);
+	GR.lDisplay.innerHTML = (GLOBALS.M * GR.L).toFixed(6);
+	GR.rsDisplay.innerHTML = (GLOBALS.M * GLOBALS.horizon).toFixed(3);
 	// time step counter
 	DISPLAY.n = 0;
 };
@@ -119,19 +119,19 @@ var drawForeground = function () {  // main loop
 };
 
 var setupModel = function (model, colour) {
-	INIT.initialize(model);
-	model.initialize();
-	model.X = DISPLAY.pointX(INIT.M * DISPLAY.scale * model.r, model.phi);
-	model.Y = DISPLAY.pointY(INIT.M * DISPLAY.scale * model.r, model.phi);
+	GLOBALS.initialize(model);
+	model.initialize(GLOBALS.a, GLOBALS.lFac, GLOBALS.debug);
+	model.X = DISPLAY.pointX(GLOBALS.M * DISPLAY.scale * model.r, model.phi);
+	model.Y = DISPLAY.pointY(GLOBALS.M * DISPLAY.scale * model.r, model.phi);
 	model.colour = colour;
 }
 
 var scenarioChange = function () {  // refresh form data
-	INIT.getHtmlValues();
-	DISPLAY.scale = INIT.getFloatById('scale');
-	DISPLAY.pScale = INIT.getFloatById('pscale');
+	GLOBALS.getHtmlValues();
+	DISPLAY.scale = GLOBALS.getFloatById('scale');
+	DISPLAY.pScale = GLOBALS.getFloatById('pscale');
 	document.getElementById('showTracks').checked ? DISPLAY.showTracks = true : DISPLAY.showTracks = false;
-	SYMPLECTIC.initialize();
+	SYMPLECTIC.initialize(GLOBALS.order);
 	document.getElementById('toggleDebug').checked ? GLOBALS.debug = true : GLOBALS.debug = false;
 	setupModel(NEWTON, DISPLAY.GREEN);
 	setupModel(GR, DISPLAY.BLUE);
