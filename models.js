@@ -46,9 +46,6 @@ var SYMPLECTIC = {
 		    case 10:
 		        this.method = this.tenthOrder;
 			break;
-		    default:
-		        this.method = this.eightthOrder;
-			break;
 		}
 	},
 	suzuki: function (self, model, base, cd, forward, back) {
