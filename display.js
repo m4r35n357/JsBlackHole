@@ -95,8 +95,8 @@ var DISPLAY = {
 	},
 	plotRotation: function () {
 		var phiBH, X, Y;
-		var radius = 0.7 * GLOBALS.M * this.scale * GLOBALS.horizon;
-		this.phiBH += GLOBALS.deltaPhi;
+		var radius = GLOBALS.radius(2.0 * GLOBALS.M) * this.scale;
+		this.phiBH += GLOBALS.deltaPhi();
 		phiBH = this.phiBH;
 		X = this.pointX(radius, phiBH);
 		Y = this.pointY(radius, phiBH);
@@ -110,7 +110,7 @@ var DISPLAY = {
                 return error < -120.0 ? model.colour : (error < -90.0 ? this.YELLOW : (error < -60.0 ? this.ORANGE : this.RED));
         },
 	plotOrbit: function (model) {
-		var r = model.r * GLOBALS.M * this.scale;
+		var r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
 		var X = this.pointX(r, model.phi);
 		var Y = this.pointY(r, model.phi);
 		model.fg.clearRect(model.X - this.blank, model.Y - this.blank, 2 * this.blank, 2 * this.blank);
@@ -126,9 +126,8 @@ var DISPLAY = {
 	},
 	plotPotential: function (model) {
 		var v = this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(model.r));
-		var scaledMass = GLOBALS.M * this.scale;
-		var r = model.r * scaledMass;
-		model.fgPotential.clearRect(model.rOld * scaledMass - this.blank, this.potentialY - this.blank, 2 * this.blank, v + 2 * this.blank);
+		var r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
+		model.fgPotential.clearRect(GLOBALS.radius(model.rOld) * GLOBALS.M * this.scale - this.blank, this.potentialY - this.blank, 2 * this.blank, v + 2 * this.blank);
 		this.line(model.fgPotential, model.colour, r, v, r, this.potentialY);
 		this.ball(model.fgPotential, this.errorColour(model), r, this.potentialY, this.ballSize);
 	},

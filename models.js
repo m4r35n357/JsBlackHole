@@ -98,6 +98,12 @@ var GLOBALS = {
 	dB: function (val, ref) {
 		return 10.0 * Math.log(Math.abs((val - ref) / ref)) / this.LOG10;
 	},
+    radius: function (r) {
+        return Math.sqrt(r * r + this.a * this.a);
+    },
+    deltaPhi: function () {
+        return 2.0 * this.M * this.a / (this.r * this.r * this.r + this.r * this.a * this.a + 2.0 * this.M * this.a * this.a) * this.timeStep;
+    },
 	phiDegrees: function (phiRadians) {
 		return (phiRadians * 360.0 / this.TWOPI % 360).toFixed(0) + "&deg;";
 	},
@@ -179,7 +185,6 @@ var GLOBALS = {
 		this.a >= 0.0 ? this.prograde = true : this.prograde = false;
 		this.horizon = 1.0 + Math.sqrt(1.0 - this.a * this.a);
 		this.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(3));
-		this.deltaPhi = this.a / (this.horizon * this.horizon + this.a * this.a) * this.timeStep;
 	},
 	initialize: function (model) {
 		model.collided = false;
