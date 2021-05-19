@@ -23,10 +23,10 @@
 var drawBackground = function () {
 	var grd;
 	var i;
-	var isco = DISPLAY.scale * GLOBALS.M * GLOBALS.isco(GLOBALS.a);
-	var photonSphere = DISPLAY.scale * GLOBALS.M * GLOBALS.photonSphere(GLOBALS.a);
-	var ergosphere = DISPLAY.scale * GLOBALS.M * GLOBALS.ergosphere;
-	var horizon = DISPLAY.scale * GLOBALS.M * GLOBALS.horizon;
+	var isco = GLOBALS.radius(GLOBALS.isco(GLOBALS.a)) * GLOBALS.M * DISPLAY.scale;
+	var photonSphere = GLOBALS.radius(GLOBALS.photonSphere(GLOBALS.a)) * GLOBALS.M * DISPLAY.scale;
+	var ergosphere = GLOBALS.radius(GLOBALS.ergosphere) * GLOBALS.M * DISPLAY.scale;
+	var horizon = GLOBALS.radius(GLOBALS.horizon) * GLOBALS.M * DISPLAY.scale;
 	// Initialize orbit canvases
 	DISPLAY.bg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
 	DISPLAY.tracks.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
