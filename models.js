@@ -101,8 +101,8 @@ var GLOBALS = {
     radius: function (r) {
         return Math.sqrt(r * r + this.a * this.a);
     },
-    deltaPhi: function () {
-        return 2.0 * this.M * this.a / (this.r * this.r * this.r + this.r * this.a * this.a + 2.0 * this.M * this.a * this.a) * this.timeStep;
+    deltaPhi: function (r) {  // omega = - g_t_phi / g_phi_phi
+        return this.Rs * this.a * this.c / (r * r * r + (r + this.Rs) * this.a * this.a) * this.timeStep;
     },
 	phiDegrees: function (phiRadians) {
 		return (phiRadians * 360.0 / this.TWOPI % 360).toFixed(0) + "&deg;";
@@ -175,6 +175,7 @@ var GLOBALS = {
 		this.c = this.getFloatById('c');
 		this.G = this.getFloatById('G');
 		this.M = this.getFloatById('mass') * this.G / (this.c * this.c);
+        this.Rs = 2.0 * this.M;
 		this.debug && console.info(this.name + ".M: " + this.M.toFixed(3));
 		this.r = this.getFloatById('radius') / this.M;
 		this.debug && console.info(this.name + ".r: " + this.r.toFixed(1));

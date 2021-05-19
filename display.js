@@ -95,8 +95,8 @@ var DISPLAY = {
 	},
 	plotRotation: function () {
 		var phiBH, X, Y;
-		var radius = GLOBALS.radius(2.0 * GLOBALS.M) * this.scale;
-		this.phiBH += GLOBALS.deltaPhi();
+		var radius = GLOBALS.radius(GLOBALS.Rs) * this.scale;
+		this.phiBH += GLOBALS.deltaPhi(GLOBALS.Rs);
 		phiBH = this.phiBH;
 		X = this.pointX(radius, phiBH);
 		Y = this.pointY(radius, phiBH);
