@@ -21,8 +21,6 @@
 "use strict";
 
 var drawBackground = function () {
-    var grd;
-    var i;
     var isco = GLOBALS.radius(GLOBALS.isco(GLOBALS.a)) * GLOBALS.M * DISPLAY.scale;
     var photonSphere = GLOBALS.radius(GLOBALS.photonSphere(GLOBALS.a)) * GLOBALS.M * DISPLAY.scale;
     var ergosphere = GLOBALS.radius(GLOBALS.ergosphere) * GLOBALS.M * DISPLAY.scale;
@@ -33,9 +31,6 @@ var drawBackground = function () {
     NEWTON.fg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
     GR.fg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
     DISPLAY.circularGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.GREY, DISPLAY.BLACK);
-    grd = DISPLAY.bgPotential.createLinearGradient(0, 0, DISPLAY.pSize, 0);
-    grd.addColorStop(0, DISPLAY.GREY);
-    grd.addColorStop(1, DISPLAY.BLACK);
     // Solar perimeter
     DISPLAY.bg.strokeStyle = DISPLAY.YELLOW;
         DISPLAY.bg.beginPath();
@@ -57,9 +52,7 @@ var drawBackground = function () {
     DISPLAY.bgPotential.clearRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
     NEWTON.fgPotential.clearRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
     GR.fgPotential.clearRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
-    // Background
-    DISPLAY.bgPotential.fillStyle = grd;
-    DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
+    DISPLAY.linearGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.GREY, DISPLAY.BLACK);
     // ISCO
     DISPLAY.bgPotential.globalAlpha = 0.1;
     DISPLAY.bgPotential.fillStyle = DISPLAY.WHITE;

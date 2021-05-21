@@ -72,6 +72,13 @@ var DISPLAY = {
         canvas.fillStyle = grd;
         canvas.fillRect(0, 0, 2 * x, 2 * y);
     },
+    linearGradient: function (canvas, x, y, innerColour, outerColour) {
+        var grd = DISPLAY.bgPotential.createLinearGradient(0, 0, DISPLAY.pSize, 0);
+        grd.addColorStop(0, innerColour);
+        grd.addColorStop(1, outerColour);
+        DISPLAY.bgPotential.fillStyle = grd;
+        DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
+    },
     varTable: function () {
         var M = GLOBALS.M;
         var c = GLOBALS.c;
