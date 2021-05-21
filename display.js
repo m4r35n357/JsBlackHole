@@ -108,7 +108,7 @@ var DISPLAY = {
         X = this.pointX(radius, phiBH);
         Y = this.pointY(radius, phiBH);
         this.tracks.clearRect(this.X - this.blank, this.Y - this.blank, 2 * this.blank, 2 * this.blank);
-        this.ball(this.tracks, this.RED, X, Y, 2);
+        this.ball(this.tracks, this.WHITE, X, Y, 2);
         this.X = X;
         this.Y = Y;
     },
