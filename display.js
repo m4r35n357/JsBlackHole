@@ -112,10 +112,10 @@ var DISPLAY = {
         this.X = X;
         this.Y = Y;
     },
-        errorColour: function (model) {
-                var error = GLOBALS.dB(GLOBALS.h(model), model.h0);
-                return error < -120.0 ? model.colour : (error < -90.0 ? this.YELLOW : (error < -60.0 ? this.ORANGE : this.RED));
-        },
+    errorColour: function (model) {
+        var error = GLOBALS.dB(GLOBALS.h(model), model.h0);
+        return error < -120.0 ? model.colour : (error < -90.0 ? this.YELLOW : (error < -60.0 ? this.ORANGE : this.RED));
+    },
     plotOrbit: function (model) {
         var r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
         var X = this.pointX(r, model.phi);
@@ -152,7 +152,7 @@ var DISPLAY = {
         var i, r;
         DISPLAY.bgPotential.strokeStyle = model.colour;
         DISPLAY.bgPotential.beginPath();
-        for (i = this.pSize; i > GLOBALS.radius(GLOBALS.horizon) * GLOBALS.M * this.scale; i -= 1) {
+        for (i = this.pSize; i > 0; i -= 1) {
             r = i / (GLOBALS.M * this.scale);
             DISPLAY.bgPotential.lineTo(i, this.canvasPotential(model, Math.sqrt(r * r - GLOBALS.a * GLOBALS.a)));
         }
