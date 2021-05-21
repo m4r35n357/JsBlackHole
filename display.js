@@ -124,8 +124,11 @@ var DISPLAY = {
     energyBar: function () {
         this.line(DISPLAY.bgPotential, this.BLACK, Math.floor(GLOBALS.horizon * GLOBALS.M * this.scale), this.potentialY, this.originX, this.potentialY);
     },
+    canvasPotential: function (model, r) {
+        return this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(r));
+    },
     plotPotential: function (model) {
-        var v = this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(model.r));
+        var v = this.canvasPotential(model, model.r);
         var r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
         model.fgPotential.clearRect(GLOBALS.radius(model.rOld) * GLOBALS.M * this.scale - this.blank, this.potentialY - this.blank, 2 * this.blank, v + 2 * this.blank);
         this.line(model.fgPotential, model.colour, r, v, r, this.potentialY);
@@ -139,11 +142,12 @@ var DISPLAY = {
         this.ball(model.fgPotential, model.colour, xValue, tDotValue, this.ballSize);
     },
     potential: function (model) {
-        var i;
+        var i, r;
         DISPLAY.bgPotential.strokeStyle = model.colour;
         DISPLAY.bgPotential.beginPath();
-        for (i = Math.floor(GLOBALS.horizon * this.scale); i < this.pSize; i += 1) {
-            DISPLAY.bgPotential.lineTo(i, this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(i / (GLOBALS.M * this.scale))));
+        for (i = this.pSize; i > GLOBALS.radius(GLOBALS.horizon) * GLOBALS.M * this.scale; i -= 1) {
+            r = i / (GLOBALS.M * this.scale);
+            DISPLAY.bgPotential.lineTo(i, this.canvasPotential(model, Math.sqrt(r * r - GLOBALS.a * GLOBALS.a)));
         }
         DISPLAY.bgPotential.stroke();
     },
