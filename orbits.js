@@ -33,7 +33,7 @@ var drawBackground = function () {
     NEWTON.fg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
     GR.fg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
     DISPLAY.circularGradient(DISPLAY.bg, DISPLAY.originX, DISPLAY.originY, DISPLAY.GREY, DISPLAY.BLACK);
-    grd = DISPLAY.bgPotential.createLinearGradient(0, 0, DISPLAY.width, 0);
+    grd = DISPLAY.bgPotential.createLinearGradient(0, 0, DISPLAY.pSize, 0);
     grd.addColorStop(0, DISPLAY.GREY);
     grd.addColorStop(1, DISPLAY.BLACK);
     // Solar perimeter
@@ -59,7 +59,7 @@ var drawBackground = function () {
     GR.fgPotential.clearRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
     // Background
     DISPLAY.bgPotential.fillStyle = grd;
-    DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.width, DISPLAY.pSize);
+    DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
     // ISCO
     DISPLAY.bgPotential.globalAlpha = 0.1;
     DISPLAY.bgPotential.fillStyle = DISPLAY.WHITE;
@@ -142,13 +142,11 @@ var scenarioChange = function () {  // refresh form data
 
 window.onload = function () {  // load static DOM elements
     var orbitPlot = document.getElementById('tracks');
-    var potential = document.getElementById('bgpot');
     DISPLAY.oSize = orbitPlot.width;
-    DISPLAY.pSize = potential.width;
     DISPLAY.originX = orbitPlot.width / 2;
     DISPLAY.originY = orbitPlot.height / 2;
-    DISPLAY.width = potential.width;
     DISPLAY.tracks = orbitPlot.getContext('2d');
+    DISPLAY.pSize = document.getElementById('bgpot').width;
     NEWTON.fg = document.getElementById('fgorbitn').getContext('2d');
     GR.fg = document.getElementById('fgorbitgr').getContext('2d');
     DISPLAY.bg = document.getElementById('bgorbit').getContext('2d');
