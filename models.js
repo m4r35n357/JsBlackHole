@@ -69,7 +69,7 @@ var GLOBALS = {
         var rOld = model.rOld = model.r;
         var direction = model.direction;
         var h0 = model.h0;
-        SYMPLECTIC.method(model, this.timeStep);
+        SYMPLECTIC.integrate(GLOBALS.order, model, this.timeStep);
         r = model.r;
         if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
             phiDegrees = this.phiDMS(model.phi);
