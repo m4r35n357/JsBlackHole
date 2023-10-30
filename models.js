@@ -20,22 +20,6 @@
 
 "use strict";
 
-var SYMPLECTIC = {
-    integrate: function (order, model, cd) {
-        if (order > 2) {
-            order -= 2;
-            var fwd = 1.0 / (4.0 - 4.0**(1.0 / (order + 1)));
-            for (var stage = 0; stage < 5; stage++) {
-                this.integrate(order, model, (stage == 2 ? 1.0 - 4.0 * fwd : fwd) * cd);
-            }
-        } else {
-            model.updateQ(cd * 0.5);
-            model.updateP(cd);
-            model.updateQ(cd * 0.5);
-        }
-    }
-};
-
 var GLOBALS = {
     debug: false,
     TWOPI: 2.0 * Math.PI,
@@ -80,12 +64,25 @@ var GLOBALS = {
             return 3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
         }
     },
+    integrate: function (order, model, cd) {
+        if (order > 2) {
+            order -= 2;
+            var fwd = 1.0 / (4.0 - 4.0**(1.0 / (order + 1)));
+            for (var stage = 0; stage < 5; stage++) {
+                this.integrate(order, model, (stage == 2 ? 1.0 - 4.0 * fwd : fwd) * cd);
+            }
+        } else {
+            model.updateQ(cd * 0.5);
+            model.updateP(cd);
+            model.updateQ(cd * 0.5);
+        }
+    },
     solve: function (model) {  // Generalized symplectic integrator
         var i, M, r, phiDegrees, tmp, h;
         var rOld = model.rOld = model.r;
         var direction = model.direction;
         var h0 = model.h0;
-        SYMPLECTIC.integrate(this.order, model, this.timeStep);
+        this.integrate(this.order, model, this.timeStep);
         r = model.r;
         if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
             phiDegrees = this.phiDMS(model.phi);
