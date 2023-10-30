@@ -20,6 +20,25 @@
 
 "use strict";
 
+var SYMPLECTIC = {
+    initialize: function (order) {
+        this.order = order;
+    },
+    integrate: function (order, model, cd) {
+        if (order > 2) {
+            order -= 2;
+            fwd = 1.0 / (4.0 - 4.0**(1.0 / (order + 1)));
+            for (stage = 0; stage < 5; stage++) {
+                integrate(order, model, (stage == 2 ? 1.0 - 4.0 * fwd : fwd) * cd);
+            }
+        } else {
+            model.updateQ(cd * 0.5);
+            model.updateP(cd);
+            model.updateQ(cd * 0.5);
+        }
+    }
+};
+
 var GLOBALS = {
     debug: false,
     TWOPI: 2.0 * Math.PI,
