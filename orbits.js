@@ -99,9 +99,7 @@ var plotModel = function (model) {
 
 var drawForeground = function () {  // main loop
     DISPLAY.refreshId && window.cancelAnimationFrame(DISPLAY.refreshId);
-    if ((DISPLAY.n % 10) === 0) {
-        DISPLAY.varTable();
-    }
+    ((DISPLAY.n % 10) === 0) && DISPLAY.varTable();
     DISPLAY.plotRotation(); // BH spin direction indicator
     plotModel(NEWTON);
     plotModel(GR);

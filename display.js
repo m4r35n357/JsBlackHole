@@ -36,7 +36,7 @@ var DISPLAY = {
     n: 0,
     ballSize: 3,
     blank: 4,
-    potentialY: 100,
+    vY: 100,
     phiBH: 0.0,
     pointX: function (r, phi) {
         return this.originX + r * Math.cos(phi);
@@ -80,32 +80,29 @@ var DISPLAY = {
         DISPLAY.bgV.fillRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
     },
     varTable: function () {
-        let M = GLOBALS.M;
-        let c = GLOBALS.c;
-        let tau = this.n * GLOBALS.step * M / c;
+        let tau = this.n * GLOBALS.step * GLOBALS.M / GLOBALS.c;
         if (! NEWTON.collided) {
-            NEWTON.rText.innerHTML = (M * NEWTON.r).toFixed(3);
+            NEWTON.rText.innerHTML = (GLOBALS.M * NEWTON.r).toFixed(3);
             NEWTON.phiText.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
             NEWTON.tText.innerHTML = tau.toFixed(1);
             NEWTON.vText.innerHTML = NEWTON.speed().toFixed(6);
         }
         if (! GR.collided) {
-            GR.tText.innerHTML = (M * GR.t / c).toFixed(1);
-            GR.rText.innerHTML = (M * GR.r).toFixed(3);
+            GR.tText.innerHTML = (GLOBALS.M * GR.t / GLOBALS.c).toFixed(1);
+            GR.rText.innerHTML = (GLOBALS.M * GR.r).toFixed(3);
             GR.phiText.innerHTML = GLOBALS.phiDegrees(GR.phi);
             GR.tauText.innerHTML = tau.toFixed(1);
             GR.tDotText.innerHTML = GR.tDot.toFixed(3);
             GR.rDotText.innerHTML = GR.rDot.toFixed(3);
-            GR.phiDotText.innerHTML = (GR.phiDot / M).toFixed(3);
+            GR.phiDotText.innerHTML = (GR.phiDot / GLOBALS.M).toFixed(3);
             GR.vText.innerHTML = GR.speed().toFixed(6);
         }
     },
     plotRotation: function () {
         let circle = GLOBALS.circle(GLOBALS.ergosphere) * GLOBALS.M * DISPLAY.scale;
         this.phiBH += GLOBALS.deltaPhi(GLOBALS.ergosphere);
-        let phiBH = this.phiBH;
-        let X = this.pointX(circle, phiBH);
-        let Y = this.pointY(circle, phiBH);
+        let X = this.pointX(circle, this.phiBH);
+        let Y = this.pointY(circle, this.phiBH);
         this.tracks.clearRect(this.X - this.blank, this.Y - this.blank, 2 * this.blank, 2 * this.blank);
         this.ball(this.tracks, this.WHITE, X, Y, 2);
         this.X = X;
@@ -121,24 +118,22 @@ var DISPLAY = {
         let Y = this.pointY(r, m.phi);
         m.fg.clearRect(m.X - this.blank, m.Y - this.blank, 2 * this.blank, 2 * this.blank);
         this.ball(m.fg, this.errorColour(m), X, Y, this.ballSize);
-        if (this.showTracks) {
-            this.line(this.tracks, m.colour, m.X, m.Y, X, Y);
-        }
+        this.showTracks && this.line(this.tracks, m.colour, m.X, m.Y, X, Y);
         m.X = X;
         m.Y = Y;
     },
     energyBar: function () {
-        this.line(DISPLAY.bgV, this.BLACK, Math.floor(GLOBALS.horizon * GLOBALS.M * this.scale), this.potentialY, this.originX, this.potentialY);
+        this.line(DISPLAY.bgV, this.BLACK, Math.floor(GLOBALS.horizon * GLOBALS.M * this.scale), this.vY, this.originX, this.vY);
     },
     cV: function (m, r) {
-        return this.potentialY + this.pScale * this.pSize * (m.energyBar - m.V(r));
+        return this.vY + this.pScale * this.pSize * (m.energyBar - m.V(r));
     },
     plotV: function (m) {
         let v = this.cV(m, m.r);
         let r = GLOBALS.circle(m.r) * GLOBALS.M * this.scale;
-        m.fgV.clearRect(GLOBALS.circle(m.rOld) * GLOBALS.M * this.scale - this.blank, this.potentialY - this.blank, 2 * this.blank, v + 2 * this.blank);
-        this.line(m.fgV, m.colour, r, v, r, this.potentialY);
-        this.ball(m.fgV, this.errorColour(m), r, this.potentialY, this.ballSize);
+        m.fgV.clearRect(GLOBALS.circle(m.rOld) * GLOBALS.M * this.scale - this.blank, this.vY - this.blank, 2 * this.blank, v + 2 * this.blank);
+        this.line(m.fgV, m.colour, r, v, r, this.vY);
+        this.ball(m.fgV, this.errorColour(m), r, this.vY, this.ballSize);
     },
     plotSpeed: function (m) {  // dTau/dt plot for GR
         let xValue = DISPLAY.pSize - 5;

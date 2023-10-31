@@ -45,8 +45,8 @@ var GLOBALS = {
         let seconds = (minutes - Math.floor(minutes)) * 60;
         return circularDegrees.toFixed(0) + "&deg;" + minutes.toFixed(0) + "&#39;" + seconds.toFixed(0) + "&#34;";
     },
-    h: function (model) {  // the radial "Hamiltonian"
-        return 0.5 * model.rDot * model.rDot + model.V(model.r);
+    h: function (m) {  // the radial "Hamiltonian"
+        return 0.5 * m.rDot * m.rDot + m.V(m.r);
     },
     photonSphere: function (a) {
         if (this.prograde) {
