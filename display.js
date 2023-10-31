@@ -149,11 +149,10 @@ var DISPLAY = {
         this.ball(model.fgPotential, model.colour, xValue, tDotValue, this.ballSize);
     },
     potential: function (model) {
-        var i, r;
         DISPLAY.bgPotential.strokeStyle = model.colour;
         DISPLAY.bgPotential.beginPath();
-        for (i = this.pSize; i > 0; i -= 1) {
-            r = i / (GLOBALS.M * this.scale);
+        for (let i = this.pSize; i > 0; i -= 1) {
+            let r = i / (GLOBALS.M * this.scale);
             DISPLAY.bgPotential.lineTo(i, this.canvasPotential(model, Math.sqrt(r * r - GLOBALS.a * GLOBALS.a)));
         }
         DISPLAY.bgPotential.stroke();

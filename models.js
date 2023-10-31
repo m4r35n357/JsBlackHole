@@ -64,49 +64,41 @@ var GLOBALS = {
             return 3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
         }
     },
-    integrate: function (order, model, cd) {
+    integrate: function (order, m, cd) {
         if (order > 2) {
             order -= 2;
-            var fwd = 1.0 / (4.0 - 4.0**(1.0 / (order + 1)));
-            for (var stage = 0; stage < 5; stage++) {
-                this.integrate(order, model, (stage == 2 ? 1.0 - 4.0 * fwd : fwd) * cd);
+            let fwd = 1.0 / (4.0 - 4.0**(1.0 / (order + 1)));
+            for (let stage = 0; stage < 5; stage += 1) {
+                this.integrate(order, m, (stage === 2 ? 1.0 - 4.0 * fwd : fwd) * cd);
             }
         } else {
-            model.updateQ(cd * 0.5);
-            model.updateP(cd);
-            model.updateQ(cd * 0.5);
+            m.updateQ(cd * 0.5);
+            m.updateP(cd);
+            m.updateQ(cd * 0.5);
         }
     },
-    solve: function (model) {  // Generalized symplectic integrator
-        var i, M, r, phiDegrees, tmp, h;
-        var rOld = model.rOld = model.r;
-        var direction = model.direction;
-        var h0 = model.h0;
-        this.integrate(this.order, model, this.timeStep);
-        r = model.r;
-        if (((r > rOld) && (direction < 0)) || ((r < rOld) && (direction > 0))) {
-            phiDegrees = this.phiDMS(model.phi);
-            M = this.M;
-            if (direction === -1) {
-                model.rMinDisplay.innerHTML = (M * r).toFixed(3);
-                model.pDisplay.innerHTML = phiDegrees;
-                this.debug && console.log(model.name + ": Perihelion");
-            } else {
-                model.rMaxDisplay.innerHTML = (M * r).toFixed(3);
-                model.aDisplay.innerHTML = phiDegrees;
-                this.debug && console.log(model.name + ": Aphelion");
+    update: function (m) {
+        if (m.r > this.horizon) {
+            m.rOld = m.r;
+            this.integrate(this.order, m, this.timeStep);
+            if (((m.r > m.rOld) && (m.direction < 0)) || ((m.r < m.rOld) && (m.direction > 0))) {
+                let phiDegrees = this.phiDMS(m.phi);
+                if (m.direction === -1) {
+                    m.rMinDisplay.innerHTML = (this.M * m.r).toFixed(3);
+                    m.pDisplay.innerHTML = phiDegrees;
+                    this.debug && console.log(m.name + ": Perihelion");
+                } else {
+                    m.rMaxDisplay.innerHTML = (this.M * m.r).toFixed(3);
+                    m.aDisplay.innerHTML = phiDegrees;
+                    this.debug && console.log(m.name + ": Aphelion");
+                }
+                m.direction = - m.direction;
+                let h = this.h(m);
+                this.debug && console.log("H0: " + m.h0.toExponential(6) + ", H: " + h.toExponential(6) + ", E: " + this.dB(h, m.h0).toFixed(1) + "dBh0");
             }
-            model.direction = - direction;
-            h = this.h(model);
-            this.debug && console.log("H0: " + h0.toExponential(6) + ", H: " + h.toExponential(6) + ", E: " + this.dB(h, h0).toFixed(1) + "dBh0");
-        }
-    },
-    update: function (model) {
-        if (model.r > this.horizon) {
-            this.solve(model);
         } else {
-            model.collided = true;
-            this.debug && console.info(model.name + " - collided\n");
+            m.collided = true;
+            this.debug && console.info(m.name + " - collided\n");
         }
     },
     getFloatById: function (id) {
