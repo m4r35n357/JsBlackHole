@@ -82,7 +82,7 @@ var GLOBALS = {
         this.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
         this.order = this.getFloatById('order');
         this.debug && console.info(this.name + ".order: " + this.order);
-        this.a >= 0.0 ? this.prograde = true : this.prograde = false;
+        this.prograde = (this.a >= 0.0) ? true : false;
         this.horizon = 1.0 + Math.sqrt(1.0 - this.a * this.a);
         this.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(3));
     },
@@ -113,12 +113,12 @@ var GLOBALS = {
             if (((m.r > m.rOld) && (m.inwards)) || ((m.r < m.rOld) && (!m.inwards))) {
                 let phiDegrees = this.phiDMS(m.phi);
                 if (m.inwards === true) {
-                    m.rMinDisplay.innerHTML = (this.M * m.r).toFixed(3);
-                    m.pDisplay.innerHTML = phiDegrees;
+                    m.rMinText.innerHTML = (this.M * m.r).toFixed(3);
+                    m.pText.innerHTML = phiDegrees;
                     this.debug && console.log(m.name + ": Perihelion");
                 } else {
-                    m.rMaxDisplay.innerHTML = (this.M * m.r).toFixed(3);
-                    m.aDisplay.innerHTML = phiDegrees;
+                    m.rMaxText.innerHTML = (this.M * m.r).toFixed(3);
+                    m.aText.innerHTML = phiDegrees;
                     this.debug && console.log(m.name + ": Aphelion");
                 }
                 m.inwards = !m.inwards;

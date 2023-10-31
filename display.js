@@ -44,38 +44,38 @@ var DISPLAY = {
     pointY: function (r, phi) {
         return this.originY + r * Math.sin(phi);
     },
-    line: function (canvas, colour, x1, y1, x2, y2) {
-        canvas.strokeStyle = colour;
-        canvas.beginPath();
-        canvas.moveTo(x1, y1);
-        canvas.lineTo(x2, y2);
-        canvas.stroke();
+    line: function (c, colour, x1, y1, x2, y2) {
+        c.strokeStyle = colour;
+        c.beginPath();
+        c.moveTo(x1, y1);
+        c.lineTo(x2, y2);
+        c.stroke();
     },
-    ball: function (canvas, colour, x, y, radius) {
-        canvas.fillStyle = colour;
-        canvas.beginPath();
-        canvas.arc(x, y, radius, 0, GLOBALS.TWOPI, true);
-        canvas.closePath();
-        canvas.fill();
+    ball: function (c, colour, x, y, radius) {
+        c.fillStyle = colour;
+        c.beginPath();
+        c.arc(x, y, radius, 0, GLOBALS.TWOPI, true);
+        c.closePath();
+        c.fill();
     },
-    circle: function (canvas, colour, x, y, radius) {
-        canvas.strokeStyle = colour;
-        canvas.beginPath();
-        canvas.arc(x, y, radius, 0, GLOBALS.TWOPI, true);
-        canvas.closePath();
-        canvas.stroke();
+    circle: function (c, colour, x, y, radius) {
+        c.strokeStyle = colour;
+        c.beginPath();
+        c.arc(x, y, radius, 0, GLOBALS.TWOPI, true);
+        c.closePath();
+        c.stroke();
     },
-    circularGradient: function (canvas, x, y, innerColour, outerColour) {
-        let grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
-        grd.addColorStop(0, innerColour);
-        grd.addColorStop(1, outerColour);
-        canvas.fillStyle = grd;
-        canvas.fillRect(0, 0, 2 * x, 2 * y);
+    circularGradient: function (c, x, y, inner, outer) {
+        let grd = c.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
+        grd.addColorStop(0, inner);
+        grd.addColorStop(1, outer);
+        c.fillStyle = grd;
+        c.fillRect(0, 0, 2 * x, 2 * y);
     },
-    linearGradient: function (canvas, x, y, innerColour, outerColour) {
+    linearGradient: function (c, x, y, inner, outer) {
         let grd = DISPLAY.bgPotential.createLinearGradient(0, 0, DISPLAY.pSize, 0);
-        grd.addColorStop(0, innerColour);
-        grd.addColorStop(1, outerColour);
+        grd.addColorStop(0, inner);
+        grd.addColorStop(1, outer);
         DISPLAY.bgPotential.fillStyle = grd;
         DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
     },
@@ -84,20 +84,20 @@ var DISPLAY = {
         let c = GLOBALS.c;
         let properTime = this.n * GLOBALS.timeStep * M / c;
         if (! NEWTON.collided) {
-            NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(3);
-            NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
-            NEWTON.tDisplay.innerHTML = properTime.toFixed(1);
-            NEWTON.vDisplay.innerHTML = NEWTON.speed().toFixed(6);
+            NEWTON.rText.innerHTML = (M * NEWTON.r).toFixed(3);
+            NEWTON.phiText.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
+            NEWTON.tText.innerHTML = properTime.toFixed(1);
+            NEWTON.vText.innerHTML = NEWTON.speed().toFixed(6);
         }
         if (! GR.collided) {
-            GR.tDisplay.innerHTML = (M * GR.t / c).toFixed(1);
-            GR.rDisplay.innerHTML = (M * GR.r).toFixed(3);
-            GR.phiDisplay.innerHTML = GLOBALS.phiDegrees(GR.phi);
-            GR.tauDisplay.innerHTML = properTime.toFixed(1);
-            GR.tDotDisplay.innerHTML = GR.tDot.toFixed(3);
-            GR.rDotDisplay.innerHTML = GR.rDot.toFixed(3);
-            GR.phiDotDisplay.innerHTML = (GR.phiDot / M).toFixed(3);
-            GR.vDisplay.innerHTML = GR.speed().toFixed(6);
+            GR.tText.innerHTML = (M * GR.t / c).toFixed(1);
+            GR.rText.innerHTML = (M * GR.r).toFixed(3);
+            GR.phiText.innerHTML = GLOBALS.phiDegrees(GR.phi);
+            GR.tauText.innerHTML = properTime.toFixed(1);
+            GR.tDotText.innerHTML = GR.tDot.toFixed(3);
+            GR.rDotText.innerHTML = GR.rDot.toFixed(3);
+            GR.phiDotText.innerHTML = (GR.phiDot / M).toFixed(3);
+            GR.vText.innerHTML = GR.speed().toFixed(6);
         }
     },
     plotRotation: function () {
@@ -112,48 +112,48 @@ var DISPLAY = {
         this.X = X;
         this.Y = Y;
     },
-    errorColour: function (model) {
-        let error = GLOBALS.dB(GLOBALS.h(model), model.h0);
-        return error < -120.0 ? model.colour : (error < -90.0 ? this.YELLOW : (error < -60.0 ? this.ORANGE : this.RED));
+    errorColour: function (m) {
+        let error = GLOBALS.dB(GLOBALS.h(m), m.h0);
+        return error < -120.0 ? m.colour : (error < -90.0 ? this.YELLOW : (error < -60.0 ? this.ORANGE : this.RED));
     },
-    plotOrbit: function (model) {
-        let r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
-        let X = this.pointX(r, model.phi);
-        let Y = this.pointY(r, model.phi);
-        model.fg.clearRect(model.X - this.blank, model.Y - this.blank, 2 * this.blank, 2 * this.blank);
-        this.ball(model.fg, this.errorColour(model), X, Y, this.ballSize);
+    plotOrbit: function (m) {
+        let r = GLOBALS.radius(m.r) * GLOBALS.M * this.scale;
+        let X = this.pointX(r, m.phi);
+        let Y = this.pointY(r, m.phi);
+        m.fg.clearRect(m.X - this.blank, m.Y - this.blank, 2 * this.blank, 2 * this.blank);
+        this.ball(m.fg, this.errorColour(m), X, Y, this.ballSize);
         if (this.showTracks) {
-            this.line(this.tracks, model.colour, model.X, model.Y, X, Y);
+            this.line(this.tracks, m.colour, m.X, m.Y, X, Y);
         }
-        model.X = X;
-        model.Y = Y;
+        m.X = X;
+        m.Y = Y;
     },
     energyBar: function () {
         this.line(DISPLAY.bgPotential, this.BLACK, Math.floor(GLOBALS.horizon * GLOBALS.M * this.scale), this.potentialY, this.originX, this.potentialY);
     },
-    canvasPotential: function (model, r) {
-        return this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(r));
+    cPotential: function (m, r) {
+        return this.potentialY + this.pScale * this.pSize * (m.energyBar - m.V(r));
     },
-    plotPotential: function (model) {
-        let v = this.canvasPotential(model, model.r);
-        let r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
-        model.fgPotential.clearRect(GLOBALS.radius(model.rOld) * GLOBALS.M * this.scale - this.blank, this.potentialY - this.blank, 2 * this.blank, v + 2 * this.blank);
-        this.line(model.fgPotential, model.colour, r, v, r, this.potentialY);
-        this.ball(model.fgPotential, this.errorColour(model), r, this.potentialY, this.ballSize);
+    plotPotential: function (m) {
+        let v = this.cPotential(m, m.r);
+        let r = GLOBALS.radius(m.r) * GLOBALS.M * this.scale;
+        m.fgPotential.clearRect(GLOBALS.radius(m.rOld) * GLOBALS.M * this.scale - this.blank, this.potentialY - this.blank, 2 * this.blank, v + 2 * this.blank);
+        this.line(m.fgPotential, m.colour, r, v, r, this.potentialY);
+        this.ball(m.fgPotential, this.errorColour(m), r, this.potentialY, this.ballSize);
     },
-    plotSpeed: function (model) {  // dTau/dt plot for GR
+    plotSpeed: function (m) {  // dTau/dt plot for GR
         let xValue = DISPLAY.pSize - 5;
-        let tDotValue = DISPLAY.pSize * (1.0 - model.speed());
-        model.fgPotential.clearRect(xValue - 3, 0, xValue + 3, DISPLAY.pSize);
-        this.line(model.fgPotential, model.colour, xValue, DISPLAY.pSize, xValue, tDotValue);
-        this.ball(model.fgPotential, model.colour, xValue, tDotValue, this.ballSize);
+        let tDotValue = DISPLAY.pSize * (1.0 - m.speed());
+        m.fgPotential.clearRect(xValue - 3, 0, xValue + 3, DISPLAY.pSize);
+        this.line(m.fgPotential, m.colour, xValue, DISPLAY.pSize, xValue, tDotValue);
+        this.ball(m.fgPotential, m.colour, xValue, tDotValue, this.ballSize);
     },
-    potential: function (model) {
-        DISPLAY.bgPotential.strokeStyle = model.colour;
+    potential: function (m) {
+        DISPLAY.bgPotential.strokeStyle = m.colour;
         DISPLAY.bgPotential.beginPath();
         for (let i = this.pSize; i > 0; i -= 1) {
             let r = i / (GLOBALS.M * this.scale);
-            DISPLAY.bgPotential.lineTo(i, this.canvasPotential(model, Math.sqrt(r * r - GLOBALS.a * GLOBALS.a)));
+            DISPLAY.bgPotential.lineTo(i, this.cPotential(m, Math.sqrt(r * r - GLOBALS.a * GLOBALS.a)));
         }
         DISPLAY.bgPotential.stroke();
     },
