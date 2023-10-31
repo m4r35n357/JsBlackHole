@@ -135,7 +135,6 @@ var GLOBALS = {
 var NEWTON = {
     name: "NEWTON",
     initialize: function (a, lFac, debug) {
-        var V0;
         this.circular(this.r);
         debug && console.info(this.name + ".L: " + this.L.toFixed(3));
         this.L2 = this.L * this.L;
@@ -143,7 +142,7 @@ var NEWTON = {
         debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
         this.L = this.L * lFac;
         this.L2 = this.L * this.L;
-        V0 = this.V(this.r); // using (possibly) adjusted L from above
+        let V0 = this.V(this.r); // using (possibly) adjusted L from above
         this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
         this.h0 =  0.5 * this.rDot * this.rDot + V0;
     },
@@ -162,7 +161,7 @@ var NEWTON = {
         this.phi += c * this.phiDot;
     },
     updateP: function (c) {  // update radial momentum
-        var r2 = this.r * this.r;
+        let r2 = this.r * this.r;
         this.rDot -= c * (1.0 / r2 - this.L2 / (r2 * this.r));
     },
 };
@@ -170,7 +169,6 @@ var NEWTON = {
 var GR = { // can be spinning
     name: "GR",
     initialize: function (a, lFac, debug) {
-        var V0;
         this.circular(this.r, a);
         debug && console.info(this.name + ".L: " + this.L.toFixed(12));
         debug && console.info(this.name + ".E: " + this.E.toFixed(12));
@@ -181,7 +179,7 @@ var GR = { // can be spinning
         this.intermediates(this.L, this.E, a);
         this.t = 0.0;
         this.tDot = 1.0;
-        V0 = this.V(this.r); // using (possibly) adjusted L from above
+        let V0 = this.V(this.r); // using (possibly) adjusted L from above
         this.rDot = - Math.sqrt(2.0 * (this.energyBar - V0));
         this.h0 =  0.5 * this.rDot * this.rDot + V0;
     },
@@ -189,8 +187,8 @@ var GR = { // can be spinning
         return Math.sqrt(1.0 - 1.0 / (this.tDot * this.tDot));
     },
     circular: function (r, a) {  // L and E for a circular orbit of r
-        var sqrtR = Math.sqrt(r);
-        var tmp = Math.sqrt(r * r - 3.0 * r + 2.0 * a * sqrtR);
+        let sqrtR = Math.sqrt(r);
+        let tmp = Math.sqrt(r * r - 3.0 * r + 2.0 * a * sqrtR);
         this.L = (r * r - 2.0 * a * sqrtR + a * a) / (sqrtR * tmp);
         this.E = (r * r - 2.0 * r + a * sqrtR) / (r * tmp);
     },
@@ -206,15 +204,15 @@ var GR = { // can be spinning
     },
     updateQ: function (c) {  // update radial position
         this.r += c * this.rDot;
-        var r2 = this.r * this.r;
-        var delta = r2 + this.a2 - 2.0 * this.r;
+        let r2 = this.r * this.r;
+        let delta = r2 + this.a2 - 2.0 * this.r;
         this.tDot = ((r2 + this.a2 * (1.0 + 2.0 / this.r)) * this.E - this.twoAL / this.r) / delta;
         this.t += c * this.tDot;
         this.phiDot = ((1.0 - 2.0 / this.r) * this.L + this.twoAE / this.r) / delta;
         this.phi += c * this.phiDot;
     },
     updateP: function (c) {  // update radial momentum
-        var r2 = this.r * this.r;
+        let r2 = this.r * this.r;
         this.rDot -= c * (1.0 / r2 - this.k1 / (r2 * this.r) + 3.0 * this.k2 / (r2 * r2));
     },
 };
