@@ -81,9 +81,9 @@ var GLOBALS = {
         if (m.r > this.horizon) {
             m.rOld = m.r;
             this.integrate(this.order, m, this.timeStep);
-            if (((m.r > m.rOld) && (m.direction < 0)) || ((m.r < m.rOld) && (m.direction > 0))) {
+            if (((m.r > m.rOld) && (m.inwards)) || ((m.r < m.rOld) && (!m.inwards))) {
                 let phiDegrees = this.phiDMS(m.phi);
-                if (m.direction === -1) {
+                if (m.inwards === true) {
                     m.rMinDisplay.innerHTML = (this.M * m.r).toFixed(3);
                     m.pDisplay.innerHTML = phiDegrees;
                     this.debug && console.log(m.name + ": Perihelion");
@@ -92,7 +92,7 @@ var GLOBALS = {
                     m.aDisplay.innerHTML = phiDegrees;
                     this.debug && console.log(m.name + ": Aphelion");
                 }
-                m.direction = - m.direction;
+                m.inwards = !m.inwards;
                 let h = this.h(m);
                 this.debug && console.log("H0: " + m.h0.toExponential(6) + ", H: " + h.toExponential(6) + ", E: " + this.dB(h, m.h0).toFixed(1) + "dBh0");
             }
@@ -128,7 +128,7 @@ var GLOBALS = {
         model.r = this.r;
         model.rOld = this.r;
         model.phi = 0.0;
-        model.direction = - 1.0;
+        model.inwards = true;
     },
 };
 
