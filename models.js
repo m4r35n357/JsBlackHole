@@ -93,17 +93,17 @@ var GLOBALS = {
         m.phi = 0.0;
         m.inwards = true;
     },
-    integrate: function (order, m, cd) {
+    integrate: function (order, m, c_d) {
         if (order > 2) {
             order -= 2;
             let fwd = 1.0 / (4.0 - 4.0**(1.0 / (order + 1)));
             for (let stage = 0; stage < 5; stage += 1) {
-                this.integrate(order, m, (stage === 2 ? 1.0 - 4.0 * fwd : fwd) * cd);
+                this.integrate(order, m, (stage === 2 ? 1.0 - 4.0 * fwd : fwd) * c_d);
             }
         } else {
-            m.updateQ(cd * 0.5);
-            m.updateP(cd);
-            m.updateQ(cd * 0.5);
+            m.updateQ(c_d * 0.5);
+            m.updateP(c_d);
+            m.updateQ(c_d * 0.5);
         }
     },
     update: function (m) {
@@ -160,9 +160,9 @@ var NEWTON = {
         this.phiDot = this.L / (this.r * this.r);
         this.phi += c * this.phiDot;
     },
-    updateP: function (c) {  // update radial momentum
+    updateP: function (d) {  // update radial momentum
         let r2 = this.r * this.r;
-        this.rDot -= c * (1.0 / r2 - this.L2 / (r2 * this.r));
+        this.rDot -= d * (1.0 / r2 - this.L2 / (r2 * this.r));
     },
 };
 
@@ -172,11 +172,11 @@ var GR = { // can be spinning
         this.circular(this.r, a);
         debug && console.info(this.name + ".L: " + this.L.toFixed(12));
         debug && console.info(this.name + ".E: " + this.E.toFixed(12));
-        this.intermediates(this.L, this.E, a);
+        this.constants(this.L, this.E, a);
         this.energyBar = this.V(this.r);
         debug && console.info(this.name + ".energyBar: " + this.energyBar.toFixed(6));
         this.L = this.L * lFac;
-        this.intermediates(this.L, this.E, a);
+        this.constants(this.L, this.E, a);
         this.t = 0.0;
         this.tDot = 1.0;
         let V0 = this.V(this.r); // using (possibly) adjusted L from above
@@ -192,7 +192,7 @@ var GR = { // can be spinning
         this.L = (r * r - 2.0 * a * sqrtR + a * a) / (sqrtR * tmp);
         this.E = (r * r - 2.0 * r + a * sqrtR) / (r * tmp);
     },
-    intermediates: function (L, E, a) {
+    constants: function (L, E, a) {
         this.k1 = L * L - a * a * (E * E - 1.0);
         this.k2 = (L - a * E) * (L - a * E);
         this.a2 = a * a;
@@ -211,8 +211,8 @@ var GR = { // can be spinning
         this.phiDot = ((1.0 - 2.0 / this.r) * this.L + this.twoAE / this.r) / delta;
         this.phi += c * this.phiDot;
     },
-    updateP: function (c) {  // update radial momentum
+    updateP: function (d) {  // update radial momentum
         let r2 = this.r * this.r;
-        this.rDot -= c * (1.0 / r2 - this.k1 / (r2 * this.r) + 3.0 * this.k2 / (r2 * r2));
+        this.rDot -= d * (1.0 / r2 - this.k1 / (r2 * this.r) + 3.0 * this.k2 / (r2 * r2));
     },
 };
