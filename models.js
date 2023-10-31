@@ -64,6 +64,35 @@ var GLOBALS = {
             return 3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
         }
     },
+    getFloatById: function (id) {
+        return parseFloat(document.getElementById(id).value);
+    },
+    getHtmlValues: function () {
+        this.debug && console.info("Restarting . . . ");
+        this.timeStep = this.getFloatById('timestep');
+        this.lFac = this.getFloatById('lfactor') / 100.0;
+        this.c = this.getFloatById('c');
+        this.G = this.getFloatById('G');
+        this.M = this.getFloatById('mass') * this.G / (this.c * this.c);
+        this.Rs = 2.0 * this.M;
+        this.debug && console.info(this.name + ".M: " + this.M.toFixed(3));
+        this.r = this.getFloatById('radius') / this.M;
+        this.debug && console.info(this.name + ".r: " + this.r.toFixed(1));
+        this.a = this.getFloatById('spin');
+        this.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
+        this.order = this.getFloatById('order');
+        this.debug && console.info(this.name + ".order: " + this.order);
+        this.a >= 0.0 ? this.prograde = true : this.prograde = false;
+        this.horizon = 1.0 + Math.sqrt(1.0 - this.a * this.a);
+        this.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(3));
+    },
+    initialize: function (m) {
+        m.collided = false;
+        m.r = this.r;
+        m.rOld = this.r;
+        m.phi = 0.0;
+        m.inwards = true;
+    },
     integrate: function (order, m, cd) {
         if (order > 2) {
             order -= 2;
@@ -100,35 +129,6 @@ var GLOBALS = {
             m.collided = true;
             this.debug && console.info(m.name + " - collided\n");
         }
-    },
-    getFloatById: function (id) {
-        return parseFloat(document.getElementById(id).value);
-    },
-    getHtmlValues: function () {
-        this.debug && console.info("Restarting . . . ");
-        this.timeStep = this.getFloatById('timestep');
-        this.lFac = this.getFloatById('lfactor') / 100.0;
-        this.c = this.getFloatById('c');
-        this.G = this.getFloatById('G');
-        this.M = this.getFloatById('mass') * this.G / (this.c * this.c);
-        this.Rs = 2.0 * this.M;
-        this.debug && console.info(this.name + ".M: " + this.M.toFixed(3));
-        this.r = this.getFloatById('radius') / this.M;
-        this.debug && console.info(this.name + ".r: " + this.r.toFixed(1));
-        this.a = this.getFloatById('spin');
-        this.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
-        this.order = this.getFloatById('order');
-        this.debug && console.info(this.name + ".order: " + this.order);
-        this.a >= 0.0 ? this.prograde = true : this.prograde = false;
-        this.horizon = 1.0 + Math.sqrt(1.0 - this.a * this.a);
-        this.debug && console.info(this.name + ".horizon: " + this.horizon.toFixed(3));
-    },
-    initialize: function (model) {
-        model.collided = false;
-        model.r = this.r;
-        model.rOld = this.r;
-        model.phi = 0.0;
-        model.inwards = true;
     },
 };
 
