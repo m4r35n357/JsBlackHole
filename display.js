@@ -66,23 +66,23 @@ var DISPLAY = {
         canvas.stroke();
     },
     circularGradient: function (canvas, x, y, innerColour, outerColour) {
-        var grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
+        let grd = canvas.createRadialGradient(x, y, 0, x, y, Math.sqrt(x * x + y * y));
         grd.addColorStop(0, innerColour);
         grd.addColorStop(1, outerColour);
         canvas.fillStyle = grd;
         canvas.fillRect(0, 0, 2 * x, 2 * y);
     },
     linearGradient: function (canvas, x, y, innerColour, outerColour) {
-        var grd = DISPLAY.bgPotential.createLinearGradient(0, 0, DISPLAY.pSize, 0);
+        let grd = DISPLAY.bgPotential.createLinearGradient(0, 0, DISPLAY.pSize, 0);
         grd.addColorStop(0, innerColour);
         grd.addColorStop(1, outerColour);
         DISPLAY.bgPotential.fillStyle = grd;
         DISPLAY.bgPotential.fillRect(0, 0, DISPLAY.pSize, DISPLAY.pSize);
     },
     varTable: function () {
-        var M = GLOBALS.M;
-        var c = GLOBALS.c;
-        var properTime = this.n * GLOBALS.timeStep * M / c;
+        let M = GLOBALS.M;
+        let c = GLOBALS.c;
+        let properTime = this.n * GLOBALS.timeStep * M / c;
         if (! NEWTON.collided) {
             NEWTON.rDisplay.innerHTML = (M * NEWTON.r).toFixed(3);
             NEWTON.phiDisplay.innerHTML = GLOBALS.phiDegrees(NEWTON.phi);
@@ -101,8 +101,8 @@ var DISPLAY = {
         }
     },
     plotRotation: function () {
-        var phiBH, X, Y;
-        var radius = GLOBALS.radius(GLOBALS.ergosphere) * GLOBALS.M * DISPLAY.scale;
+        let phiBH, X, Y;
+        let radius = GLOBALS.radius(GLOBALS.ergosphere) * GLOBALS.M * DISPLAY.scale;
         this.phiBH += GLOBALS.deltaPhi(GLOBALS.ergosphere);
         phiBH = this.phiBH;
         X = this.pointX(radius, phiBH);
@@ -113,13 +113,13 @@ var DISPLAY = {
         this.Y = Y;
     },
     errorColour: function (model) {
-        var error = GLOBALS.dB(GLOBALS.h(model), model.h0);
+        let error = GLOBALS.dB(GLOBALS.h(model), model.h0);
         return error < -120.0 ? model.colour : (error < -90.0 ? this.YELLOW : (error < -60.0 ? this.ORANGE : this.RED));
     },
     plotOrbit: function (model) {
-        var r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
-        var X = this.pointX(r, model.phi);
-        var Y = this.pointY(r, model.phi);
+        let r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
+        let X = this.pointX(r, model.phi);
+        let Y = this.pointY(r, model.phi);
         model.fg.clearRect(model.X - this.blank, model.Y - this.blank, 2 * this.blank, 2 * this.blank);
         this.ball(model.fg, this.errorColour(model), X, Y, this.ballSize);
         if (this.showTracks) {
@@ -135,15 +135,15 @@ var DISPLAY = {
         return this.potentialY + this.pScale * this.pSize * (model.energyBar - model.V(r));
     },
     plotPotential: function (model) {
-        var v = this.canvasPotential(model, model.r);
-        var r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
+        let v = this.canvasPotential(model, model.r);
+        let r = GLOBALS.radius(model.r) * GLOBALS.M * this.scale;
         model.fgPotential.clearRect(GLOBALS.radius(model.rOld) * GLOBALS.M * this.scale - this.blank, this.potentialY - this.blank, 2 * this.blank, v + 2 * this.blank);
         this.line(model.fgPotential, model.colour, r, v, r, this.potentialY);
         this.ball(model.fgPotential, this.errorColour(model), r, this.potentialY, this.ballSize);
     },
     plotSpeed: function (model) {  // dTau/dt plot for GR
-        var xValue = DISPLAY.pSize - 5;
-        var tDotValue = DISPLAY.pSize * (1.0 - model.speed());
+        let xValue = DISPLAY.pSize - 5;
+        let tDotValue = DISPLAY.pSize * (1.0 - model.speed());
         model.fgPotential.clearRect(xValue - 3, 0, xValue + 3, DISPLAY.pSize);
         this.line(model.fgPotential, model.colour, xValue, DISPLAY.pSize, xValue, tDotValue);
         this.ball(model.fgPotential, model.colour, xValue, tDotValue, this.ballSize);

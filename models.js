@@ -39,10 +39,10 @@ var GLOBALS = {
         return (phiRadians * 360.0 / this.TWOPI % 360).toFixed(0) + "&deg;";
     },
     phiDMS: function (phiRadians) {
-        var totalDegrees = phiRadians * 360.0 / this.TWOPI;
-        var circularDegrees = totalDegrees - Math.floor(totalDegrees / 360.0) * 360;
-        var minutes = (circularDegrees - Math.floor(circularDegrees)) * 60;
-        var seconds = (minutes - Math.floor(minutes)) * 60;
+        let totalDegrees = phiRadians * 360.0 / this.TWOPI;
+        let circularDegrees = totalDegrees - Math.floor(totalDegrees / 360.0) * 360;
+        let minutes = (circularDegrees - Math.floor(circularDegrees)) * 60;
+        let seconds = (minutes - Math.floor(minutes)) * 60;
         return circularDegrees.toFixed(0) + "&deg;" + minutes.toFixed(0) + "&#39;" + seconds.toFixed(0) + "&#34;";
     },
     h: function (model) {  // the radial "Hamiltonian"
@@ -56,8 +56,8 @@ var GLOBALS = {
         }
     },
     isco: function (a) {
-        var z1 = 1.0 + Math.pow(1.0 - a * a, 1.0 / 3.0) * (Math.pow(1.0 + a, 1.0 / 3.0) + Math.pow(1.0 - a, 1.0 / 3.0));
-        var z2 = Math.sqrt(3.0 * a * a + z1 * z1);
+        let z1 = 1.0 + Math.pow(1.0 - a * a, 1.0 / 3.0) * (Math.pow(1.0 + a, 1.0 / 3.0) + Math.pow(1.0 - a, 1.0 / 3.0));
+        let z2 = Math.sqrt(3.0 * a * a + z1 * z1);
         if (this.prograde) {
             return 3.0 + z2 - Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
         } else {

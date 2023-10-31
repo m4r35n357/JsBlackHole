@@ -21,10 +21,10 @@
 "use strict";
 
 var drawBackground = function () {
-    var isco = GLOBALS.radius(GLOBALS.isco(GLOBALS.a)) * GLOBALS.M * DISPLAY.scale;
-    var photonSphere = GLOBALS.radius(GLOBALS.photonSphere(GLOBALS.a)) * GLOBALS.M * DISPLAY.scale;
-    var ergosphere = GLOBALS.radius(GLOBALS.ergosphere) * GLOBALS.M * DISPLAY.scale;
-    var horizon = GLOBALS.radius(GLOBALS.horizon) * GLOBALS.M * DISPLAY.scale;
+    let isco = GLOBALS.radius(GLOBALS.isco(GLOBALS.a)) * GLOBALS.M * DISPLAY.scale;
+    let photonSphere = GLOBALS.radius(GLOBALS.photonSphere(GLOBALS.a)) * GLOBALS.M * DISPLAY.scale;
+    let ergosphere = GLOBALS.radius(GLOBALS.ergosphere) * GLOBALS.M * DISPLAY.scale;
+    let horizon = GLOBALS.radius(GLOBALS.horizon) * GLOBALS.M * DISPLAY.scale;
     // Initialize orbit canvases
     DISPLAY.bg.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
     DISPLAY.tracks.clearRect(0, 0, DISPLAY.oSize, DISPLAY.oSize);
@@ -133,7 +133,7 @@ var scenarioChange = function () {  // refresh form data
 };
 
 window.onload = function () {  // load static DOM elements
-    var orbitPlot = document.getElementById('tracks');
+    let orbitPlot = document.getElementById('tracks');
     DISPLAY.oSize = orbitPlot.width;
     DISPLAY.originX = orbitPlot.width / 2;
     DISPLAY.originY = orbitPlot.height / 2;
