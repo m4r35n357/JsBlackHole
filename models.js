@@ -29,11 +29,11 @@ var GLOBALS = {
     dB: function (val, ref) {
         return 10.0 * Math.log(Math.abs((val - ref) / ref)) / this.LOG10;
     },
-    radius: function (r) {
+    circle: function (r) {
         return Math.sqrt(r * r + this.a * this.a);
     },
     deltaPhi: function (r) {  // omega = - g_t_phi / g_phi_phi
-        return this.Rs * this.a * this.c / (r * r * r + (r + this.Rs) * this.a * this.a) * this.timeStep;
+        return this.Rs * this.a * this.c / (r * r * r + (r + this.Rs) * this.a * this.a) * this.step;
     },
     phiDegrees: function (phiRadians) {
         return (phiRadians * 360.0 / this.TWOPI % 360).toFixed(0) + "&deg;";
@@ -69,7 +69,7 @@ var GLOBALS = {
     },
     getHtmlValues: function () {
         this.debug && console.info("Restarting . . . ");
-        this.timeStep = this.getFloatById('timestep');
+        this.step = this.getFloatById('timestep');
         this.lFac = this.getFloatById('lfactor') / 100.0;
         this.c = this.getFloatById('c');
         this.G = this.getFloatById('G');
@@ -109,7 +109,7 @@ var GLOBALS = {
     update: function (m) {
         if (m.r > this.horizon) {
             m.rOld = m.r;
-            this.integrate(this.order, m, this.timeStep);
+            this.integrate(this.order, m, this.step);
             if (((m.r > m.rOld) && (m.inwards)) || ((m.r < m.rOld) && (!m.inwards))) {
                 let phiDegrees = this.phiDMS(m.phi);
                 if (m.inwards === true) {
@@ -152,7 +152,7 @@ var NEWTON = {
     circular: function (r) {  // L for a circular orbit of r
         this.L = Math.sqrt(r);
     },
-    V: function (r) {  // the Effective Potential
+    V: function (r) {  // the Effective V
         return - 1.0 / r + this.L2 / (2.0 * r * r);
     },
     updateQ: function (c) {  // update radial position
