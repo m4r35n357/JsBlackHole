@@ -64,23 +64,33 @@ var GLOBALS = {
             return 3.0 + z2 + Math.sqrt((3.0 - z1) * (3.0 + z1 + 2.0 * z2));
         }
     },
-    getFloatById: function (id) {
-        return parseFloat(document.getElementById(id).value);
+    getParameter: function (id) {
+        var parameter;
+        var element = document.getElementById(id);
+        if (this.params.has(id)) {
+            parameter = this.params.get(id);
+            console.log(" URL " + id + ": " + parameter);
+            element.value = parameter;
+        }
+        parameter = parseFloat(element.value);
+        console.log("PAGE " + id + ": " + parameter);
+        return parameter;
     },
     getHtmlValues: function () {
+        this.params = new URL(window.location.toLocaleString()).searchParams;
         this.debug && console.info("Restarting . . . ");
-        this.step = this.getFloatById('timestep');
-        this.lFac = this.getFloatById('lfactor') / 100.0;
-        this.c = this.getFloatById('c');
-        this.G = this.getFloatById('G');
-        this.M = this.getFloatById('mass') * this.G / (this.c * this.c);
+        this.step = this.getParameter('timestep');
+        this.lFac = this.getParameter('lfactor') / 100.0;
+        this.c = this.getParameter('c');
+        this.G = this.getParameter('G');
+        this.M = this.getParameter('mass') * this.G / (this.c * this.c);
         this.Rs = 2.0 * this.M;
         this.debug && console.info(this.name + ".M: " + this.M.toFixed(3));
-        this.r = this.getFloatById('radius') / this.M;
+        this.r = this.getParameter('radius') / this.M;
         this.debug && console.info(this.name + ".r: " + this.r.toFixed(1));
-        this.a = this.getFloatById('spin');
+        this.a = this.getParameter('spin');
         this.debug && console.info(this.name + ".a: " + this.a.toFixed(1));
-        this.order = this.getFloatById('order');
+        this.order = this.getParameter('order');
         this.debug && console.info(this.name + ".order: " + this.order);
         this.prograde = (this.a >= 0.0) ? true : false;
         this.horizon = 1.0 + Math.sqrt(1.0 - this.a * this.a);

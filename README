@@ -1,0 +1,12 @@
+
+Run web server:
+
+python3 -m http.server 8080
+
+Browse:
+
+http://localhost:8080/?c=1&timestep=1&scale=30&pscale=300&G=1&mass=1&radius=12&order=4&spin=-0.50
+
+http://localhost:8080/?c=1&timestep=1&scale=30&pscale=300&G=1&mass=1&radius=12
+
+http://localhost:8080/

@@ -119,8 +119,8 @@ var setupModel = function (model, colour) {
 
 var scenarioChange = function () {  // refresh form data
     GLOBALS.getHtmlValues();
-    DISPLAY.scale = GLOBALS.getFloatById('scale');
-    DISPLAY.pScale = GLOBALS.getFloatById('pscale');
+    DISPLAY.scale = GLOBALS.getParameter('scale');
+    DISPLAY.pScale = GLOBALS.getParameter('pscale');
     document.getElementById('showTracks').checked ? DISPLAY.showTracks = true : DISPLAY.showTracks = false;
     document.getElementById('toggleDebug').checked ? GLOBALS.debug = true : GLOBALS.debug = false;
     setupModel(NEWTON, DISPLAY.GREEN);
@@ -170,5 +170,5 @@ window.onload = function () {  // load static DOM elements
     GR.tauDotText = document.getElementById('taudotGR');
     GR.vText = document.getElementById('vGR');
     document.getElementById('scenarioForm').onsubmit = scenarioChange;
-    scenarioChange();  // start thimgs moving
+    scenarioChange();  // start things moving
 };
